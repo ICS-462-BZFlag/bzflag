@@ -235,6 +235,14 @@ void            RobotPlayer::doUpdateMotion(float dt)
             if (!p || p->getId() == getId())
                 continue;
             const int maxShots = p->getMaxShots();
+	  
+	    if (p != NULL)
+	    {
+	      if (p->getTeam() == LocalPlayer::getTeam())
+	      {
+	      }
+	    }
+	  
             for (int s = 0; s < maxShots; s++)
             {
                 ShotPath* shot = p->getShot(s);

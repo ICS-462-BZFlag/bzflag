@@ -1808,6 +1808,8 @@
 		DF8950DD16E42CF800BA9DD5 /* playerHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = playerHandler.cpp; path = ../plugins/serverSidePlayerSample/playerHandler.cpp; sourceTree = "<group>"; };
 		DF8950DE16E42CF800BA9DD5 /* playerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = playerHandler.h; path = ../plugins/serverSidePlayerSample/playerHandler.h; sourceTree = "<group>"; };
 		DF8950DF16E42CF800BA9DD5 /* serverSidePlayerSample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = serverSidePlayerSample.cpp; path = ../plugins/serverSidePlayerSample/serverSidePlayerSample.cpp; sourceTree = "<group>"; };
+		ECE2AD8423E189A000F10165 /* sample.conf */ = {isa = PBXFileReference; lastKnownFileType = text; path = sample.conf; sourceTree = "<group>"; };
+		ECE2AD8523E189FB00F10165 /* empty.bzw */ = {isa = PBXFileReference; lastKnownFileType = text; path = empty.bzw; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3388,6 +3390,8 @@
 		0394E967167B2D7B007F4035 /* Targets */ = {
 			isa = PBXGroup;
 			children = (
+				ECE2AD8423E189A000F10165 /* sample.conf */,
+				ECE2AD8523E189FB00F10165 /* empty.bzw */,
 				03C8EE25167ABE2300BB07A5 /* BZFlag.app */,
 				03C5E7BC1670A3DA005A26C4 /* lib3D.a */,
 				0357A7BC1670AF8E0056C938 /* libcommon.a */,

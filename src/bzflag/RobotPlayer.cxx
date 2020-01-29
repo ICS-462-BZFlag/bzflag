@@ -236,11 +236,25 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 continue;
             const int maxShots = p->getMaxShots();
 	  
+	    float totalTeamPosition[3];
+	    totalTeamPosition[0] = 0.0;
+	    totalTeamPosition[1] = 0.0;
+	    totalTeamPosition[2] = 0.0;
+	    float teamAmount = 0.0;
+	    float teamCoM[3];
+	    
 	    if (p != NULL)
 	    {
 	      if (p->getTeam() == LocalPlayer::getTeam())
 	      {
+		teamAmount++;
+		totalTeamPosition[0] += p->getPosition()[0];
+		totalTeamPosition[1] += p->getPosition()[1];
+		totalTeamPosition[2] += p->getPosition()[2];
 	      }
+	      teamCoM[0] = totalTeamPosition[0] / teamAmount;
+	      teamCoM[1] = totalTeamPosition[1] / teamAmount;
+	      teamCoM[2] = totalTeamPosition[2] / teamAmount;
 	    }
 	  
             for (int s = 0; s < maxShots; s++)

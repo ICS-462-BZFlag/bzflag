@@ -215,6 +215,7 @@ void RobotPlayer::calcCoM(float cm[])
   totalTeamPosition[2] = 0.0;
   float teamAmount = 1.0;
   Player *p = 0;
+  
   for (int t=0; t <= World::getWorld()->getCurMaxPlayers(); t++)
   {
     if (p != NULL)
@@ -318,7 +319,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
         {
             float distance;
             float v[2];
-            const float* endPoint = path[pathIndex].get();
+            const float* endPoint = teamCoM;
             // find how long it will take to get to next path segment
             v[0] = endPoint[0] - position[0];
             v[1] = endPoint[1] - position[1];

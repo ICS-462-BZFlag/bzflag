@@ -49,6 +49,7 @@ public:
 private:
     void        doUpdate(float dt);
     void        doUpdateMotion(float dt);
+    void calcCoM(float cm[]);
     BzfRegion*      findRegion(const float p[2], float nearest[2]) const;
     float       getRegionExitPoint(
         const float p1[2], const float p2[2],

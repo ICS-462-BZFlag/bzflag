@@ -719,11 +719,12 @@ void            ServerLink::sendGrabFlag(int flagIndex)
     send(MsgGrabFlag, sizeof(msg), msg);
 }
 
-void            ServerLink::sendDropFlag(const float* position)
+void            ServerLink::sendDropFlag(const PlayerId& dropper, const float* position)
 {
-    char msg[12];
+    char msg[PlayerIdPLen + 12];
     void* buf = msg;
     buf = nboPackVector(buf, position);
+<   buf = nboPackUByte(buf, dropper);
     send(MsgDropFlag, sizeof(msg), msg);
 }
 

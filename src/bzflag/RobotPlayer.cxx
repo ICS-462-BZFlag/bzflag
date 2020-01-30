@@ -222,6 +222,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
         float azimuth = oldAzimuth;
         float tankAngVel = BZDB.eval(StateDatabase::BZDB_TANKANGVEL);
         float tankSpeed = BZDBCache::tankSpeed;
+        float teamCoM[3];
 
 
         // basically a clone of Roger's evasive code
@@ -240,8 +241,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
 	    totalTeamPosition[0] = 0.0;
 	    totalTeamPosition[1] = 0.0;
 	    totalTeamPosition[2] = 0.0;
-	    float teamAmount = 0.0;
-	    float teamCoM[3];
+	    float teamAmount = 1.0;
 	    
 	    if (p != NULL)
 	    {
@@ -252,6 +252,11 @@ void            RobotPlayer::doUpdateMotion(float dt)
 		totalTeamPosition[1] += p->getPosition()[1];
 		totalTeamPosition[2] += p->getPosition()[2];
 	      }
+	      
+	      totalTeamPosition[0] += LocalPlayer::getMyTank()->getPosition()[0];
+	      totalTeamPosition[1] += LocalPlayer::getMyTank()->getPosition()[1];
+	      totalTeamPosition[2] += LocalPlayer::getMyTank()->getPosition()[2];
+	      
 	      teamCoM[0] = totalTeamPosition[0] / teamAmount;
 	      teamCoM[1] = totalTeamPosition[1] / teamAmount;
 	      teamCoM[2] = totalTeamPosition[2] / teamAmount;
@@ -307,7 +312,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
         {
             float distance;
             float v[2];
-            const float* endPoint = path[pathIndex].get();
+	    const float* endPoint = teamCoM;
             // find how long it will take to get to next path segment
             v[0] = endPoint[0] - position[0];
             v[1] = endPoint[1] - position[1];

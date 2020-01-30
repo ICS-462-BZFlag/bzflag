@@ -207,7 +207,7 @@ void            RobotPlayer::doUpdate(float dt)
     }
 }
 
-void RobotPlayer::calcCoM(float teamCoM[])
+void RobotPlayer::calcCoM(float cm[])
 {
   float totalTeamPosition[3];
   totalTeamPosition[0] = 0.0;
@@ -231,9 +231,9 @@ void RobotPlayer::calcCoM(float teamCoM[])
       totalTeamPosition[1] += LocalPlayer::getMyTank()->getPosition()[1];
       totalTeamPosition[2] += LocalPlayer::getMyTank()->getPosition()[2];
       
-      teamCoM[0] = totalTeamPosition[0] / teamAmount;
-      teamCoM[1] = totalTeamPosition[1] / teamAmount;
-      teamCoM[2] = totalTeamPosition[2] / teamAmount;
+      cm[0] = totalTeamPosition[0] / teamAmount;
+      cm[1] = totalTeamPosition[1] / teamAmount;
+      cm[2] = totalTeamPosition[2] / teamAmount;
     }
   }
 }
@@ -253,7 +253,9 @@ void            RobotPlayer::doUpdateMotion(float dt)
         float azimuth = oldAzimuth;
         float tankAngVel = BZDB.eval(StateDatabase::BZDB_TANKANGVEL);
         float tankSpeed = BZDBCache::tankSpeed;
-
+        float teamCoM[3];
+        calcCoM(teamCoM);
+      
         // basically a clone of Roger's evasive code
         for (int t=0; t <= World::getWorld()->getCurMaxPlayers(); t++)
         {
@@ -265,32 +267,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             if (!p || p->getId() == getId())
                 continue;
             const int maxShots = p->getMaxShots();
-<<<<<<< Updated upstream
-	  
-	    float totalTeamPosition[3];
-	    totalTeamPosition[0] = 0.0;
-	    totalTeamPosition[1] = 0.0;
-	    totalTeamPosition[2] = 0.0;
-	    float teamAmount = 0.0;
-	    float teamCoM[3];
-	    
-	    if (p != NULL)
-	    {
-	      if (p->getTeam() == LocalPlayer::getTeam())
-	      {
-		teamAmount++;
-		totalTeamPosition[0] += p->getPosition()[0];
-		totalTeamPosition[1] += p->getPosition()[1];
-		totalTeamPosition[2] += p->getPosition()[2];
-	      }
-	      teamCoM[0] = totalTeamPosition[0] / teamAmount;
-	      teamCoM[1] = totalTeamPosition[1] / teamAmount;
-	      teamCoM[2] = totalTeamPosition[2] / teamAmount;
-	    }
-	  
-=======
 
->>>>>>> Stashed changes
             for (int s = 0; s < maxShots; s++)
             {
                 ShotPath* shot = p->getShot(s);

@@ -543,7 +543,7 @@ static bool lookForFlag(float &rotation, float &speed)
         {
             if (myTank->getFlag() != Flags::Null)
             {
-                serverLink->sendDropFlag(myTank->getPosition());
+                serverLink->sendDropFlag(myTank->getId(), myTank->getPosition());
                 handleFlagDropped(myTank);
             }
         }
@@ -602,7 +602,7 @@ static bool navigate(float &rotation, float &speed)
         const float *temp = world->getBase(myTank->getTeam());
         if (temp == NULL)
         {
-            serverLink->sendDropFlag(myTank->getPosition());
+            serverLink->sendDropFlag(myTank->getId(), myTank->getPosition());
             handleFlagDropped(myTank);
         }
         else
@@ -612,7 +612,7 @@ static bool navigate(float &rotation, float &speed)
                     || (temp[0] == pos[0] && temp[1] == pos[1])) &&
                     myTank->getFlag()->flagTeam == myTank->getTeam())
             {
-                serverLink->sendDropFlag(myTank->getPosition());
+                serverLink->sendDropFlag(myTank->getId(), myTank->getPosition());
                 handleFlagDropped(myTank);
             }
             else
@@ -768,7 +768,7 @@ static void dropHardFlags()
             ||  (type == Flags::Identify)
             ||  ((type == Flags::PhantomZone) && !myTank->isFlagActive()))
     {
-        serverLink->sendDropFlag(myTank->getPosition());
+        serverLink->sendDropFlag(myTank->getId(), myTank->getPosition());
         handleFlagDropped(myTank);
     }
 }

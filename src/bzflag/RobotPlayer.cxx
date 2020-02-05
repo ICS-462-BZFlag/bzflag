@@ -207,36 +207,40 @@ void            RobotPlayer::doUpdate(float dt)
     }
 }
 
-void RobotPlayer::calcCoM(float cm[])
+/*
+ calcCoM is a function to calculate the center of mass of a team.
+ The function will be used to create flocking behavior for bot tanks.
+ */
+void RobotPlayer::calcCoM(float cm[3])
 {
   float totalTeamPosition[3];
   totalTeamPosition[0] = 0.0;
   totalTeamPosition[1] = 0.0;
   totalTeamPosition[2] = 0.0;
-  float teamAmount = 1.0;
+  int teamAmount = 0;
   Player *p = 0;
   
-  for (int t=0; t <= World::getWorld()->getCurMaxPlayers(); t++)
+  for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
   {
+    if (t < World::getWorld()->getCurMaxPlayers())
+	p = World::getWorld()->getPlayer(t);
+    else
+	p = LocalPlayer::getMyTank();
     if (p != NULL)
     {
-      if (p->getTeam() == LocalPlayer::getTeam())
+      if (p->getTeam() == getTeam())
       {
 	teamAmount++;
 	totalTeamPosition[0] += p->getPosition()[0];
 	totalTeamPosition[1] += p->getPosition()[1];
 	totalTeamPosition[2] += p->getPosition()[2];
       }
-      
-      totalTeamPosition[0] += LocalPlayer::getMyTank()->getPosition()[0];
-      totalTeamPosition[1] += LocalPlayer::getMyTank()->getPosition()[1];
-      totalTeamPosition[2] += LocalPlayer::getMyTank()->getPosition()[2];
-      
-      cm[0] = totalTeamPosition[0] / teamAmount;
-      cm[1] = totalTeamPosition[1] / teamAmount;
-      cm[2] = totalTeamPosition[2] / teamAmount;
     }
   }
+  
+  cm[0] = totalTeamPosition[0] / teamAmount;
+  cm[1] = totalTeamPosition[1] / teamAmount;
+  cm[2] = totalTeamPosition[2] / teamAmount;
 }
 
 void            RobotPlayer::doUpdateMotion(float dt)
@@ -254,9 +258,10 @@ void            RobotPlayer::doUpdateMotion(float dt)
         float azimuth = oldAzimuth;
         float tankAngVel = BZDB.eval(StateDatabase::BZDB_TANKANGVEL);
         float tankSpeed = BZDBCache::tankSpeed;
-        float teamCoM[3];
-        calcCoM(teamCoM);
       
+	//Creating an array to store the center of mass for a team.
+        float teamCoM[3];
+
         // basically a clone of Roger's evasive code
         for (int t=0; t <= World::getWorld()->getCurMaxPlayers(); t++)
         {
@@ -268,7 +273,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             if (!p || p->getId() == getId())
                 continue;
             const int maxShots = p->getMaxShots();
-
+	  
             for (int s = 0; s < maxShots; s++)
             {
                 ShotPath* shot = p->getShot(s);
@@ -313,13 +318,26 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 }
             }
         }
-
+      
         // when we are not evading, follow the path
         if (!evading && dt > 0.0 && pathIndex < (int)path.size())
         {
             float distance;
             float v[2];
-            const float* endPoint = teamCoM;
+	  
+	    /*
+	     Running calcCoM to calculate the team center of mass for the current
+	     robot player
+	    */
+	    calcCoM(teamCoM);
+	  
+	    /*
+	     Replacing path coordinates with team center of mass so tanks
+	     on the same team head towards the team center of mass and
+	     flock together.
+	     */
+	     const float* endPoint = teamCoM;
+	  
             // find how long it will take to get to next path segment
             v[0] = endPoint[0] - position[0];
             v[1] = endPoint[1] - position[1];

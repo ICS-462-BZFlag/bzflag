@@ -4872,6 +4872,7 @@ static void handleCommand(int t, void *rawbuf, bool udp)
     {
         // data: flag index, player id (may be a bot)
         uint16_t flag;
+        PlayerId id;
 
         buf = nboUnpackUShort(buf, flag);
         buf = nboUnpackUByte(buf, id);
@@ -4910,7 +4911,7 @@ static void handleCommand(int t, void *rawbuf, bool udp)
     {
         // data: team whose territory flag was brought to, 
         // player id (may be a bot)
-        uint16_t _team;
+        uint16_t _capping_team, _capped_team;
         PlayerId id;
 
         buf = nboUnpackUShort(buf, _capped_team);

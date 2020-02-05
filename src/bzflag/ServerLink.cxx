@@ -705,18 +705,23 @@ bool ServerLink::readEnter(std::string& reason,
     return true;
 }
 
-void            ServerLink::sendCaptureFlag(TeamColor team)
+void            ServerLink::sendCaptureFlag(const PlayerId& capturer, TeamColor capping_team, TeamColor capped_team)
 {
-    char msg[2];
-    nboPackUShort(msg, uint16_t(team));
-    send(MsgCaptureFlag, sizeof(msg), msg);
+    char msg[PlayerIdPLen + 4];
+    void* buf = msg;
+    buf = nboPackUShort(buf, uint16_t(capped_team));
+    buf = nboPackUShort(buf, uint16_t(capping_team));
+    buf = nboPackUByte(buf, capturer);
+    send(MsgCaptureFlag, (char*)buf - (char*)msg, msg);
 }
 
-void            ServerLink::sendGrabFlag(int flagIndex)
+void            ServerLink::sendGrabFlag(const PlayerId& grabber, int flagIndex)
 {
-    char msg[2];
-    nboPackUShort(msg, uint16_t(flagIndex));
-    send(MsgGrabFlag, sizeof(msg), msg);
+    char msg[PlayerIdPLen + 2];
+    void* buf = msg;
+    buf = nboPackUShort(buf, uint16_t(flagIndex));
+    buf = nboPackUByte(buf, grabber);
+    send(MsgGrabFlag, (char*)buf - (char*)msg, msg);
 }
 
 void            ServerLink::sendDropFlag(const PlayerId& dropper, const float* position)
@@ -724,8 +729,8 @@ void            ServerLink::sendDropFlag(const PlayerId& dropper, const float* p
     char msg[PlayerIdPLen + 12];
     void* buf = msg;
     buf = nboPackVector(buf, position);
-<   buf = nboPackUByte(buf, dropper);
-    send(MsgDropFlag, sizeof(msg), msg);
+    buf = nboPackUByte(buf, dropper);
+    send(MsgDropFlag, (char*)buf - (char*)msg, msg);
 }
 
 void            ServerLink::sendKilled(const PlayerId& killer,

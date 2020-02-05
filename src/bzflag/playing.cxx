@@ -4032,7 +4032,6 @@ static void     checkEnvironment()
 #endif
 	                serverLink->sendGrabFlag(myTank->getId(), i);
                     lastGrabSent=TimeKeeper::getTick();
-                }
             }
         }
     }
@@ -7945,7 +7944,7 @@ void            startPlaying(BzfDisplay* _display,
 #endif
 
     // print expiration
-    if (timeBombString())
+   if (timeBombString())
     {
         // add message about date of expiration
         char bombMessage[80];

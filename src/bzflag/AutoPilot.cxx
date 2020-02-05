@@ -612,7 +612,7 @@ static bool navigate(float &rotation, float &speed)
                     || (temp[0] == pos[0] && temp[1] == pos[1])) &&
                     myTank->getFlag()->flagTeam == myTank->getTeam())
             {
-                serverLink->sendDropFlag(myTank->getPosition());
+                serverLink->sendDropFlag(myTank->getId(), myTank->getPosition());
                 handleFlagDropped(myTank);
             }
             else

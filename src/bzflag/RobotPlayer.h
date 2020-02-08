@@ -49,6 +49,14 @@ public:
 private:
     void        doUpdate(float dt);
     void        doUpdateMotion(float dt);
+  
+    /*
+     Function declaration for calcCoM that calculates the
+     center of mass for a team.
+    */
+    void calcCoM(float cm[]);
+    void calcFlockVelo(float flockVelo[3]);
+  
     BzfRegion*      findRegion(const float p[2], float nearest[2]) const;
     float       getRegionExitPoint(
         const float p1[2], const float p2[2],

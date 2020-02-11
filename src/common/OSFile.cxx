@@ -740,8 +740,8 @@ bool OSDir::linuxAddFileStack(std::string pathName, std::string fileMask, bool b
     // quell warnings
     if (!bRecursive)
     {
-        fileMask.size();
-        pathName.size();
+        static_cast<void>(fileMask.size());
+        static_cast<void>(pathName.size());
     }
     return false;
 #else

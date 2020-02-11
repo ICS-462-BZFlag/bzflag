@@ -403,10 +403,11 @@ void            RobotPlayer::doUpdateMotion(float dt)
              on the same team head towards the team center of mass and
              flock together.
              */
+	    float* endPoint;
             if(checkFlag())
-            const float* endPoint = flagLoc;
+            endPoint = flagLoc;
             else
-            const float* endPoint = flagLoc;
+            endPoint = flagLoc;
 
             char buffer[128];
             sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",

@@ -55,6 +55,9 @@ private:
      center of mass for a team.
     */
     void calcCoM(float cm[]);
+
+    void calcFlockVelo(float flockVelo[3]);
+
   
     BzfRegion*      findRegion(const float p[2], float nearest[2]) const;
     float       getRegionExitPoint(

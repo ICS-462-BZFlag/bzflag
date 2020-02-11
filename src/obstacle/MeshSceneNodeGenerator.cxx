@@ -10,14 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-// Interface
-#include "MeshSceneNodeGenerator.h"
-
-
-// System headers
 #include <math.h>
-
-// Common headers
+#include "vectors.h"
+#include "MeshSceneNodeGenerator.h"
 #include "MeshObstacle.h"
 #include "MeshFace.h"
 #include "bzfgl.h"

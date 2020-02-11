@@ -20,32 +20,32 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7009C42E-D693-4635-95CF-23ECBA63653C}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -484,6 +484,7 @@
     <ClCompile Include="..\..\src\geometry\models\tank\low_ltread.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\low_rtread.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\low_turret.cxx" />
+    <ClCompile Include="..\..\src\geometry\models\tank\medium_barrel.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\medium_body.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\medium_ltread.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\medium_rtread.cxx" />
@@ -514,6 +515,7 @@
     <ClInclude Include="..\..\include\RenderNode.h" />
     <ClInclude Include="..\..\include\SceneNode.h" />
     <ClInclude Include="..\..\include\SceneRenderer.h" />
+    <ClInclude Include="..\..\include\ShotSceneNode.h" />
     <ClInclude Include="..\..\include\SphereSceneNode.h" />
     <ClInclude Include="..\..\include\TankGeometryMgr.h" />
     <ClInclude Include="..\..\include\TankSceneNode.h" />

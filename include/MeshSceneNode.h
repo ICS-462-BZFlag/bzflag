@@ -19,11 +19,10 @@
 #ifndef BZF_MESH_SCENE_NODE_H
 #define BZF_MESH_SCENE_NODE_H
 
-// Inherits
+#include "common.h"
+#include "bzfgl.h"
 #include "SceneNode.h"
 
-// Common headers
-#include "bzfgl.h"
 //
 // NOTES:
 //
@@ -63,6 +62,7 @@ public:
     void getRenderNodes(std::vector<RenderSet>& rnodes);
 
     void makeXFormList();
+    void freeXFormList();
     static void initContext(void* data);
     static void freeContext(void* data);
 
@@ -79,7 +79,7 @@ private:
     bool animRepos;
 
     // transform display list
-    GLfloat xformMatrix[16];
+    GLuint xformList;
 
     struct MeshMaterial
     {
@@ -125,6 +125,7 @@ private:
     void updateMaterial(MeshMaterial* mat);
     const BzMaterial* convertMaterial(const BzMaterial* bzmat);
     int calcNormalLod(const ViewFrustum&);
+    int calcShadowLod(const ViewFrustum&);
     int calcRadarLod();
 
     friend class MeshSceneNodeMgr;

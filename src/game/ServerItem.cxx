@@ -1,5 +1,5 @@
 /* bzflag
- * Copyright (c) 1993-2019 Tim Riker
+ * Copyright (c) 1993-2018 Tim Riker
  *
  * This package is free software;  you can redistribute it and/or
  * modify it under the terms of the license found in the file
@@ -10,12 +10,14 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* interface header */
-#include "ServerItem.h"
+#include "common.h"
 
 /* system headers */
 #include <string>
-#include <cstring>
+#include <string.h>
+
+/* interface header */
+#include "ServerItem.h"
 
 /* common implementation headers */
 #include "TextUtils.h"
@@ -25,8 +27,7 @@
 #include "ServerListCache.h"
 
 
-ServerItem::ServerItem() :  randomSortWeight((int)(bzfrand()*500)), updateTime(0), cached(false), favorite(false),
-    localDiscovery(false)
+ServerItem::ServerItem() :  randomSortWeight((int)(bzfrand()*500)), updateTime(0), cached(false), favorite(false)
 {
 }
 
@@ -159,11 +160,16 @@ std::string ServerItem::getAgeString() const
     return returnMe;
 }
 
-// get the current time -- one-line functions add little value ...
-// replace with native std::time()?
+// get the current time
 time_t ServerItem::getNow() const
 {
-    return std::time(nullptr);
+#if defined(_WIN32)
+    return time(NULL);
+#else
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec;
+#endif
 }
 
 bool ServerItem::operator<(const ServerItem &right)
@@ -225,17 +231,12 @@ unsigned int ServerItem::getSortFactor() const
             ping.blueCount + ping.purpleCount;
     value *= 1000;
 
-    // Ensure that locally discovered servers show up at the top of the list
-    if (localDiscovery)
-        value += 1 + 200 * 1000;
-
     // The constructor sets this to a random value from roughly 0 to 500 (up
     // to half the value of a player). This will be used to randomize the
     // order of servers with the same number of players. No longer will
     // servers starting with an 'a' or a number show higher on the list just
     // because of their hostname.
-    else
-        value += randomSortWeight;
+    value += randomSortWeight;
 
     return value;
 }

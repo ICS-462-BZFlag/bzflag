@@ -182,7 +182,7 @@ const char *TimeKeeper::timestamp(void) // const
 
     strncpy(buffer, TextUtils::format("%04d-%02d-%02d %02d:%02d:%02d",
                                       now->tm_year, now->tm_mon, now->tm_mday,
-                                      now->tm_hour, now->tm_min, now->tm_sec).c_str(), 255);
+                                      now->tm_hour, now->tm_min, now->tm_sec).c_str(), 256);
     buffer[255] = '\0'; // safety
 
     return buffer;
@@ -267,11 +267,11 @@ void TimeKeeper::convertTime(double raw, long int convertedTimes[])
 const std::string TimeKeeper::printTime(long int timeValue[])
 {
     std::string valueNames;
-    char temp[25];
+    char temp[20];
 
     if (timeValue[0] > 0)
     {
-        snprintf(temp, 25, "%ld day%s", timeValue[0], timeValue[0] == 1 ? "" : "s");
+        snprintf(temp, 20, "%ld day%s", timeValue[0], timeValue[0] == 1 ? "" : "s");
         valueNames.append(temp);
     }
     if (timeValue[1] > 0)

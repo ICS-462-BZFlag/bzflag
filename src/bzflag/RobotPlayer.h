@@ -10,16 +10,16 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/*
- *
- */
+ /*
+  *
+  */
 
 #ifndef BZF_ROBOT_PLAYER_H
 #define BZF_ROBOT_PLAYER_H
 
 #include "common.h"
 
-/* system interface headers */
+  /* system interface headers */
 #include <vector>
 
 /* interface header */
@@ -35,11 +35,11 @@ class RobotPlayer : public LocalPlayer
 {
 public:
     RobotPlayer(const PlayerId&,
-                const char* name, ServerLink*,
-                const char* _motto);
+        const char* name, ServerLink*,
+        const char* _motto);
 
     float       getTargetPriority(const Player*) const;
-    const Player*   getTarget() const;
+    const Player* getTarget() const;
     void        setTarget(const Player*);
     static void     setObstacleList(std::vector<BzfRegion*>*);
 
@@ -48,28 +48,32 @@ public:
 
 private:
     void        doUpdate(float dt);
-    void        doUpdateMotion(float dt);
-  
+	void        findFlag(float location[3]);
+    void        findBase(float location[3]);
+	bool        checkFlag();
+    void        dropFlag();
+	void        doUpdateMotion(float dt);
+
     /*
      Function declaration for calcCoM that calculates the
      center of mass for a team.
     */
     void calcCoM(float cm[]);
-  
-    BzfRegion*      findRegion(const float p[2], float nearest[2]) const;
+
+    BzfRegion* findRegion(const float p[2], float nearest[2]) const;
     float       getRegionExitPoint(
         const float p1[2], const float p2[2],
         const float a[2], const float targetPoint[2],
         float mid[2], float& priority);
     void       findPath(RegionPriorityQueue& queue,
-                        BzfRegion* region, BzfRegion* targetRegion,
-                        const float targetPoint[2], int mailbox);
+        BzfRegion* region, BzfRegion* targetRegion,
+        const float targetPoint[2], int mailbox);
 
-    void       projectPosition(const Player *targ,const float t,float &x,float &y,float &z) const;
-    void       getProjectedPosition(const Player *targ, float *projpos) const;
+    void       projectPosition(const Player* targ, const float t, float& x, float& y, float& z) const;
+    void       getProjectedPosition(const Player* targ, float* projpos) const;
 
 private:
-    const Player*   target;
+    const Player* target;
     std::vector<RegionPoint>    path;
     int         pathIndex;
     float       timerForShot;

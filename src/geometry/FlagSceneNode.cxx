@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "FlagSceneNode.h"
 
@@ -354,7 +357,7 @@ void            FlagSceneNode::notifyStyleChange()
     if (billboard && !realFlag)
         builder.setCulling(GL_BACK);
     else
-        builder.disableCulling();
+        builder.setCulling(GL_NONE);
     gstate = builder.getState();
 
     flagChunks = BZDBCache::flagChunks;
@@ -420,7 +423,6 @@ void            FlagSceneNode::FlagRenderNode::render()
     const bool is_transparent = sceneNode->transparent;
 
     const GLfloat* sphere = sceneNode->getSphere();
-    const float topHeight = base + Height;
 
     myColor4fv(sceneNode->color);
 
@@ -431,60 +433,32 @@ void            FlagSceneNode::FlagRenderNode::render()
     {
         glTranslatef(sphere[0], sphere[1], sphere[2]);
 
-        if (!is_billboard || realFlag)
-            glRotatef(sceneNode->angle + 180.0f, 0.0f, 0.0f, 1.0f);
-
-        // Flag drawing
-        if (is_billboard)
-        {
-            // Wawing flag
-            if (realFlag)
-            {
-                const float Tilt = sceneNode->tilt;
-                const float Hscl = sceneNode->hscl;
-                static GLfloat shear[16] = {Hscl, 0.0f, Tilt, 0.0f,
-                                            0.0f, 1.0f, 0.0f, 0.0f,
-                                            0.0f, 0.0f, 1.0f, 0.0f,
-                                            0.0f, 0.0f, 0.0f, 1.0f
-                                           };
-                shear[0] = Hscl; // maintains the flag length
-                shear[2] = Tilt; // pulls the flag up or down
-                glPushMatrix();
-                glMultMatrixf(shear);
-            }
-            else
-                RENDERER.getViewFrustum().executeBillboard();
-
-            allWaves[waveReference].execute();
-            addTriangleCount(triCount);
-
-            if (realFlag)
-                glPopMatrix();
-        }
-        else
-        {
-            // Not wawing flag
-            glBegin(GL_TRIANGLE_STRIP);
-            glTexCoord2f(0.0f, 0.0f);
-            glVertex3f(0.0f, 0.0f, base);
-            glTexCoord2f(1.0f, 0.0f);
-            glVertex3f(Width, 0.0f, base);
-            glTexCoord2f(0.0f, 1.0f);
-            glVertex3f(0.0f, 0.0f, topHeight);
-            glTexCoord2f(1.0f, 1.0f);
-            glVertex3f(Width, 0.0f, topHeight);
-            glEnd();
-            addTriangleCount(2);
-        }
-
-        // Drawing the pole black untextured
-        myColor4f(0.0f, 0.0f, 0.0f, sceneNode->color[3]);
-
-        if (doing_texturing)
-            glDisable(GL_TEXTURE_2D);
-
         if (is_billboard && realFlag)
         {
+            // the pole
+            glRotatef(sceneNode->angle + 180.0f, 0.0f, 0.0f, 1.0f);
+            const float Tilt = sceneNode->tilt;
+            const float Hscl = sceneNode->hscl;
+            static GLfloat shear[16] = {Hscl, 0.0f, Tilt, 0.0f,
+                                        0.0f, 1.0f, 0.0f, 0.0f,
+                                        0.0f, 0.0f, 1.0f, 0.0f,
+                                        0.0f, 0.0f, 0.0f, 1.0f
+                                       };
+            shear[0] = Hscl; // maintains the flag length
+            shear[2] = Tilt; // pulls the flag up or down
+            glPushMatrix();
+            glMultMatrixf(shear);
+            allWaves[waveReference].execute();
+            addTriangleCount(triCount);
+            glPopMatrix();
+
+            myColor4f(0.0f, 0.0f, 0.0f, sceneNode->color[3]);
+
+            if (doing_texturing)
+                glDisable(GL_TEXTURE_2D);
+
+            // the pole
+            const float topHeight = base + Height;
             glBegin(GL_TRIANGLE_STRIP);
             {
                 glVertex3f(-poleWidth, 0.0f, 0.0f);
@@ -501,40 +475,64 @@ void            FlagSceneNode::FlagRenderNode::render()
             glEnd();
             addTriangleCount(8);
         }
-        else if (geoPole)
-        {
-            if (is_billboard)
-                glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-
-            glBegin(GL_TRIANGLE_STRIP);
-            {
-                glVertex3f(-poleWidth, 0.0f, 0.0f);
-                glVertex3f(+poleWidth, 0.0f, 0.0f);
-                glVertex3f(-poleWidth, 0.0f, topHeight);
-                glVertex3f(+poleWidth, 0.0f, topHeight);
-            }
-            glEnd();
-            addTriangleCount(2);
-        }
         else
         {
             if (is_billboard)
-                glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-
-            glBegin(GL_LINE_STRIP);
             {
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(0.0f, 0.0f, topHeight);
+                RENDERER.getViewFrustum().executeBillboard();
+                allWaves[waveReference].execute();
+                addTriangleCount(triCount);
             }
-            glEnd();
-            addTriangleCount(1);
-        }
+            else
+            {
+                glRotatef(sceneNode->angle + 180.0f, 0.0f, 0.0f, 1.0f);
+                glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+                glBegin(GL_TRIANGLE_STRIP);
+                glTexCoord2f(0.0f, 0.0f);
+                glVertex3f(0.0f, base, 0.0f);
+                glTexCoord2f(1.0f, 0.0f);
+                glVertex3f(Width, base, 0.0f);
+                glTexCoord2f(0.0f, 1.0f);
+                glVertex3f(0.0f, base + Height, 0.0f);
+                glTexCoord2f(1.0f, 1.0f);
+                glVertex3f(Width, base + Height, 0.0f);
+                glEnd();
+                addTriangleCount(2);
+            }
 
-        if (doing_texturing)
-            glEnable(GL_TEXTURE_2D);
+            myColor4f(0.0f, 0.0f, 0.0f, sceneNode->color[3]);
+
+            if (doing_texturing)
+                glDisable(GL_TEXTURE_2D);
+
+            if (geoPole)
+            {
+                glBegin(GL_TRIANGLE_STRIP);
+                {
+                    glVertex3f(-poleWidth, 0.0f, 0.0f);
+                    glVertex3f(+poleWidth, 0.0f, 0.0f);
+                    glVertex3f(-poleWidth, base + Height, 0.0f);
+                    glVertex3f(+poleWidth, base + Height, 0.0f);
+                }
+                glEnd();
+                addTriangleCount(2);
+            }
+            else
+            {
+                glBegin(GL_LINE_STRIP);
+                {
+                    glVertex3f(0.0f, 0.0f, 0.0f);
+                    glVertex3f(0.0f, base + Height, 0.0f);
+                }
+                glEnd();
+                addTriangleCount(1);
+            }
+        }
     }
     glPopMatrix();
 
+    if (doing_texturing)
+        glEnable(GL_TEXTURE_2D);
     if (!BZDBCache::blend && is_transparent)
         myStipple(0.5f);
 }

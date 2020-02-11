@@ -44,7 +44,7 @@ dnl Minimum version of autoconf required.  Should coincide with the
 dnl setting in the autogen.sh script.
 AC_PREREQ([2.68])
 
-AC_INIT([BZFlag],[2.4.19],[http://BZFlag.org/],[bzflag])
+AC_INIT([BZFlag],[2.4.18],[http://BZFlag.org/],[bzflag])
 AC_CONFIG_SRCDIR(src/bzflag/bzflag.cxx)
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -168,6 +168,12 @@ AC_ARG_ENABLE(threads, [  --disable-threads        build without threading])
 
 # do we want bzadmin?
 AC_ARG_ENABLE(bzadmin, [  --disable-bzadmin       do not build text client])
+
+# build a binary set to stop functioning after some date
+AC_ARG_ENABLE(timebomb, [  --enable-timebomb       build exp Date])
+if test x$enable_timebomb = xyes; then
+    AC_DEFINE(TIME_BOMB, "3/13/1998", [Time Bomb expiration])
+fi
 
 AC_ARG_ENABLE(robots, [  --disable-robots        disable robots])
 if test x$enable_robots != xno; then

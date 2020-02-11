@@ -31,6 +31,10 @@
 
 /*const int NO_VARIANT = (-1); */
 
+// initialize the singleton
+template <>
+TextureManager* Singleton<TextureManager>::_instance = (TextureManager*)0;
+
 static int noiseProc(ProcTextureInit &init);
 
 ProcTextureInit procLoader[1];
@@ -309,6 +313,19 @@ const ImageInfo& TextureManager::getInfo ( const char* name )
 }
 
 
+bool TextureManager::getColorAverages(int texId, float rgba[4],
+                                      bool factorAlpha) const
+{
+    TextureIDMap::const_iterator it = textureIDs.find(texId);
+    if (it == textureIDs.end())
+    {
+        logDebugMessage(1,"getColorAverages: Unable to find texture (by id): %d\n", texId);
+        return false;
+    }
+    return it->second->texture->getColorAverages(rgba, factorAlpha);
+}
+
+
 int TextureManager::addTexture( const char* name, OpenGLTexture *texture )
 {
     if (!name || !texture)
@@ -365,9 +382,9 @@ OpenGLTexture* TextureManager::loadTexture(FileTextureInit &init, bool reportFai
 
 
 int TextureManager::newTexture(const char* name, int x, int y, unsigned char* data,
-                               OpenGLTexture::Filter filter, bool repeat)
+                               OpenGLTexture::Filter filter, bool repeat, int format)
 {
-    return addTexture(name, new OpenGLTexture(x, y, data, filter, repeat));
+    return addTexture(name, new OpenGLTexture(x, y, data, filter, repeat, format));
 }
 
 

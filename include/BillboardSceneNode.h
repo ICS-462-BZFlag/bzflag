@@ -17,10 +17,8 @@
 #ifndef BZF_BILLBOARD_SCENE_NODE_H
 #define BZF_BILLBOARD_SCENE_NODE_H
 
-// Inherits from
+#include "common.h"
 #include "SceneNode.h"
-
-// Commen headers
 #include "OpenGLLight.h"
 
 class BillboardSceneNode : public SceneNode

@@ -40,6 +40,14 @@ TextChunk::TextChunk(const std::string& _fileName, int _maxLines, int _maxLineLe
 }
 
 
+TextChunk::TextChunk(const TextChunk& tc)
+{
+    fileName = tc.fileName;
+    theVector = tc.theVector;
+    return;
+}
+
+
 StringVector TextChunk::parse()
 {
     StringVector strings;

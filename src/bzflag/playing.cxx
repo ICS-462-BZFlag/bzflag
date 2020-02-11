@@ -7944,7 +7944,7 @@ void            startPlaying(BzfDisplay* _display,
 #endif
 
     // print expiration
-   if (timeBombString())
+    if (timeBombString())
     {
         // add message about date of expiration
         char bombMessage[80];

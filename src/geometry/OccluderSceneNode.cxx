@@ -11,6 +11,9 @@
  */
 
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "OccluderSceneNode.h"
 
@@ -28,6 +31,7 @@ OccluderSceneNode::OccluderSceneNode(const MeshFace* face)
 {
     int i;
 
+    noPlane = false;
     setOccluder(true);
 
     // record plane info
@@ -77,11 +81,6 @@ OccluderSceneNode::~OccluderSceneNode()
     return;
 }
 
-
-const GLfloat* OccluderSceneNode::getPlane() const
-{
-    return plane;
-}
 
 bool OccluderSceneNode::cull(const ViewFrustum& frustum) const
 {

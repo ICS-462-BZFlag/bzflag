@@ -19,10 +19,8 @@
 #ifndef BZF_MESH_FRAG_SCENE_NODE_H
 #define BZF_MESH_FRAG_SCENE_NODE_H
 
-// Inherits from
+#include "common.h"
 #include "WallSceneNode.h"
-
-// Global headers
 #include "BzMaterial.h"
 
 //
@@ -44,7 +42,6 @@ public:
     ~MeshFragSceneNode();
 
     // virtual functions from SceneNode
-    const GLfloat* getPlane() const override;
     bool cull(const ViewFrustum&) const;
     void addShadowNodes(SceneRenderer&);
     void addRenderNodes(SceneRenderer&);

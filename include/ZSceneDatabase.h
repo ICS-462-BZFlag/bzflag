@@ -17,7 +17,7 @@
 #ifndef BZF_Z_SCENE_DATABASE_H
 #define BZF_Z_SCENE_DATABASE_H
 
-// Inherits from
+#include "common.h"
 #include "SceneDatabase.h"
 
 class ZSceneDatabase : public SceneDatabase

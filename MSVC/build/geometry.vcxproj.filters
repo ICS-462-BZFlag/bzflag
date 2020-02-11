@@ -61,6 +61,9 @@
     <ClCompile Include="..\..\src\geometry\models\tank\low_rtread.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\geometry\models\tank\medium_barrel.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\geometry\models\tank\low_turret.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -193,6 +196,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\SceneRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ShotSceneNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\SphereSceneNode.h">

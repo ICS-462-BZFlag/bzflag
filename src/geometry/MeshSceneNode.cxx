@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "MeshSceneNode.h"
 
@@ -19,6 +22,7 @@
 #include <stdlib.h>
 
 // common implementation headers
+#include "vectors.h"
 #include "Extents.h"
 #include "Intersect.h"
 #include "TimeKeeper.h"
@@ -60,6 +64,8 @@ MeshSceneNode::MeshSceneNode(const MeshObstacle* _mesh)
     lodCount = 0;
     lods = NULL;
 
+    xformList = INVALID_GL_LIST_ID;
+
     if (mesh == NULL)
         return;
 
@@ -70,6 +76,10 @@ MeshSceneNode::MeshSceneNode(const MeshObstacle* _mesh)
     drawMgr = drawInfo->getDrawMgr();
     if (drawMgr == NULL)
         return;
+
+    // disable the plane
+    noPlane = true;
+    plane[0] = plane[1] = plane[2] = plane[3] = 0.0f;
 
     // setup the extents, sphere, and lengthPerPixel adjustment
     float lengthAdj = 1.0f;
@@ -178,6 +188,7 @@ MeshSceneNode::~MeshSceneNode()
     delete[] lods;
 
     OpenGLGState::unregisterContextInitializer(freeContext, initContext, this);
+    freeXFormList();
 
     return;
 }
@@ -185,6 +196,25 @@ MeshSceneNode::~MeshSceneNode()
 
 inline int MeshSceneNode::calcNormalLod(const ViewFrustum& vf)
 {
+    const float* e = vf.getEye();
+    const float* s = getSphere();
+    const float* d = vf.getDirection();
+    const float dist = (d[0] * (s[0] - e[0])) +
+                       (d[1] * (s[1] - e[1])) +
+                       (d[2] * (s[2] - e[2]));
+    const float lengthPerPixel = dist * LodScale;
+    for (int i = (lodCount - 1); i > 0; i--)
+    {
+        if (lengthPerPixel > lodLengths[i])
+            return i;
+    }
+    return 0;
+}
+
+
+inline int MeshSceneNode::calcShadowLod(const ViewFrustum& vf)
+{
+    // FIXME: adjust for ray direction
     const float* e = vf.getEye();
     const float* s = getSphere();
     const float* d = vf.getDirection();
@@ -256,7 +286,7 @@ void MeshSceneNode::addRenderNodes(SceneRenderer& renderer)
 void MeshSceneNode::addShadowNodes(SceneRenderer& renderer)
 {
     const ViewFrustum& vf = renderer.getViewFrustum();
-    const int level = (lodCount == 1) ? 0 : calcNormalLod(vf);
+    const int level = (lodCount == 1) ? 0 : calcShadowLod(vf);
     LodNode& lod = lods[level];
     for (int i = 0; i < lod.count; i++)
     {
@@ -341,7 +371,7 @@ void MeshSceneNode::notifyStyleChange()
             if (!mat.needsSorting)
             {
                 setNode.node =
-                    new OpaqueRenderNode(drawMgr, xformMatrix, normalize,
+                    new OpaqueRenderNode(drawMgr, &xformList, normalize,
                                          mat.colorPtr, lod, set, extPtr,
                                          drawSet.triangleCount);
                 mat.animRepos = false;
@@ -353,7 +383,7 @@ void MeshSceneNode::notifyStyleChange()
                 if (xformTool != NULL)
                     xformTool->modifyVertex(setPos);
                 setNode.node =
-                    new AlphaGroupRenderNode(drawMgr, xformMatrix, normalize,
+                    new AlphaGroupRenderNode(drawMgr, &xformList, normalize,
                                              mat.colorPtr, lod, set, extPtr, setPos,
                                              drawSet.triangleCount);
                 if ((fabsf(drawSet.sphere[0]) > 0.001f) &&
@@ -369,7 +399,7 @@ void MeshSceneNode::notifyStyleChange()
             }
 
             setNode.radarNode =
-                new OpaqueRenderNode(drawMgr, xformMatrix, normalize,
+                new OpaqueRenderNode(drawMgr, &xformList, normalize,
                                      mat.colorPtr, lod, set, extPtr,
                                      drawSet.triangleCount);
         }
@@ -530,7 +560,7 @@ void MeshSceneNode::updateMaterial(MeshSceneNode::MeshMaterial* mat)
 
     // culling
     if (bzmat->getNoCulling())
-        builder.disableCulling();
+        builder.setCulling(GL_NONE);
 
     // generate the gstate
     gstate = builder.getState();
@@ -561,11 +591,37 @@ void MeshSceneNode::makeXFormList()
         };
 
         // oops, transpose
+        GLfloat matrix[16];
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
-                xformMatrix[(i*4)+j] = xformTool->getMatrix()[(j*4)+i];
+                matrix[(i*4)+j] = xformTool->getMatrix()[(j*4)+i];
         }
+
+        xformList = glGenLists(1);
+        glNewList(xformList, GL_COMPILE);
+        {
+            glMultMatrixf(matrix);
+        }
+        glEndList();
+
+        error = glGetError();
+        if (error != GL_NO_ERROR)
+        {
+            logDebugMessage(0,"ERROR: MeshSceneNode::makeXFormList() failed: %i\n", error);
+            xformList = INVALID_GL_LIST_ID;
+        }
+    }
+    return;
+}
+
+
+void MeshSceneNode::freeXFormList()
+{
+    if (xformList != INVALID_GL_LIST_ID)
+    {
+        glDeleteLists(xformList, 1);
+        xformList = INVALID_GL_LIST_ID;
     }
     return;
 }
@@ -578,8 +634,10 @@ void MeshSceneNode::initContext(void* data)
 }
 
 
-void MeshSceneNode::freeContext(void*)
+void MeshSceneNode::freeContext(void* data)
 {
+    ((MeshSceneNode*)data)->freeXFormList();
+    return;
 }
 
 

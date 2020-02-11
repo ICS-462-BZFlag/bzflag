@@ -21,6 +21,10 @@
 /* local headers */
 #include "ScoreboardRenderer.h"
 
+// initialize the singleton
+template <>
+Roaming* Singleton<Roaming>::_instance = (Roaming*)0;
+
 Roaming::Roaming() : view(roamViewDisabled),
     targetManual(-1),
     targetWinner(-1),

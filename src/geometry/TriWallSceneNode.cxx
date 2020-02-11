@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "TriWallSceneNode.h"
 
@@ -226,9 +229,9 @@ TriWallSceneNode::TriWallSceneNode(const GLfloat base[3],
     uElements = 1;
     areas[level] = area;
     nodes[level++] = new Geometry(this, uElements, base, uEdge, vEdge,
-                                  plane, uRepeats, vRepeats);
+                                  getPlane(), uRepeats, vRepeats);
     shadowNode = new Geometry(this, uElements, base, uEdge, vEdge,
-                              plane, uRepeats, vRepeats);
+                              getPlane(), uRepeats, vRepeats);
     shadowNode->setStyle(0);
 
     // make remaining levels by doubling elements in each dimension
@@ -238,7 +241,7 @@ TriWallSceneNode::TriWallSceneNode(const GLfloat base[3],
         area *= 0.25f;
         areas[level] = area;
         nodes[level++] = new Geometry(this, uElements, base, uEdge, vEdge,
-                                      plane, uRepeats, vRepeats);
+                                      getPlane(), uRepeats, vRepeats);
     }
 
     // record extents info
@@ -321,7 +324,7 @@ bool            TriWallSceneNode::inAxisBox(const Extents& exts) const
     memcpy (vertices[1], nodes[0]->getVertex(1), sizeof(float[3]));
     memcpy (vertices[2], nodes[0]->getVertex(2), sizeof(float[3]));
 
-    return testPolygonInAxisBox (3, vertices, plane, exts);
+    return testPolygonInAxisBox (3, vertices, getPlane(), exts);
 }
 
 

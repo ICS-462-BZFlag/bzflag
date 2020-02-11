@@ -13,11 +13,10 @@
 #ifndef _MESH_RENDER_NODE_H
 #define _MESH_RENDER_NODE_H
 
-// Inherits from
-#include "RenderNode.h"
 
 // common implementation headers
 #include "bzfgl.h"
+#include "RenderNode.h"
 
 
 class Extents;
@@ -28,7 +27,7 @@ class OpaqueRenderNode : public RenderNode
 {
 public:
     OpaqueRenderNode(MeshDrawMgr* drawMgr,
-                     GLfloat *xformMatrix, bool normalize,
+                     GLuint* xformList, bool normalize,
                      const GLfloat* color, int lod, int set,
                      const Extents* exts, int triangles);
     void render();
@@ -45,7 +44,7 @@ private:
     void drawVTN() const;
 private:
     MeshDrawMgr* drawMgr;
-    GLfloat* xformMatrix;
+    GLuint* xformList;
     bool normalize;
     int lod, set;
     const GLfloat* color;
@@ -58,7 +57,7 @@ class AlphaGroupRenderNode : public OpaqueRenderNode
 {
 public:
     AlphaGroupRenderNode(MeshDrawMgr* drawMgr,
-                         GLfloat *xformMatrix, bool normalize,
+                         GLuint* xformList, bool normalize,
                          const GLfloat* color, int lod, int set,
                          const Extents* exts, const float pos[3],
                          int triangles);

@@ -27,6 +27,9 @@
 /* Building regex */
 #define HAVE_REGEX_H 1
 
+/* Time Bomb expiration */
+/* #undef TIME_BOMB */
+
 /* Debug Rendering */
 /* #undef DEBUG_RENDERING */
 
@@ -123,3 +126,5 @@ inline void W32_DEBUG_TRACE (const char* buffer )
 #ifndef in_addr_t
 #define in_addr_t unsigned long
 #endif
+
+#pragma warning( disable : 4351 )

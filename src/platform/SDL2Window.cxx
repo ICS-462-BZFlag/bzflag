@@ -24,7 +24,7 @@ HWND SDLWindow::hwnd = NULL;
 SDLWindow::SDLWindow(const SDLDisplay* _display, SDLVisual*)
     : BzfWindow(_display), hasGamma(true), origGamma(-1.0f), lastGamma(1.0f),
       windowId(NULL), glContext(NULL), canGrabMouse(true), fullScreen(false),
-      vsync(false), base_width(640), base_height(480), min_width(-1), min_height(-1)
+      base_width(640), base_height(480), min_width(-1), min_height(-1)
 {
 }
 
@@ -48,26 +48,7 @@ void SDLWindow::setFullscreen(bool on)
 
 void SDLWindow::iconify(void)
 {
-    // workaround for SDL 2 bug on macOS (or just a macOS bug?) where trying to
-    // iconify the window just sends it to the background instead
-    // bug report: https://bugzilla.libsdl.org/show_bug.cgi?id=4177
-    // TODO: Remove this workaround when/if SDL2 includes their own workaround.
-#if defined(__APPLE__) && defined(MAC_OS_X_VERSION_10_13) && \
-    MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_13
-    if (fullScreen)
-        SDL_SetWindowFullscreen(windowId, 0);
-#endif
-
     SDL_MinimizeWindow(windowId);
-
-    // continuation of above workaround; so far, it seems sufficient to simply
-    // set the window back to fullscreen after minimizing it; this does seem a
-    // bit precarious...
-#if defined(__APPLE__) && defined(MAC_OS_X_VERSION_10_13) && \
-    MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_13
-    if (fullScreen)
-        SDL_SetWindowFullscreen(windowId, SDL_WINDOW_FULLSCREEN);
-#endif
 }
 
 
@@ -191,6 +172,10 @@ bool SDLWindow::create(void)
     SDL_bool windowWasGrabbed = SDL_FALSE;
     if (windowId != NULL)
         windowWasGrabbed = SDL_GetWindowGrab(windowId);
+    int swapInterval = 0;
+    if (windowId != NULL)
+        if (glContext != NULL)
+            swapInterval = SDL_GL_GetSwapInterval() == 1;
 
     // if we have an existing identical window, go no further
     if (windowId != NULL)
@@ -255,9 +240,7 @@ bool SDLWindow::create(void)
     makeContext();
     makeCurrent();
 
-    if(SDL_GL_SetSwapInterval(vsync ? -1 : 0) == -1 && vsync)
-        // no adaptive vsync; set regular vsync
-        SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(swapInterval);
 
     // init opengl context
     OpenGLGState::initContext();
@@ -331,13 +314,7 @@ void SDLWindow::makeContext()
 
 void SDLWindow::setVerticalSync(bool setting)
 {
-    vsync = setting;
-
-    if (windowId != NULL)
-        if (glContext != NULL)
-            if(SDL_GL_SetSwapInterval(vsync ? -1 : 0) == -1 && vsync)
-                // no adaptive vsync; set regular vsync
-                SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(setting ? 1 : 0);
 }
 
 void SDLWindow::setMinSize(int width, int height)

@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface headers
 #include "WallSceneNode.h"
 #include "PolyWallSceneNode.h"
@@ -34,6 +37,7 @@ WallSceneNode::WallSceneNode() : numLODs(0),
     elementAreas(NULL),
     style(0)
 {
+    noPlane      = false;
     dynamicColor = NULL;
     color[3] = 1.0f;
     modulateColor[3] = 1.0f;
@@ -60,11 +64,6 @@ WallSceneNode::~WallSceneNode()
 {
     // free element area table
     delete[] elementAreas;
-}
-
-const GLfloat* WallSceneNode::getPlane() const
-{
-    return plane;
 }
 
 void            WallSceneNode::setNumLODs(int num, float* areas)
@@ -373,7 +372,7 @@ void            WallSceneNode::notifyStyleChange()
     if (alphaThreshold != 0.0f)
         builder.setAlphaFunc(GL_GEQUAL, alphaThreshold);
     if (noCulling)
-        builder.disableCulling();
+        builder.setCulling(GL_NONE);
     if (noSorting)
         builder.setNeedsSorting(false);
     if (wantSphereMap)

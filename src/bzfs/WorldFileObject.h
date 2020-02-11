@@ -12,9 +12,6 @@
 #ifndef __WORLDFILEOBJECT_H__
 #define __WORLDFILEOBJECT_H__
 
-// Before everything
-#include "common.h"
-
 // system headers
 #include <iostream>
 #include <vector>

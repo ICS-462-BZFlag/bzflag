@@ -69,10 +69,9 @@ ServerStartMenu::ServerStartMenu()
     items = &listHUD->getList();
     items->push_back("Capture the Flag");
     items->push_back("Free for All");
-    items->push_back("Open Free For All (Teamless)");
-    items->push_back("Rabbit Chase (Random Selection)");
-    items->push_back("Rabbit Chase (Score-based Selection)");
-    items->push_back("Rabbit Chase (Killer Selection)");
+    items->push_back("Rabbit Hunt (Random Selection)");
+    items->push_back("Rabbit Hunt (Score-based Selection)");
+    items->push_back("Rabbit Hunt (Killer Selection)");
     listHUD->update();
     controls.push_back(listHUD);
 
@@ -388,6 +387,12 @@ void ServerStartMenu::execute()
         int arg = 0;
         args[arg++] = serverApp;
 
+#if defined(_WIN32)
+        // always try a fallback port if default port is busy
+        // (unix-like OSes will instead try to kill off the old process)
+        args[arg++] = "-pf";
+#endif
+
         // load the world map first, so that later arguments can
         // override any that are present in a map's "options" block
         if (((HUDuiList*)listHUD[15])->getIndex() != 0)   // not random
@@ -407,16 +412,11 @@ void ServerStartMenu::execute()
         }
         else if (((HUDuiList*)listHUD[1])->getIndex() == 1)
             args[arg++] = "-h";
-        else if (((HUDuiList*)listHUD[1])->getIndex() == 2)
-        {
-            args[arg++] = "-h";
-            args[arg++] = "-offa";
-        }
         else
         {
             static const char* rabbitStyles[] = { "random", "score", "killer" };
             args[arg++] = "-rabbit";
-            args[arg++] = rabbitStyles[(((HUDuiList*)listHUD[1])->getIndex()) - 3];
+            args[arg++] = rabbitStyles[(((HUDuiList*)listHUD[1])->getIndex()) - 2];
         }
 
         // max players

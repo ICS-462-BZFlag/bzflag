@@ -82,11 +82,7 @@ void SDLMedia::setMediaDirectory(const std::string& _dir)
 
 double          SDLMedia::stopwatch(bool start)
 {
-#ifdef HAVE_SDL2
-    Uint64 currentTick = SDL_GetPerformanceCounter();
-#else
     Uint32 currentTick = SDL_GetTicks(); //msec
-#endif
 
     if (start)
     {
@@ -94,20 +90,11 @@ double          SDLMedia::stopwatch(bool start)
         return 0.0;
     }
     if (currentTick >= stopwatchTime)
-#ifdef HAVE_SDL2
-        return (double) (currentTick - stopwatchTime) /
-               SDL_GetPerformanceFrequency(); // sec
-#else
         return (double) (currentTick - stopwatchTime) * 0.001; // sec
-#endif
     else
         //Clock is wrapped : happens after 49 days
         //Should be "wrap value" - stopwatchtime. Now approx.
-#ifdef HAVE_SDL2
-        return (double) currentTick / SDL_GetPerformanceFrequency();
-#else
         return (double) currentTick * 0.001;
-#endif
 }
 
 bool            SDLMedia::openAudio()

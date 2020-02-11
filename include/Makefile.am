@@ -53,6 +53,7 @@ noinst_HEADERS =			\
 	FlagWarpSceneNode.h		\
 	Frustum.h			\
 	GameTime.h			\
+	GLCollect.h			\
 	Intersect.h			\
 	KeyManager.h			\
 	LagInfo.h			\
@@ -105,6 +106,7 @@ noinst_HEADERS =			\
 	ServerItem.h			\
 	ServerList.h			\
 	ServerListCache.h		\
+	ShotSceneNode.h			\
 	ShotUpdate.h			\
 	Singleton.h			\
 	SphereObstacle.h		\
@@ -121,6 +123,7 @@ noinst_HEADERS =			\
 	TextUtils.h			\
 	TextureManager.h		\
 	TextureMatrix.h			\
+	TimeBomb.h			\
 	TimeKeeper.h			\
 	TriWallSceneNode.h		\
 	ViewFrustum.h			\

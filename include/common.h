@@ -18,7 +18,12 @@
 #define BZF_COMMON_H
 
 /* this should always be the very FIRST header */
-#include "config.h"
+
+#ifdef _DEVCPP /* the Dev-C++ build is acting very stubborn; this is (hopefully) -temporary- */
+# include_next "config.h"
+#else
+# include "config.h"
+#endif
 
 #ifdef _WIN32
 #  undef NOMINMAX
@@ -82,6 +87,10 @@ extern int debugLevel;
 #    define UNUSED(parameter) (parameter)
 #      endif
 #    else
+#      if defined(_MSC_VER)
+/* disable reporting an "unreferenced formal parameter" */
+#   pragma warning( disable : 4100 )
+#      endif
 #      define UNUSED(parameter) (parameter)
 #    endif
 #  endif

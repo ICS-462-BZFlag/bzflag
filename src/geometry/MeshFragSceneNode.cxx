@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "MeshFragSceneNode.h"
 
@@ -241,6 +244,7 @@ MeshFragSceneNode::MeshFragSceneNode(int _faceCount, const MeshFace** _faces)
     faceCount = _faceCount;
 
     // disable the plane
+    noPlane = true;
     static const float fakePlane[4] = {0.0f, 0.0f, 1.0f, 0.0f};
     setPlane(fakePlane);
 
@@ -354,11 +358,6 @@ MeshFragSceneNode::~MeshFragSceneNode()
     return;
 }
 
-
-const GLfloat* MeshFragSceneNode::getPlane() const
-{
-    return NULL;
-}
 
 bool MeshFragSceneNode::cull(const ViewFrustum& frustum) const
 {

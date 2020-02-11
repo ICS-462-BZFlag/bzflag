@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "EighthDimSceneNode.h"
 
@@ -44,7 +47,7 @@ bool            EighthDimSceneNode::cull(const ViewFrustum&) const
 void            EighthDimSceneNode::notifyStyleChange()
 {
     OpenGLGStateBuilder builder(gstate);
-    builder.disableCulling();
+    builder.setCulling(GL_NONE);
     if (BZDB.isTrue("blend"))
         builder.setBlending(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     else

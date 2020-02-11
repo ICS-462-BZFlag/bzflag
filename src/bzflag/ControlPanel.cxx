@@ -327,12 +327,14 @@ void            ControlPanel::render(SceneRenderer& _renderer)
     int i, j;
     const int x = window.getOriginX();
     const int y = window.getOriginY();
+    const int w = window.getWidth();
     const int tabStyle = BZDB.evalInt("showtabs");
     const bool showTabs = (tabStyle > 0);
     tabsOnRight = (tabStyle == 2);
 
     glMatrixMode(GL_PROJECTION);
-    window.setProjectionPlay();
+    glLoadIdentity();
+    glOrtho(0.0, (double)w, 0.0, window.getHeight(), -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
@@ -649,6 +651,46 @@ void            ControlPanel::render(SceneRenderer& _renderer)
 
     }
     glEnd();
+
+    if (0)
+    {
+        // some engines miss the corners
+        glBegin(GL_POINTS);
+        {
+            glVertex2f((float) (x + messageAreaPixels[0] - 1),
+                       (float) (y + messageAreaPixels[1] - 1));
+            glVertex2f((float) (x + messageAreaPixels[0] + messageAreaPixels[2]),
+                       (float) (y + messageAreaPixels[1] - 1));
+            glVertex2f((float) (x + messageAreaPixels[0] + messageAreaPixels[2]),
+                       (float) (y + messageAreaPixels[1] + messageAreaPixels[3]));
+            glVertex2f((float) (x + messageAreaPixels[0] - 1),
+                       (float) (y + messageAreaPixels[1] + messageAreaPixels[3]));
+            long int tabPosition = 0;
+            for (int tab = 0; tab < (int)tabs->size(); tab++)
+            {
+                if (messageMode == MessageModes(tab))
+                {
+                    if (tabsOnRight)
+                    {
+                        glVertex2f((float) (x + messageAreaPixels[0] + messageAreaPixels[2] - totalTabWidth + tabPosition),
+                                   (float) (y + messageAreaPixels[1] + messageAreaPixels[3] + ay));
+                        glVertex2f((float) (x + messageAreaPixels[0] + messageAreaPixels[2] - totalTabWidth + tabPosition + long(
+                                                tabTextWidth[tab])),
+                                   (float) (y + messageAreaPixels[1] + messageAreaPixels[3] + ay));
+                    }
+                    else
+                    {
+                        glVertex2f((float) (x + messageAreaPixels[0] + tabPosition),
+                                   (float) (y + messageAreaPixels[1] + messageAreaPixels[3] + ay));
+                        glVertex2f((float) (x + messageAreaPixels[0] + tabPosition + long(tabTextWidth[tab])),
+                                   (float) (y + messageAreaPixels[1] + messageAreaPixels[3] + ay));
+                    }
+                }
+                tabPosition += long(tabTextWidth[tab]);
+            }
+        }
+        glEnd();
+    }
 
     if (BZDBCache::blend)
         glDisable(GL_BLEND);

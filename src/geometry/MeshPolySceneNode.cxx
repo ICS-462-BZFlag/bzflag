@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // interface header
 #include "MeshPolySceneNode.h"
 
@@ -166,7 +169,7 @@ MeshPolySceneNode::MeshPolySceneNode(const float _plane[4],
 
     // choose axis to ignore (the one with the largest normal component)
     int ignoreAxis;
-    const auto normal = plane;
+    const GLfloat* normal = getPlane();
     if (fabsf(normal[0]) > fabsf(normal[1]))
     {
         if (fabsf(normal[0]) > fabsf(normal[2]))
@@ -283,7 +286,8 @@ bool MeshPolySceneNode::inAxisBox (const Extents& exts) const
     if (!extents.touches(exts))
         return false;
 
-    return testPolygonInAxisBox (getVertexCount(), getVertices(), plane, exts);
+    return testPolygonInAxisBox (getVertexCount(), getVertices(),
+                                 getPlane(), exts);
 }
 
 

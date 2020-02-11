@@ -17,7 +17,7 @@
 #ifndef BZF_SPHERE_SCENE_NODE_H
 #define BZF_SPHERE_SCENE_NODE_H
 
-// Inherits from
+#include "common.h"
 #include "SceneNode.h"
 
 
@@ -61,6 +61,10 @@ class SphereLodSceneNode : public SphereSceneNode
 public:
     SphereLodSceneNode(const GLfloat pos[3], GLfloat radius);
     ~SphereLodSceneNode();
+
+    void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+    void setColor(const GLfloat* rgba);
+    void move(const GLfloat pos[3], GLfloat radius);
 
     void setShockWave(bool value);
 
@@ -168,6 +172,11 @@ class SphereBspSceneNode : public SphereSceneNode
 public:
     SphereBspSceneNode(const GLfloat pos[3], GLfloat radius);
     ~SphereBspSceneNode();
+
+    void        setColor(GLfloat r, GLfloat g,
+                         GLfloat b, GLfloat a = 1.0f);
+    void        setColor(const GLfloat* rgba);
+    void        move(const GLfloat pos[3], GLfloat radius);
 
     void        addRenderNodes(SceneRenderer&);
     void        addShadowNodes(SceneRenderer&);

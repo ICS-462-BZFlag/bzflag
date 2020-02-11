@@ -1,5 +1,5 @@
 /* bzflag
- * Copyright (c) 1993-2019 Tim Riker
+ * Copyright (c) 1993-2018 Tim Riker
  *
  * This package is free software;  you can redistribute it and/or
  * modify it under the terms of the license found in the file
@@ -11,20 +11,19 @@
  */
 
 /* interface header */
-#include "multicast.h" // includes network.h
+#include "multicast.h"
 
-#include <cstdio>
-#include <cstring>
-#include <cerrno>
+/* system implementation headers */
+#ifdef _WIN32
+#  include <winsock2.h>
+#  include <ws2tcpip.h>
+#endif
+
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 #include <vector>
 #include <string>
-
-#if defined(__linux__)
-// This is inherently non-portable, as device handling varies from OS to OS
-// Debian requires the explicit include. Apparently Alpine does as well
-#include <sys/ioctl.h>
-#include <net/if.h>
-#endif
 
 /* common implementation headers */
 #include "ErrorHandler.h"
@@ -69,7 +68,7 @@ int         openBroadcast(int port, const char* service,
     if (port <= 0)
     {
         std::vector<std::string> args;
-        char buf[12];
+        char buf[10];
         sprintf(buf,"%d", port);
         args.push_back(buf);
         printError("openBroadcast: Invalid port {1}", &args);

@@ -33,6 +33,7 @@ libCommon_la_SOURCES  =			\
 	Team.cxx			\
 	TextChunkManager.cxx		\
 	TextUtils.cxx			\
+	TimeBomb.cxx			\
 	TimeKeeper.cxx			\
 	VotingBooth.cxx			\
 	WordFilter.cxx			\

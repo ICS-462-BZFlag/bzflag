@@ -18,7 +18,7 @@
 #ifndef BZF_MESH_POLY_SCENE_NODE_H
 #define BZF_MESH_POLY_SCENE_NODE_H
 
-// Inherits from
+#include "common.h"
 #include "WallSceneNode.h"
 
 class MeshPolySceneNode : public WallSceneNode

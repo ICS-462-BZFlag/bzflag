@@ -207,7 +207,6 @@ void            RobotPlayer::doUpdate(float dt)
     }
 }
 
-
 /*
  calcCoM is a function to calculate the center of mass of a team.
  The function will be used to create flocking behavior for bot tanks.
@@ -242,39 +241,6 @@ void RobotPlayer::calcCoM(float cm[3])
   cm[0] = totalTeamPosition[0] / teamAmount;
   cm[1] = totalTeamPosition[1] / teamAmount;
   cm[2] = totalTeamPosition[2] / teamAmount;
-}
-
-
-void RobotPlayer::calcFlockVelo(float flockVelo[3])
-{
-  float totalTeamVelocity[3];
-  totalTeamVelocity[0] = 0.0;
-  totalTeamVelocity[1] = 0.0;
-  totalTeamVelocity[2] = 0.0;
-  int teamAmount = 0;
-  Player *p = 0;
-  
-  for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
-  {
-    if (t < World::getWorld()->getCurMaxPlayers())
-	p = World::getWorld()->getPlayer(t);
-    else
-	p = LocalPlayer::getMyTank();
-    if (p != NULL)
-    {
-      if (p->getTeam() == getTeam())
-      {
-	teamAmount++;
-	totalTeamVelocity[0] += p->getVelocity()[0];
-	totalTeamVelocity[1] += p->getVelocity()[1];
-	totalTeamVelocity[2] += p->getVelocity()[2];
-      }
-    }
-  }
-  
-  flockVelo[0] = totalTeamVelocity[0] / teamAmount;
-  flockVelo[1] = totalTeamVelocity[1] / teamAmount;
-  flockVelo[2] = totalTeamVelocity[2] / teamAmount;
 }
 
 void            RobotPlayer::doUpdateMotion(float dt)

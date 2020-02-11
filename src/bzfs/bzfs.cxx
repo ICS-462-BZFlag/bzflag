@@ -33,6 +33,7 @@
 #include "ShotUpdate.h"
 #include "PhysicsDriver.h"
 #include "CommandManager.h"
+#include "TimeBomb.h"
 #include "ConfigFileManager.h"
 #include "bzsignal.h"
 
@@ -3378,9 +3379,6 @@ void playerKilled(int victimIndex, int killerIndex, int reason,
         killer = realPlayer(killerIndex) ? &killerData->player : 0;
     }
 
-    // Call a new event when all the plugins have finished reassigning any kills
-    worldEventManager.callEvents(bz_ePlayerDeathFinalizedEvent, &dieEvent);
-
     // killing rabbit or killing anything when I am a dead ex-rabbit is allowed
     bool teamkill = false;
     if (killer)
@@ -4869,43 +4867,64 @@ static void handleCommand(int t, void *rawbuf, bool udp)
         break;
     }
 
-    // player requesting to grab flag
+    // player or player's bot requesting to grab flag
     case MsgGrabFlag:
     {
-        // data: flag index
+        // data: flag index, player id (may be a bot)
         uint16_t flag;
-
-        if (invalidPlayerAction(playerData->player, t, "grab a flag"))
-            break;
+        PlayerId id;
 
         buf = nboUnpackUShort(buf, flag);
+        buf = nboUnpackUByte(buf, id);
+        playerData = GameKeeper::Player::getPlayerByIndex(id);
+        if (invalidPlayerAction(playerData->player, id, "grab a flag"))
+            break;
+
+        // sender should be grabber unless grabber is a bot
+        // should also check if sender and bot are related
+        if (id != t && !playerData->player.isBot()) break;
         // Sanity check
         if (flag < numFlags)
-            grabFlag(t, *FlagInfo::get(flag), true);
+            grabFlag(id, *FlagInfo::get(flag), true);
         break;
     }
 
-    // player requesting to drop flag
+    // player or player's bot requesting to drop flag
     case MsgDropFlag:
     {
-        // data: position of drop
+        // data: position of drop, player id (may be a bot)
         float pos[3];
+        PlayerId id;
+        GameKeeper::Player *playerData;
         buf = nboUnpackVector(buf, pos);
+        buf = nboUnpackUByte(buf, id);
+        playerData = GameKeeper::Player::getPlayerByIndex(id);
+        // sender should be dropper unless dropper is a bot
+        // should also check if sender and bot are related
+        if (id != t && !playerData->player.isBot()) break;
         dropPlayerFlag(*playerData, pos);
         break;
     }
 
-    // player has captured a flag
+    // player or player's bot has captured a flag
     case MsgCaptureFlag:
     {
-        // data: team whose territory flag was brought to
-        uint16_t _team;
+        // data: team whose territory flag was brought to, 
+        // player id (may be a bot)
+        uint16_t _capping_team, _capped_team;
+        PlayerId id;
 
-        if (invalidPlayerAction(playerData->player, t, "capture a flag"))
+        buf = nboUnpackUShort(buf, _capped_team);
+        buf = nboUnpackUShort(buf, _capping_team);
+        buf = nboUnpackUByte(buf, id);
+        playerData = GameKeeper::Player::getPlayerByIndex(id);
+        if (invalidPlayerAction(playerData->player, id, "capture a flag"))
             break;
-
-        buf = nboUnpackUShort(buf, _team);
-        captureFlag(t, TeamColor(_team));
+        playerData = GameKeeper::Player::getPlayerByIndex(id);
+        // sender should be capturer unless capturer is a bot
+        // should also check if sender and bot are related
+        if (id != t && !playerData->player.isBot()) break;
+        captureFlag(id, TeamColor(_capping_team), TeamColor(_capped_team), true);
         break;
     }
 
@@ -6516,6 +6535,21 @@ int main(int argc, char **argv)
 
     Record::init();
 
+    // check time bomb
+    if (timeBombBoom())
+    {
+        std::cerr << "This release expired on " << timeBombString() << ".\n";
+        std::cerr << "Please upgrade to the latest release.\n";
+        exit(0);
+    }
+
+    // print expiration date
+    if (timeBombString())
+    {
+        std::cerr << "This release will expire on " << timeBombString() << ".\n";
+        std::cerr << "Version " << getAppVersion() << std::endl;
+    }
+
     // initialize
 #if defined(_WIN32)
     {
@@ -6597,8 +6631,14 @@ int main(int argc, char **argv)
     if (clOptions->publicizeServer && clOptions->publicizedKey.empty())
     {
         logDebugMessage(0,
-                        "\nWARNING: Publicly listed bzfs servers must register"
-                        " using the '-publickey <key>'option.\n\n");
+                        "\n"
+                        "WARNING:\n"
+                        "  Publicly listed bzfs servers must register using the '-publickey <key>'\n"
+                        "  option. A web page describing list-server policies and procedures can\n"
+                        "  be found at the following location:\n"
+                        "\n"
+                        "    https://wiki.bzflag.org/ServerAuthentication\n"
+                        "\n");
     }
 
 #ifdef BZ_PLUGINS

@@ -355,7 +355,7 @@ static std::string cmdDrop(const std::string&,
                 !(flag == Flags::OscillationOverthruster &&
                   myTank->getLocation() == LocalPlayer::InBuilding))
         {
-            serverLink->sendDropFlag(myTank->getPosition());
+            serverLink->sendDropFlag(myTank->getId(), myTank->getPosition());
             // changed: on windows it may happen the MsgDropFlag
             // never comes back to us, so we drop it right away
             handleFlagDropped(myTank);
@@ -1029,9 +1029,6 @@ static std::string cmdHunt(const std::string&,
 {
     if (args.size() != 0)
         return "usage: hunt";
-    LocalPlayer *myTank = LocalPlayer::getMyTank();
-    if (!myTank)
-        return "use only when connected";
     hud->getScoreboard()->huntKeyEvent (false);
     return std::string();
 }
@@ -1041,9 +1038,6 @@ static std::string cmdAddHunt(const std::string&,
 {
     if (args.size() != 0)
         return "usage: addhunt";
-    LocalPlayer *myTank = LocalPlayer::getMyTank();
-    if (!myTank)
-        return "use only when connected";
     hud->getScoreboard()->huntKeyEvent (true);
     return std::string();
 }

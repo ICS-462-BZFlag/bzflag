@@ -33,7 +33,6 @@ public:
     WallSceneNode();
     ~WallSceneNode();
 
-    const GLfloat* getPlane() const override;
     const GLfloat*  getColor() const;
     const GLfloat*  getDynamicColor() const;
     const GLfloat*  getModulateColor() const;
@@ -94,7 +93,6 @@ protected:
                               const GLfloat2Array& uvs,
                               SceneNode*& front, SceneNode*& back); // const
 
-    GLfloat     plane[4];   // unit normal, distance to origin
 private:
     static void splitEdge(float d1, float d2,
                           const GLfloat* p1, const GLfloat* p2,

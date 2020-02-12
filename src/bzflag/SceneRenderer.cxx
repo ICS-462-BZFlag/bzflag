@@ -43,6 +43,20 @@ static bool mapFog;
 static bool setupMapFog();
 
 
+#ifdef GL_ABGR_EXT
+static int      strrncmp(const char* s1, const char* s2, int num)
+{
+    int len1 = strlen(s1) - 1;
+    int len2 = strlen(s2) - 1;
+    for (; len1 >= 0 && len2 >= 0 && num > 0; len1--, len2--, num--)
+    {
+        const int d = (int)s1[len1] - (int)s2[len2];
+        if (d != 0) return d;
+    }
+    return 0;
+}
+#endif
+
 //
 // FlareLight
 //
@@ -71,6 +85,10 @@ const float   SceneRenderer::dimDensity = 0.75f;
 const GLfloat SceneRenderer::dimnessColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 const GLfloat SceneRenderer::blindnessColor[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
+/* initialize the singleton */
+template <>
+SceneRenderer* Singleton<SceneRenderer>::_instance = (SceneRenderer*)0;
+
 SceneRenderer::SceneRenderer() :
     window(NULL),
     blank(false),
@@ -78,13 +96,14 @@ SceneRenderer::SceneRenderer() :
     sunBrightness(1.0f),
     scene(NULL),
     background(NULL),
+    abgr(false),
     useQualityValue(2),
     useDepthComplexityOn(false),
     useWireframeOn(false),
     useHiddenLineOn(false),
     panelOpacity(0.3f),
     radarOpacity(0.3f),
-    radarSize(8),
+    radarSize(4),
     panelHeight(4),
     maxMotionFactor(5),
     viewType(Normal),
@@ -109,10 +128,6 @@ SceneRenderer::SceneRenderer() :
     // init the track mark manager
     TrackMarks::init();
 
-    // add callbacks for radar size and panel height
-    BZDB.addCallback("radarsize", bzdbCallback, NULL);
-    BZDB.addCallback("panelheight", bzdbCallback, NULL);
-
     return;
 }
 
@@ -131,6 +146,36 @@ void SceneRenderer::setWindow(MainWindow* _window)
     }
     glGetIntegerv(GL_STENCIL_BITS, &bits);
     useStencilOn = (bits > 0);
+
+    // see if abgr extention is available and system is known to be
+    // faster with abgr.
+    const char* vendor = (const char*)glGetString(GL_VENDOR);
+    const char* renderer = (const char*)glGetString(GL_RENDERER);
+    const char* version = (const char*)glGetString(GL_VERSION);
+    const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
+    (void)vendor;
+    (void)renderer;
+    (void)version;
+    (void)extensions; // silence g++
+#ifdef GL_ABGR_EXT
+    if ((extensions != NULL && strstr(extensions, "GL_EXT_abgr") != NULL) &&
+            (vendor != NULL && strcmp(vendor, "SGI") == 0))
+    {
+        // old hardware is faster with ABGR.  new hardware isn't.
+        if ((renderer != NULL) &&
+                (strncmp(renderer, "GR1", 3) == 0 ||
+                 strncmp(renderer, "VGX", 3) == 0 ||
+                 strncmp(renderer, "LIGHT", 5) == 0 ||
+                 strrncmp(renderer, "-XS", 3) == 0 ||
+                 strrncmp(renderer, "-XSM", 4) == 0 ||
+                 strrncmp(renderer, "-XS24", 5) == 0 ||
+                 strrncmp(renderer, "-XS24-Z", 7) == 0 ||
+                 strrncmp(renderer, "-XZ", 3) == 0 ||
+                 strrncmp(renderer, "-Elan", 5) == 0 ||
+                 strrncmp(renderer, "-Extreme", 8) == 0))
+            abgr = true;
+    }
+#endif
 
     // can only do hidden line if polygon offset is available
     canUseHiddenLine = true;
@@ -159,6 +204,12 @@ SceneRenderer::~SceneRenderer()
 
     // kill the track manager
     TrackMarks::kill();
+}
+
+
+bool SceneRenderer::useABGR() const
+{
+    return abgr;
 }
 
 
@@ -315,15 +366,6 @@ void SceneRenderer::setDepthComplexity(bool on)
 void SceneRenderer::setRebuildTanks()
 {
     rebuildTanks = true;
-}
-
-
-void SceneRenderer::bzdbCallback(const std::string& name, void *)
-{
-    if(name == "radarsize")
-        RENDERER.setRadarSize(BZDB.evalInt("radarsize"));
-    else if(name == "panelheight")
-        RENDERER.setPanelHeight(BZDB.evalInt("panelheight"));
 }
 
 
@@ -959,10 +1001,6 @@ void SceneRenderer::renderScene(bool UNUSED(_lastFrame), bool UNUSED(_sameFrame)
 
     // draw start of background (no depth testing)
     OpenGLGState::resetState();
-
-    const GLdouble plane[4] = {0.0, 0.0, +1.0, 0.0};
-    glClipPlane(GL_CLIP_PLANE0, plane);
-
     if (background)
     {
         background->setBlank(blank);

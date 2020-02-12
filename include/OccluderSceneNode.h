@@ -18,10 +18,10 @@
 #ifndef BZF_OCCLUDER_SCENE_NODE_H
 #define BZF_OCCLUDER_SCENE_NODE_H
 
-// Inherits from
-#include "SceneNode.h"
+#include "common.h"
 
 // common implementation headers
+#include "SceneNode.h"
 #include "MeshFace.h"
 
 class OccluderSceneNode : public SceneNode
@@ -51,9 +51,6 @@ public:
     {
         return vertexCount;
     }
-
-    const GLfloat* getPlane() const override;
-
     const GLfloat* getVertex (int vertex) const
     {
         return vertices[vertex];
@@ -62,7 +59,6 @@ public:
 private:
     int vertexCount;
     GLfloat3* vertices;
-    GLfloat     plane[4];   // unit normal, distance to origin
 };
 
 

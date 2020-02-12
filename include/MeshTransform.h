@@ -39,7 +39,6 @@ class MeshTransform
 {
 public:
     MeshTransform();
-    MeshTransform(const MeshTransform&);
     ~MeshTransform();
 
     MeshTransform& operator=(const MeshTransform& transform);

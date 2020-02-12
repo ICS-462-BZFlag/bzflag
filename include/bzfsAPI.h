@@ -39,13 +39,8 @@
 #define strcasecmp stricmp
 #endif
 #else
-#ifdef __clang__
-#define BZF_API __attribute__((visibility("default")))
-#define BZF_PLUGIN_CALL extern "C" __attribute__((visibility("default")))
-#else
 #define BZF_API
 #define BZF_PLUGIN_CALL extern "C"
-#endif
 #endif
 
 /* Provide a means to deprecate API functions to discourage their use
@@ -342,7 +337,6 @@ typedef enum
     bz_eServerShotFiredEvent,
     bz_ePermissionModificationEvent,
     bz_eAllowServerShotFiredEvent,
-    bz_ePlayerDeathFinalizedEvent,
     bz_eLastEvent    //this is never used as an event, just show it's the last one
 } bz_eEventType;
 
@@ -1901,7 +1895,6 @@ BZF_API bool bz_moveFlag ( int flag, float pos[3] );
 BZF_API int bz_getPlayerFlagID ( int playerID );
 BZF_API int bz_flagPlayer ( int flag );
 BZF_API bool bz_getFlagPosition ( int flag, float* pos );
-BZF_API bool bz_getNearestFlagSafetyZone(int flag, float *pos);
 
 
 // world
@@ -2008,7 +2001,6 @@ private:
 };
 
 BZF_API void bz_getRandomPoint ( bz_CustomZoneObject *obj, float *randomPos );
-BZF_API void bz_getSpawnPointWithin ( bz_CustomZoneObject *obj, float *randomPos );
 
 class bz_CustomMapObjectHandler
 {

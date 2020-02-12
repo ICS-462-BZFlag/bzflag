@@ -19,6 +19,8 @@
  * Still in the public domain.
  */
 
+#include "config.h"
+
 /* for memcpy() */
 #include <string.h>
 /* for stupid systems */

@@ -13,19 +13,18 @@
 #include "network.h"
 
 //Includes common to all platforms
-#include <cstdio>
-#include <cstring>
+#include "ErrorHandler.h"
+#include "Address.h"
+#include <stdio.h>
+#include <string.h>
 #include <vector>
 #include <string>
-
-#include "ErrorHandler.h"
 
 #if !defined(WIN32)
 
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
-#include <netdb.h>
 
 #if defined(sun)
 #define hstrerror(x) "<network error>"

@@ -9,10 +9,6 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
-
-#ifndef __BZSIGNAL_H__
-#define __BZSIGNAL_H__
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -35,8 +31,6 @@ SIG_PF bzSignal(int signo, SIG_PF func);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // __BZSIGNAL_H__
 
 /*
  * Local Variables: ***

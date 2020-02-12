@@ -25,11 +25,13 @@ public:
     void executeSet(int lod, int set, bool normals, bool texcoords);
     void executeSetGeometry(int lod, int set);
 
+    static void disableArrays();
     static void init();
     static void kill();
 
 private:
     void rawExecuteCommands(int lod, int set);
+    static void rawDisableArrays();
 
     void makeLists();
     void freeLists();
@@ -52,6 +54,8 @@ private:
 
     int lodCount;
     LodList* lodLists;
+
+    static GLuint unloadList;
 };
 
 #endif // _MESH_DRAW_MGR_H_

@@ -660,7 +660,7 @@ bool LocalSetCommand::operator() (const char *commandLine)
 
 bool QuitCommand::operator() (const char *commandLine)
 {
-    char messageBuffer[MessageLen + 1]; // send message
+    char messageBuffer[MessageLen]; // send message
     strncpy(messageBuffer, commandLine, MessageLen);
     nboPackString(messageMessage + PlayerIdPLen, messageBuffer, MessageLen);
     serverLink->send(MsgMessage, sizeof(messageMessage), messageMessage);

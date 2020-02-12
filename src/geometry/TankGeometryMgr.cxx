@@ -74,7 +74,7 @@ static const partFunction partFunctions[LastTankLOD][BasicTankParts] =
     },
     {
         buildMedBody,
-        NULL,
+        buildMedBarrel,
         buildMedTurret,
         buildMedLCasing,
         buildMedRCasing
@@ -223,8 +223,6 @@ void TankGeometryMgr::buildLists()
                 for (int part = 0; part < lastPart; part++)
                 {
 
-                    if ((part == Barrel) && (lod == MedTankLOD))
-                        continue;
                     GLuint& list = displayLists[shadow][lod][size][part];
                     int& count = partTriangles[shadow][lod][size][part];
 
@@ -282,9 +280,6 @@ GLuint TankGeometryMgr::getPartList(TankGeometryEnums::TankShadow shadow,
                                     TankGeometryEnums::TankSize size,
                                     TankGeometryEnums::TankLOD lod)
 {
-    if ((part == Barrel) && (lod == MedTankLOD))
-        lod = LowTankLOD;
-
     return displayLists[shadow][lod][size][part];
 }
 
@@ -294,9 +289,6 @@ int TankGeometryMgr::getPartTriangleCount(TankGeometryEnums::TankShadow sh,
         TankGeometryEnums::TankSize size,
         TankGeometryEnums::TankLOD lod)
 {
-    if ((part == Barrel) && (lod == MedTankLOD))
-        lod = LowTankLOD;
-
     return partTriangles[sh][lod][size][part];
 }
 

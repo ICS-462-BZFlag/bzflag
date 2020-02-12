@@ -484,6 +484,7 @@
     <ClCompile Include="..\..\src\geometry\models\tank\low_ltread.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\low_rtread.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\low_turret.cxx" />
+    <ClCompile Include="..\..\src\geometry\models\tank\medium_barrel.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\medium_body.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\medium_ltread.cxx" />
     <ClCompile Include="..\..\src\geometry\models\tank\medium_rtread.cxx" />
@@ -514,6 +515,7 @@
     <ClInclude Include="..\..\include\RenderNode.h" />
     <ClInclude Include="..\..\include\SceneNode.h" />
     <ClInclude Include="..\..\include\SceneRenderer.h" />
+    <ClInclude Include="..\..\include\ShotSceneNode.h" />
     <ClInclude Include="..\..\include\SphereSceneNode.h" />
     <ClInclude Include="..\..\include\TankGeometryMgr.h" />
     <ClInclude Include="..\..\include\TankSceneNode.h" />

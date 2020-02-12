@@ -10,6 +10,10 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+#if defined(_MSC_VER)
+#pragma warning(4:4503)
+#endif
+
 // interface header
 #include "KeyManager.h"
 
@@ -22,6 +26,10 @@
 
 // local implementation headers
 #include "BzfEvent.h"
+
+// initialize the singleton
+template <>
+KeyManager* Singleton<KeyManager>::_instance = (KeyManager*)0;
 
 const char*     KeyManager::buttonNames[] =
 {

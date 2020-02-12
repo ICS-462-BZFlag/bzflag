@@ -129,7 +129,7 @@ BackgroundRenderer::BackgroundRenderer(const SceneRenderer&) :
     // sun shadow stuff
     gstate.reset();
     gstate.setStipple(0.5f);
-    gstate.disableCulling();
+    gstate.setCulling((GLenum)GL_NONE);
     sunShadowsGState = gstate.getState();
 
     /* useMoonTexture = BZDBCache::texture && (BZDB.eval("useQuality")>2);
@@ -796,10 +796,12 @@ void BackgroundRenderer::setupSkybox()
         bzmats[i]->setReference();
 
     // setup the wrap mode
-    if (GLEW_EXT_texture_edge_clamp)
+    skyboxWrapMode = GL_CLAMP;
+#ifdef GL_VERSION_1_2
+    const char* extStr = (const char*) glGetString(GL_EXTENSIONS);
+    if (strstr(extStr, "GL_EXT_texture_edge_clamp") != NULL)
         skyboxWrapMode = GL_CLAMP_TO_EDGE;
-    else
-        skyboxWrapMode = GL_CLAMP;
+#endif
 
     // setup the corner colors
     const int cornerFaces[8][3] =
@@ -1065,7 +1067,11 @@ void BackgroundRenderer::drawSky(SceneRenderer& renderer, bool mirror)
     const bool useClipPlane = (mirror && (doSkybox || BZDBCache::drawCelestial));
 
     if (useClipPlane)
+    {
         glEnable(GL_CLIP_PLANE0);
+        const GLdouble plane[4] = {0.0, 0.0, +1.0, 0.0};
+        glClipPlane(GL_CLIP_PLANE0, plane);
+    }
 
     if (doSkybox)
         drawSkybox();

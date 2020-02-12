@@ -17,11 +17,9 @@
 #ifndef BZF_VIEW_FRUSTUM_H
 #define BZF_VIEW_FRUSTUM_H
 
-// inherits from
-#include "Frustum.h"
-
-// Common headers
+#include "common.h"
 #include "bzfgl.h"
+#include "Frustum.h"
 
 // FIXME -- will need a means for off center projections for
 //  looking through teleporters

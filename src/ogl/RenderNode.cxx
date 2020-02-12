@@ -10,12 +10,11 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-// Interface headers
-#include "RenderNode.h"
-
-// System headers
 #include <stdlib.h>
 #include <string.h>
+#include "common.h"
+#include "RenderNode.h"
+
 
 //
 // RenderNode

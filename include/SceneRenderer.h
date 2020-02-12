@@ -70,6 +70,7 @@ public:
     void      setWindow(MainWindow* _window);
     MainWindow&   getWindow() const;
 
+    bool      useABGR() const;
     bool      useStencil() const;
     int       useQuality() const;
     bool      useDepthComplexity() const;
@@ -192,8 +193,6 @@ private:
     SceneRenderer(const SceneRenderer&);
     SceneRenderer&    operator=(const SceneRenderer&);
 
-    static void bzdbCallback(const std::string& name, void *);
-
     void      setupBackgroundMaterials();
 
     void      getLights();
@@ -235,6 +234,7 @@ private:
     static const GLfloat  blindnessColor[4];
     float         teleporterProximity;
 
+    bool      abgr;
     int       useQualityValue;
     bool      useDepthComplexityOn;
     bool      useWireframeOn;

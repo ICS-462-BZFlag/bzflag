@@ -10,6 +10,8 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+#include "common.h"
+
 // implementation header
 #include "MeshRenderNode.h"
 
@@ -29,13 +31,13 @@
 
 
 OpaqueRenderNode::OpaqueRenderNode(MeshDrawMgr* _drawMgr,
-                                   GLfloat *_xformMatrix, bool _normalize,
+                                   GLuint* _xformList, bool _normalize,
                                    const GLfloat* _color,
                                    int _lod, int _set,
                                    const Extents* _exts, int tris)
 {
     drawMgr = _drawMgr;
-    xformMatrix = _xformMatrix;
+    xformList = _xformList;
     normalize = _normalize;
     lod = _lod;
     set = _set;
@@ -55,8 +57,11 @@ void OpaqueRenderNode::render()
     myColor4fv(color);
 
     // do the transformation
-    glPushMatrix();
-    glMultMatrixf(xformMatrix);
+    if (*xformList != INVALID_GL_LIST_ID)
+    {
+        glPushMatrix();
+        glCallList(*xformList);
+    }
     if (normalize)
         glEnable(GL_NORMALIZE);
 
@@ -66,7 +71,8 @@ void OpaqueRenderNode::render()
     // undo the transformation
     if (normalize)
         glDisable(GL_NORMALIZE);
-    glPopMatrix();
+    if (*xformList != INVALID_GL_LIST_ID)
+        glPopMatrix();
 
     if (switchLights)
         RENDERER.reenableLights();
@@ -79,10 +85,14 @@ void OpaqueRenderNode::render()
 
 void OpaqueRenderNode::renderRadar()
 {
-    glPushMatrix();
-    glMultMatrixf(xformMatrix);
+    if (*xformList != INVALID_GL_LIST_ID)
+    {
+        glPushMatrix();
+        glCallList(*xformList);
+    }
     drawMgr->executeSetGeometry(lod, set);
-    glPopMatrix();
+    if (*xformList != INVALID_GL_LIST_ID)
+        glPopMatrix();
 
     addTriangleCount(triangles);
 
@@ -92,10 +102,14 @@ void OpaqueRenderNode::renderRadar()
 
 void OpaqueRenderNode::renderShadow()
 {
-    glPushMatrix();
-    glMultMatrixf(xformMatrix);
+    if (*xformList != INVALID_GL_LIST_ID)
+    {
+        glPushMatrix();
+        glCallList(*xformList);
+    }
     drawMgr->executeSetGeometry(lod, set);
-    glPopMatrix();
+    if (*xformList != INVALID_GL_LIST_ID)
+        glPopMatrix();
 
     addTriangleCount(triangles);
 
@@ -106,14 +120,14 @@ void OpaqueRenderNode::renderShadow()
 /******************************************************************************/
 
 AlphaGroupRenderNode::AlphaGroupRenderNode(MeshDrawMgr* _drawMgr,
-        GLfloat *_xformMatrix,
+        GLuint* _xformList,
         bool _normalize,
         const GLfloat* _color,
         int _lod, int _set,
         const Extents* _exts,
         const GLfloat _pos[3],
         int _triangles) :
-    OpaqueRenderNode(_drawMgr, _xformMatrix, _normalize,
+    OpaqueRenderNode(_drawMgr, _xformList, _normalize,
                      _color, _lod, _set, _exts, _triangles)
 {
     memcpy(pos, _pos, sizeof(GLfloat[3]));

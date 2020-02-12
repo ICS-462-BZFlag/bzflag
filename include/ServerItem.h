@@ -1,5 +1,5 @@
 /* bzflag
- * Copyright (c) 1993-2019 Tim Riker
+ * Copyright (c) 1993-2018 Tim Riker
  *
  * This package is free software;  you can redistribute it and/or
  * modify it under the terms of the license found in the file
@@ -16,8 +16,9 @@
 #include "common.h"
 
 /* system interface headers */
+#include <iostream>
 #include <string>
-#include <ctime>
+#include <time.h>
 
 /* common interface headers */
 #include "Ping.h"
@@ -49,7 +50,6 @@ public:
     time_t    updateTime; // last time I was updated
     bool      cached;     // was I cached ?
     bool      favorite;   // favorite server, user selection
-    bool      localDiscovery;     // is this a locally discovered server?
 };
 
 #endif /* __SERVERITEM_H__ */

@@ -10,6 +10,10 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+#if defined(_MSC_VER)
+#pragma warning(4:4503)
+#endif
+
 // interface header
 #include "StateDatabase.h"
 
@@ -74,6 +78,11 @@ void    _debugLookups(const std::string &name)
 #else
 #define debugLookups(name)
 #endif
+
+// initialize the singleton
+template <>
+StateDatabase* Singleton<StateDatabase>::_instance = (StateDatabase*)0;
+
 
 const std::string StateDatabase::BZDB_AGILITYADVEL     = std::string("_agilityAdVel");
 const std::string StateDatabase::BZDB_AGILITYTIMEWINDOW    = std::string("_agilityTimeWindow");

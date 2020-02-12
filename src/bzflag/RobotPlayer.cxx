@@ -10,11 +10,11 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/*
- *
- */
+ /*
+  *
+  */
 
-// interface header
+  // interface header
 #include "RobotPlayer.h"
 
 // common implementation headers
@@ -25,11 +25,14 @@
 #include "Intersect.h"
 #include "TargetingUtils.h"
 
+//Control Panel
+#include "playing.h"
+
 std::vector<BzfRegion*>* RobotPlayer::obstacleList = NULL;
 
 RobotPlayer::RobotPlayer(const PlayerId& _id, const char* _name,
-                         ServerLink* _server,
-                         const char* _motto = "") :
+    ServerLink* _server,
+    const char* _motto = "") :
     LocalPlayer(_id, _name, _motto),
     target(NULL),
     pathIndex(0),
@@ -37,25 +40,25 @@ RobotPlayer::RobotPlayer(const PlayerId& _id, const char* _name,
     drivingForward(true)
 {
     gettingSound = false;
-    server       = _server;
+    server = _server;
 }
 
 // estimate a player's position at now+t, similar to dead reckoning
-void RobotPlayer::projectPosition(const Player *targ,const float t,float &x,float &y,float &z) const
+void RobotPlayer::projectPosition(const Player* targ, const float t, float& x, float& y, float& z) const
 {
-    double hisx=targ->getPosition()[0];
-    double hisy=targ->getPosition()[1];
-    double hisz=targ->getPosition()[2];
-    double hisvx=targ->getVelocity()[0];
-    double hisvy=targ->getVelocity()[1];
-    double hisvz=targ->getVelocity()[2];
-    double omega=fabs(targ->getAngularVelocity());
-    double sx,sy;
+    double hisx = targ->getPosition()[0];
+    double hisy = targ->getPosition()[1];
+    double hisz = targ->getPosition()[2];
+    double hisvx = targ->getVelocity()[0];
+    double hisvy = targ->getVelocity()[1];
+    double hisvz = targ->getVelocity()[2];
+    double omega = fabs(targ->getAngularVelocity());
+    double sx, sy;
 
-    if ((targ->getStatus() & PlayerState::Falling) || fabs(omega) < 2*M_PI / 360 * 0.5)
+    if ((targ->getStatus() & PlayerState::Falling) || fabs(omega) < 2 * M_PI / 360 * 0.5)
     {
-        sx=t*hisvx;
-        sy=t*hisvy;
+        sx = t * hisvx;
+        sy = t * hisvy;
     }
     else
     {
@@ -66,13 +69,13 @@ void RobotPlayer::projectPosition(const Player *targ,const float t,float &x,floa
         double dy2 = r * (1 - cos(alfa));
         double beta = atan2(dy2, dx) * (targ->getAngularVelocity() > 0 ? 1 : -1);
         double gamma = atan2(hisvy, hisvx);
-        double rho = gamma+beta;
+        double rho = gamma + beta;
         sx = hisspeed * t * cos(rho);
         sy = hisspeed * t * sin(rho);
     }
-    x=(float)hisx+(float)sx;
-    y=(float)hisy+(float)sy;
-    z=(float)hisz+(float)hisvz*t;
+    x = (float)hisx + (float)sx;
+    y = (float)hisy + (float)sy;
+    z = (float)hisz + (float)hisvz * t;
     if (targ->getStatus() & PlayerState::Falling)
         z += 0.5f * BZDBCache::gravity * t * t;
     if (z < 0) z = 0;
@@ -83,7 +86,7 @@ void RobotPlayer::projectPosition(const Player *targ,const float t,float &x,floa
 // 1. estimate how long it will take shot to hit target
 // 2. calc position of target at that point of time
 // 3. jump to 1., using projected position, loop until result is stable
-void RobotPlayer::getProjectedPosition(const Player *targ, float *projpos) const
+void RobotPlayer::getProjectedPosition(const Player* targ, float* projpos) const
 {
     double myx = getPosition()[0];
     double myy = getPosition()[1];
@@ -91,22 +94,22 @@ void RobotPlayer::getProjectedPosition(const Player *targ, float *projpos) const
     double hisy = targ->getPosition()[1];
     double deltax = hisx - myx;
     double deltay = hisy - myy;
-    double distance = hypotf(deltax,deltay) - BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - BZDBCache::tankRadius;
+    double distance = hypotf(deltax, deltay) - BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - BZDBCache::tankRadius;
     if (distance <= 0) distance = 0;
-    double shotspeed = BZDB.eval(StateDatabase::BZDB_SHOTSPEED)*
-                       (getFlag() == Flags::Laser ? BZDB.eval(StateDatabase::BZDB_LASERADVEL) :
-                        getFlag() == Flags::RapidFire ? BZDB.eval(StateDatabase::BZDB_RFIREADVEL) :
-                        getFlag() == Flags::MachineGun ? BZDB.eval(StateDatabase::BZDB_MGUNADVEL) : 1) +
-                       hypotf(getVelocity()[0], getVelocity()[1]);
+    double shotspeed = BZDB.eval(StateDatabase::BZDB_SHOTSPEED) *
+        (getFlag() == Flags::Laser ? BZDB.eval(StateDatabase::BZDB_LASERADVEL) :
+            getFlag() == Flags::RapidFire ? BZDB.eval(StateDatabase::BZDB_RFIREADVEL) :
+            getFlag() == Flags::MachineGun ? BZDB.eval(StateDatabase::BZDB_MGUNADVEL) : 1) +
+        hypotf(getVelocity()[0], getVelocity()[1]);
 
     double errdistance = 1.0;
     float tx, ty, tz;
-    for (int tries=0 ; errdistance > 0.05 && tries < 4 ; tries++)
+    for (int tries = 0; errdistance > 0.05 && tries < 4; tries++)
     {
         float t = (float)distance / (float)shotspeed;
         projectPosition(targ, t + 0.05f, tx, ty, tz); // add 50ms for lag
         double distance2 = hypotf(tx - myx, ty - myy);
-        errdistance = fabs(distance2-distance) / (distance + ZERO_TOLERANCE);
+        errdistance = fabs(distance2 - distance) / (distance + ZERO_TOLERANCE);
         distance = distance2;
     }
     projpos[0] = tx;
@@ -128,71 +131,71 @@ void            RobotPlayer::doUpdate(float dt)
     LocalPlayer::doUpdate(dt);
 
     float tankRadius = BZDBCache::tankRadius;
-    const float shotRange  = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
+    const float shotRange = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
     const float shotRadius = BZDB.eval(StateDatabase::BZDB_SHOTRADIUS);
 
     // fire shot if any available
-    timerForShot  -= dt;
+    timerForShot -= dt;
     if (timerForShot < 0.0f)
         timerForShot = 0.0f;
 
     if (getFiringStatus() != Ready)
         return;
 
-    bool  shoot   = false;
+    bool  shoot = false;
     const float azimuth = getAngle();
     // Allow shooting only if angle is near and timer has elapsed
     if ((!path.empty()) && timerForShot <= 0.0f)
     {
         float p1[3];
         getProjectedPosition(target, p1);
-        const float* p2     = getPosition();
+        const float* p2 = getPosition();
         float shootingAngle = atan2f(p1[1] - p2[1], p1[0] - p2[0]);
         if (shootingAngle < 0.0f)
             shootingAngle += (float)(2.0 * M_PI);
-        float azimuthDiff   = shootingAngle - azimuth;
+        float azimuthDiff = shootingAngle - azimuth;
         if (azimuthDiff > M_PI)
             azimuthDiff -= (float)(2.0 * M_PI);
         else if (azimuthDiff < -M_PI)
             azimuthDiff += (float)(2.0 * M_PI);
 
         const float targetdistance = hypotf(p1[0] - p2[0], p1[1] - p2[1]) -
-                                     BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - tankRadius;
+            BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - tankRadius;
 
         const float missby = fabs(azimuthDiff) *
-                             (targetdistance - BZDBCache::tankLength);
+            (targetdistance - BZDBCache::tankLength);
         // only shoot if we miss by less than half a tanklength and no building inbetween
         if (missby < 0.5f * BZDBCache::tankLength &&
-                p1[2] < shotRadius)
+            p1[2] < shotRadius)
         {
-            float pos[3] = {getPosition()[0], getPosition()[1],
-                            getPosition()[2] +  BZDB.eval(StateDatabase::BZDB_MUZZLEHEIGHT)
-                           };
-            float dir[3] = {cosf(azimuth), sinf(azimuth), 0.0f};
+            float pos[3] = { getPosition()[0], getPosition()[1],
+                            getPosition()[2] + BZDB.eval(StateDatabase::BZDB_MUZZLEHEIGHT)
+            };
+            float dir[3] = { cosf(azimuth), sinf(azimuth), 0.0f };
             Ray tankRay(pos, dir);
             float maxdistance = targetdistance;
             if (!ShotStrategy::getFirstBuilding(tankRay, -0.5f, maxdistance))
             {
-                shoot=true;
+                shoot = false;
                 // try to not aim at teammates
-                for (int i=0; i <= World::getWorld()->getCurMaxPlayers(); i++)
+                for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
                 {
-                    Player *p = 0;
+                    Player* p = 0;
                     if (i < World::getWorld()->getCurMaxPlayers())
                         p = World::getWorld()->getPlayer(i);
                     else
                         p = LocalPlayer::getMyTank();
                     if (!p || p->getId() == getId() || validTeamTarget(p) ||
-                            !p->isAlive()) continue;
-                    float relpos[3] = {getPosition()[0] - p->getPosition()[0],
+                        !p->isAlive()) continue;
+                    float relpos[3] = { getPosition()[0] - p->getPosition()[0],
                                        getPosition()[1] - p->getPosition()[1],
                                        getPosition()[2] - p->getPosition()[2]
-                                      };
+                    };
                     Ray ray(relpos, dir);
                     float impact = rayAtDistanceFromOrigin(ray, 5 * BZDBCache::tankRadius);
                     if (impact > 0 && impact < shotRange)
                     {
-                        shoot=false;
+                        shoot = false;
                         timerForShot = 0.1f;
                         break;
                     }
@@ -207,73 +210,102 @@ void            RobotPlayer::doUpdate(float dt)
     }
 }
 
-
 /*
  calcCoM is a function to calculate the center of mass of a team.
  The function will be used to create flocking behavior for bot tanks.
  */
 void RobotPlayer::calcCoM(float cm[3])
 {
-  float totalTeamPosition[3];
-  totalTeamPosition[0] = 0.0;
-  totalTeamPosition[1] = 0.0;
-  totalTeamPosition[2] = 0.0;
-  int teamAmount = 0;
-  Player *p = 0;
-  
-  for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
-  {
-    if (t < World::getWorld()->getCurMaxPlayers())
-	p = World::getWorld()->getPlayer(t);
-    else
-	p = LocalPlayer::getMyTank();
-    if (p != NULL)
+    float totalTeamPosition[3];
+    totalTeamPosition[0] = 0.0;
+    totalTeamPosition[1] = 0.0;
+    totalTeamPosition[2] = 0.0;
+    int teamAmount = 0;
+    Player* p = 0;
+
+    for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
-      if (p->getTeam() == getTeam())
-      {
-	teamAmount++;
-	totalTeamPosition[0] += p->getPosition()[0];
-	totalTeamPosition[1] += p->getPosition()[1];
-	totalTeamPosition[2] += p->getPosition()[2];
-      }
+        if (t < World::getWorld()->getCurMaxPlayers())
+            p = World::getWorld()->getPlayer(t);
+        else
+            p = LocalPlayer::getMyTank();
+        if (p != NULL)
+        {
+            if (p->getTeam() == getTeam())
+            {
+                teamAmount++;
+                totalTeamPosition[0] += p->getPosition()[0];
+                totalTeamPosition[1] += p->getPosition()[1];
+                totalTeamPosition[2] += p->getPosition()[2];
+            }
+        }
     }
-  }
-  
-  cm[0] = totalTeamPosition[0] / teamAmount;
-  cm[1] = totalTeamPosition[1] / teamAmount;
-  cm[2] = totalTeamPosition[2] / teamAmount;
+
+    cm[0] = totalTeamPosition[0] / teamAmount;
+    cm[1] = totalTeamPosition[1] / teamAmount;
+    cm[2] = totalTeamPosition[2] / teamAmount;
+
+    char buffer[128];
+    sprintf(buffer, "Center of Mass (x,y,z): (%.2f,%.2f,%.2f)",
+        cm[0], cm[1], cm[2]);
+    controlPanel->addMessage(buffer);
+    memset(buffer, 0, sizeof buffer);
 }
 
-void RobotPlayer::calcFlockVelo(float flockVelo[3])
-{
-  float totalTeamVelocity[3];
-  totalTeamVelocity[0] = 0.0;
-  totalTeamVelocity[1] = 0.0;
-  totalTeamVelocity[2] = 0.0;
-  int teamAmount = 0;
-  Player *p = 0;
-  
-  for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
-  {
-    if (t < World::getWorld()->getCurMaxPlayers())
-	p = World::getWorld()->getPlayer(t);
-    else
-	p = LocalPlayer::getMyTank();
-    if (p != NULL)
-    {
-      if (p->getTeam() == getTeam())
-      {
-	teamAmount++;
-	totalTeamVelocity[0] += p->getVelocity()[0];
-	totalTeamVelocity[1] += p->getVelocity()[1];
-	totalTeamVelocity[2] += p->getVelocity()[2];
-      }
+void RobotPlayer::findFlag(float location[3]) {
+   // char buffer[128];
+    Flag tempF;
+    for (int i = 0; i < World::getWorld()->getMaxFlags(); i++) {
+        tempF = World::getWorld()->getFlag(i);
+        if (tempF.type->flagTeam != getTeam())
+        {
+            location[0] = tempF.position[0];
+            location[1] = tempF.position[1];
+            location[2] = tempF.position[2];
+        }
     }
-  }
-  
-  flockVelo[0] = totalTeamVelocity[0] / teamAmount;
-  flockVelo[1] = totalTeamVelocity[1] / teamAmount;
-  flockVelo[2] = totalTeamVelocity[2] / teamAmount;
+
+}
+/*
+void RobotPlayer::findBase(float location[3]) {
+    float* pointLoc = World::getWorld()->getBase(getTeam())
+}*/
+bool RobotPlayer::checkFlag() {
+    bool flagB = false;
+    FlagType* myFlag;
+    Player* p = 0;
+    for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
+    {
+        if (t < World::getWorld()->getCurMaxPlayers())
+            p = World::getWorld()->getPlayer(t);
+        else
+            p = LocalPlayer::getMyTank();
+        if (p != NULL)
+        {
+            if (p->getTeam() == getTeam())
+            {
+                myFlag = p->getFlag();
+                if (myFlag != Flags::Null) {
+                    if (myFlag->flagTeam != NoTeam) {
+                        if (myFlag->flagTeam != getTeam()) {
+                            flagB = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return flagB;
+}
+void RobotPlayer::dropFlag() {
+    FlagType* myFlag = getFlag();
+    if(myFlag != NULL){
+        if (myFlag->endurance != FlagSticky) {
+            if (myFlag->flagTeam == getTeam()) {
+                serverLink->sendDropFlag(getId(), getPosition());
+            }
+        }
+    }
 }
 
 void            RobotPlayer::doUpdateMotion(float dt)
@@ -292,11 +324,13 @@ void            RobotPlayer::doUpdateMotion(float dt)
         float tankAngVel = BZDB.eval(StateDatabase::BZDB_TANKANGVEL);
         float tankSpeed = BZDBCache::tankSpeed;
 
+        //Creating an array to store the center of mass for a team.
+        float teamCoM[3];
 
         // basically a clone of Roger's evasive code
-        for (int t=0; t <= World::getWorld()->getCurMaxPlayers(); t++)
+        for (int t = 0; t <= World::getWorld()->getCurMaxPlayers(); t++)
         {
-            Player *p = 0;
+            Player* p = 0;
             if (t < World::getWorld()->getCurMaxPlayers())
                 p = World::getWorld()->getPlayer(t);
             else
@@ -304,28 +338,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             if (!p || p->getId() == getId())
                 continue;
             const int maxShots = p->getMaxShots();
-	  
-	    float totalTeamPosition[3];
-	    totalTeamPosition[0] = 0.0;
-	    totalTeamPosition[1] = 0.0;
-	    totalTeamPosition[2] = 0.0;
-	    float teamAmount = 0.0;
-	    float teamCoM[3];
-	    
-	    if (p != NULL)
-	    {
-	      if (p->getTeam() == LocalPlayer::getTeam())
-	      {
-		teamAmount++;
-		totalTeamPosition[0] += p->getPosition()[0];
-		totalTeamPosition[1] += p->getPosition()[1];
-		totalTeamPosition[2] += p->getPosition()[2];
-	      }
-	      teamCoM[0] = totalTeamPosition[0] / teamAmount;
-	      teamCoM[1] = totalTeamPosition[1] / teamAmount;
-	      teamCoM[2] = totalTeamPosition[2] / teamAmount;
-	    }
-	  
+
             for (int s = 0; s < maxShots; s++)
             {
                 ShotPath* shot = p->getShot(s);
@@ -341,21 +354,21 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 const float dist = TargetingUtils::getTargetDistance(position, shotPos);
                 if (dist < 150.0f)
                 {
-                    const float *shotVel = shot->getVelocity();
+                    const float* shotVel = shot->getVelocity();
                     float shotAngle = atan2f(shotVel[1], shotVel[0]);
-                    float shotUnitVec[2] = {cosf(shotAngle), sinf(shotAngle)};
+                    float shotUnitVec[2] = { cosf(shotAngle), sinf(shotAngle) };
 
-                    float trueVec[2] = {(position[0]-shotPos[0])/dist,(position[1]-shotPos[1])/dist};
-                    float dotProd = trueVec[0]*shotUnitVec[0]+trueVec[1]*shotUnitVec[1];
+                    float trueVec[2] = { (position[0] - shotPos[0]) / dist,(position[1] - shotPos[1]) / dist };
+                    float dotProd = trueVec[0] * shotUnitVec[0] + trueVec[1] * shotUnitVec[1];
 
                     if (dotProd > 0.97f)
                     {
                         float rotation;
-                        float rotation1 = (float)((shotAngle + M_PI/2.0) - azimuth);
+                        float rotation1 = (float)((shotAngle + M_PI / 2.0) - azimuth);
                         if (rotation1 < -1.0f * M_PI) rotation1 += (float)(2.0 * M_PI);
                         if (rotation1 > 1.0f * M_PI) rotation1 -= (float)(2.0 * M_PI);
 
-                        float rotation2 = (float)((shotAngle - M_PI/2.0) - azimuth);
+                        float rotation2 = (float)((shotAngle - M_PI / 2.0) - azimuth);
                         if (rotation2 < -1.0f * M_PI) rotation2 += (float)(2.0 * M_PI);
                         if (rotation2 > 1.0f * M_PI) rotation2 -= (float)(2.0 * M_PI);
 
@@ -376,14 +389,39 @@ void            RobotPlayer::doUpdateMotion(float dt)
         {
             float distance;
             float v[2];
-            const float* endPoint = path[pathIndex].get();
+            float flagLoc[3];
+            /*
+             Running calcCoM to calculate the team center of mass for the current
+             robot player
+            */
+            calcCoM(teamCoM);
+
+            /*Get flag location*/
+            findFlag(flagLoc);
+            /*
+             Replacing path coordinates with team center of mass so tanks
+             on the same team head towards the team center of mass and
+             flock together.
+             */
+	    float* endPoint;
+            if(checkFlag())
+            endPoint = flagLoc;
+            else
+            endPoint = flagLoc;
+
+            char buffer[128];
+            sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",
+                endPoint[0], endPoint[1], endPoint[2]);
+            controlPanel->addMessage(buffer);
+            memset(buffer, 0, sizeof buffer);
+
             // find how long it will take to get to next path segment
             v[0] = endPoint[0] - position[0];
             v[1] = endPoint[1] - position[1];
             distance = hypotf(v[0], v[1]);
             float tankRadius = BZDBCache::tankRadius;
             // smooth path a little by turning early at corners, might get us stuck, though
-            if (distance <= 2.5f * tankRadius)
+            if (distance <= 1.0f * tankRadius)
                 pathIndex++;
 
             float segmentAzimuth = atan2f(v[1], v[0]);
@@ -394,9 +432,9 @@ void            RobotPlayer::doUpdateMotion(float dt)
             {
                 // drive backward when target is behind, try to stick to last direction
                 if (drivingForward)
-                    drivingForward = fabs(azimuthDiff) < M_PI/2*0.9 ? true : false;
+                    drivingForward = fabs(azimuthDiff) < M_PI / 2 * 0.9 ? true : false;
                 else
-                    drivingForward = fabs(azimuthDiff) < M_PI/2*0.3 ? true : false;
+                    drivingForward = fabs(azimuthDiff) < M_PI / 2 * 0.3 ? true : false;
                 setDesiredSpeed(drivingForward ? 1.0f : -1.0f);
                 // set desired turn speed
                 if (azimuthDiff >= dt * tankAngVel)
@@ -423,10 +461,11 @@ void            RobotPlayer::doUpdateMotion(float dt)
             }
         }
     }
+    dropFlag();
     LocalPlayer::doUpdateMotion(dt);
 }
 
-void            RobotPlayer::explodeTank()
+void RobotPlayer::explodeTank()
 {
     LocalPlayer::explodeTank();
     target = NULL;
@@ -444,7 +483,7 @@ void            RobotPlayer::restart(const float* pos, float _azimuth)
 }
 
 float           RobotPlayer::getTargetPriority(const
-        Player* _target) const
+    Player* _target) const
 {
     // don't target teammates or myself
     if (!this->validTeamTarget(_target))
@@ -464,21 +503,21 @@ float           RobotPlayer::getTargetPriority(const
     if (obstacleList)
     {
         float nearest[2];
-        const BzfRegion* targetRegion = findRegion (p2, nearest);
+        const BzfRegion* targetRegion = findRegion(p2, nearest);
         if (targetRegion && targetRegion->isInside(p2))
             basePriority += 1.0f;
     }
     return basePriority
-           - 0.5f * hypotf(p2[0] - p1[0], p2[1] - p1[1]) / worldSize;
+        - 0.5f * hypotf(p2[0] - p1[0], p2[1] - p1[1]) / worldSize;
 }
 
 void            RobotPlayer::setObstacleList(std::vector<BzfRegion*>*
-        _obstacleList)
+    _obstacleList)
 {
     obstacleList = _obstacleList;
 }
 
-const Player*       RobotPlayer::getTarget() const
+const Player* RobotPlayer::getTarget() const
 {
     return target;
 }
@@ -494,7 +533,7 @@ void            RobotPlayer::setTarget(const Player* _target)
     // work backwards (from target to me)
     float proj[3];
     getProjectedPosition(target, proj);
-    const float *p1 = proj;
+    const float* p1 = proj;
     const float* p2 = getPosition();
     float q1[2], q2[2];
     BzfRegion* headRegion = findRegion(p1, q1);
@@ -520,8 +559,7 @@ void            RobotPlayer::setTarget(const Player* _target)
         p1 = next->getA();
         path.push_back(p1);
         next = next->getTarget();
-    }
-    while (next && next != headRegion);
+    } while (next && next != headRegion);
     if (next || tailRegion == headRegion)
         path.push_back(q1);
     else
@@ -529,8 +567,8 @@ void            RobotPlayer::setTarget(const Player* _target)
     pathIndex = 0;
 }
 
-BzfRegion*      RobotPlayer::findRegion(const float p[2],
-                                        float nearest[2]) const
+BzfRegion* RobotPlayer::findRegion(const float p[2],
+    float nearest[2]) const
 {
     nearest[0] = p[0];
     nearest[1] = p[1];
@@ -540,7 +578,7 @@ BzfRegion*      RobotPlayer::findRegion(const float p[2],
             return (*obstacleList)[o];
 
     // point is outside: find nearest region
-    float      distance      = maxDistance;
+    float      distance = maxDistance;
     BzfRegion* nearestRegion = NULL;
     for (int i = 0; i < count; i++)
     {
@@ -570,7 +608,7 @@ float           RobotPlayer::getRegionExitPoint(
     d[1] = p2[1] - p1[1];
 
     float vect = d[0] * b[1] - d[1] * b[0];
-    float t    = 0.0f;  // safe value
+    float t = 0.0f;  // safe value
     if (fabs(vect) > ZERO_TOLERANCE)
     {
         // compute intersection along (p1,d) with (a,b)
@@ -592,10 +630,10 @@ float           RobotPlayer::getRegionExitPoint(
 }
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,
-                                      BzfRegion* region,
-                                      BzfRegion* targetRegion,
-                                      const float targetPoint[2],
-                                      int mailbox)
+    BzfRegion* region,
+    BzfRegion* targetRegion,
+    const float targetPoint[2],
+    int mailbox)
 {
     const int numEdges = region->getNumSides();
     for (int i = 0; i < numEdges; i++)
@@ -604,10 +642,10 @@ void            RobotPlayer::findPath(RegionPriorityQueue& queue,
         if (!neighbor) continue;
 
         const float* p1 = region->getCorner(i).get();
-        const float* p2 = region->getCorner((i+1)%numEdges).get();
+        const float* p2 = region->getCorner((i + 1) % numEdges).get();
         float mid[2], priority;
         float total = getRegionExitPoint(p1, p2, region->getA(),
-                                         targetPoint, mid, priority);
+            targetPoint, mid, priority);
         priority += region->getDistance();
         if (neighbor == targetRegion)
             total += hypotf(targetPoint[0] - mid[0], targetPoint[1] - mid[1]);

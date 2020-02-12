@@ -33,7 +33,6 @@
 #include "CommandManager.h"
 #include "md5.h"
 #include "version.h"
-#include "DropGeometry.h"
 
 TimeKeeper synct = TimeKeeper::getCurrent();
 std::list<PendingChatMessages> pendingChatMessages;
@@ -971,35 +970,6 @@ BZF_API bool bz_updatePlayerData ( bz_BasePlayerRecord *playerRecord )
         bz_PlayerRecordV2 *r = (bz_PlayerRecordV2*)playerRecord;
         r->motto = player->player.getMotto();
     }
-    return true;
-}
-
-const char *bz_BasePlayerRecord::getCustomData(const char* key)
-{
-    GameKeeper::Player* player = GameKeeper::Player::getPlayerByIndex(playerID);
-    if (player == nullptr || key == nullptr)
-        return nullptr;
-
-    std::string keyStr = key;
-    if (player->extraData.find(keyStr) == player->extraData.end())
-        return nullptr;
-
-    return player->extraData[keyStr].c_str();
-}
-
-bool bz_BasePlayerRecord::setCustomData(const char* key, const char* data)
-{
-    GameKeeper::Player* player = GameKeeper::Player::getPlayerByIndex(playerID);
-    if (player == nullptr || key == nullptr)
-        return false;
-
-    std::string keyStr = key;
-    std::string dataStr;
-    if (data != nullptr)
-        dataStr = dataStr;
-
-    player->extraData[keyStr] = data;
-
     return true;
 }
 
@@ -2939,21 +2909,6 @@ BZF_API bool bz_getFlagPosition ( int flag, float* pos )
     return true;
 }
 
-BZF_API bool bz_getNearestFlagSafetyZone(int flag, float *pos)
-{
-    FlagInfo *flagInfo = FlagInfo::get(flag);
-    TeamColor myTeam = flagInfo->teamIndex();
-
-    float currPos[3];
-    bz_getFlagPosition(flag, currPos);
-
-    if (myTeam == NoTeam)
-        return false;
-
-    const std::string &safetyQualifier = CustomZone::getFlagSafetyQualifier(myTeam);
-    return world->getEntryZones().getClosePoint(safetyQualifier, currPos, pos);
-}
-
 //-------------------------------------------------------------------------
 
 BZF_API float bz_getWorldMaxHeight ( void )
@@ -3337,29 +3292,6 @@ BZF_API void bz_getRandomPoint ( bz_CustomZoneObject *obj, float *randomPos )
         randomPos[1] = (obj->radius * y) + pos[1];
         randomPos[2] = pos[2];
     }
-}
-
-BZF_API void bz_getSpawnPointWithin ( bz_CustomZoneObject *obj, float *randomPos )
-{
-    TimeKeeper start = TimeKeeper::getCurrent();
-    int tries = 0;
-
-    do {
-        if (tries >= 50)
-        {
-            tries = 0;
-
-            if (TimeKeeper::getCurrent() - start > BZDB.eval("_spawnMaxCompTime"))
-            {
-                randomPos[2] = obj->zMax;
-                logDebugMessage(1, "Warning: bz_getSpawnPointWithin ran out of time, just dropping the sucker in\n");
-                break;
-            }
-        }
-
-        bz_getRandomPoint(obj, randomPos);
-        ++tries;
-    } while (!DropGeometry::dropPlayer(randomPos, obj->zMin, obj->zMax));
 }
 
 BZF_API bool bz_registerCustomMapObject ( const char* object, bz_CustomMapObjectHandler *handler )
@@ -4182,35 +4114,26 @@ BZF_API const char *bz_tolower(const char* val )
 
 BZF_API const char* bz_ltrim(const char* val, const char* trim)
 {
-    static std::string temp;
     if (!val)
         return NULL;
 
-    temp = TextUtils::ltrim(std::string(val), trim);
-
-    return temp.c_str();
+    return TextUtils::ltrim(std::string(val), trim).c_str();
 }
 
 BZF_API const char* bz_rtrim(const char* val, const char* trim)
 {
-    static std::string temp;
     if (!val)
         return NULL;
 
-    temp = TextUtils::rtrim(std::string(val), trim);
-
-    return temp.c_str();
+    return TextUtils::rtrim(std::string(val), trim).c_str();
 }
 
 BZF_API const char* bz_trim(const char* val, const char* trim)
 {
-    static std::string temp;
     if (!val)
         return NULL;
 
-    temp = TextUtils::trim(std::string(val), trim);
-
-    return temp.c_str();
+    return TextUtils::trim(std::string(val), trim).c_str();
 }
 
 BZF_API const char* bz_join(bz_APIStringList* list, const char* delimiter)

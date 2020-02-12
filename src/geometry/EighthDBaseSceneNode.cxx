@@ -10,6 +10,9 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+// bzflag common header
+#include "common.h"
+
 // inteface header
 #include "EighthDBaseSceneNode.h"
 

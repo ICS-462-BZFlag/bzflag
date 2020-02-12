@@ -418,6 +418,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             else {
                 endPoint = flagLoc;
             }
+
             char buffer[128];
             sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",
                 endPoint[0], endPoint[1], endPoint[2]);

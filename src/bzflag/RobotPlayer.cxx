@@ -403,7 +403,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
              on the same team head towards the team center of mass and
              flock together.
              */
-	    float* endPoint;
+	    const float* endPoint;
             if(checkFlag())
             endPoint = flagLoc;
             else

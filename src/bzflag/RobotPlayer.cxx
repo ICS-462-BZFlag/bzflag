@@ -266,10 +266,15 @@ void RobotPlayer::findFlag(float location[3]) {
     }
 
 }
-/*
+
 void RobotPlayer::findBase(float location[3]) {
-    float* pointLoc = World::getWorld()->getBase(getTeam())
-}*/
+    Player* p = 0;
+    
+    const float* pointLoc = World::getWorld()->getBase(getTeam());
+    location[0] = pointLoc[0];
+    location[1] = pointLoc[1];
+    location[2] = pointLoc[2];
+}
 bool RobotPlayer::checkFlag() {
     bool flagB = false;
     FlagType* myFlag;
@@ -390,6 +395,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float distance;
             float v[2];
             float flagLoc[3];
+            float baseLoc[3];
             /*
              Running calcCoM to calculate the team center of mass for the current
              robot player
@@ -398,17 +404,20 @@ void            RobotPlayer::doUpdateMotion(float dt)
 
             /*Get flag location*/
             findFlag(flagLoc);
+            /*Get own base location*/
+            findBase(baseLoc);
             /*
              Replacing path coordinates with team center of mass so tanks
              on the same team head towards the team center of mass and
              flock together.
              */
-	    const float* endPoint;
-            if(checkFlag())
-            endPoint = flagLoc;
-            else
-            endPoint = flagLoc;
-
+            const float* endPoint;
+            if (checkFlag() == true) {
+                endPoint = baseLoc;
+            }
+            else {
+                endPoint = flagLoc;
+            }
             char buffer[128];
             sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",
                 endPoint[0], endPoint[1], endPoint[2]);

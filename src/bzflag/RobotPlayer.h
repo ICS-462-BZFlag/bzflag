@@ -48,6 +48,7 @@ public:
 
 private:
     void        doUpdate(float dt);
+	void        calcRepulse(float r[]);
 	void        findFlag(float location[3]);
     void        findBase(float location[3]);
 	bool        checkFlag();

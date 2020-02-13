@@ -209,7 +209,45 @@ void            RobotPlayer::doUpdate(float dt)
         }
     }
 }
-
+/*
+calcRepulse is a function to calculate the repulsion vectors of a tank
+the function will be used to keep tanks off each other.
+*/
+void RobotPlayer::calcRepulse(float r[])
+{
+    float repulse;
+    float dir[2];
+    dir[0] = 0.0;
+    dir[1] = 0.0;
+    int teamAmount = 0;
+    Player* p = 0;
+    for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
+    {
+        
+        if (t < World::getWorld()->getCurMaxPlayers())
+            p = World::getWorld()->getPlayer(t);
+        else
+            p = LocalPlayer::getMyTank();
+        if (p != NULL)
+        {
+            if (p->getTeam() == getTeam())
+            {
+                float temp[2];
+                teamAmount++;
+                float x = p->getPosition()[0] - getPosition()[0];
+                float y = p->getPosition()[1] - getPosition()[1];
+                repulse = 1 / pow(hypotf(x, y), 2);
+                temp[0] = getPosition()[0] - p->getPosition()[0];
+                temp[1] = getPosition()[1] - p->getPosition()[1];
+                dir[0] += temp[0] * repulse;
+                dir[1] += temp[1] * repulse;
+            }
+        }
+    }
+    r[0] = dir[0] / teamAmount;
+    r[1] = dir[1] / teamAmount;
+    r[2] = 0;
+}
 /*
  calcCoM is a function to calculate the center of mass of a team.
  The function will be used to create flocking behavior for bot tanks.
@@ -396,12 +434,14 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float v[2];
             float flagLoc[3];
             float baseLoc[3];
+            float repulsion[3];
             /*
              Running calcCoM to calculate the team center of mass for the current
              robot player
             */
             calcCoM(teamCoM);
-
+            //calc repulse vector
+            calcRepulse(repulsion);
             /*Get flag location*/
             findFlag(flagLoc);
             /*Get own base location*/
@@ -411,12 +451,41 @@ void            RobotPlayer::doUpdateMotion(float dt)
              on the same team head towards the team center of mass and
              flock together.
              */
-            const float* endPoint;
+            float* endPoint;
+            float goal[3];
             if (checkFlag() == true) {
-                endPoint = baseLoc;
+                float r[2];
+                r[0] = repulsion[0] / hypotf(repulsion[0], repulsion[1]);
+                r[1] = repulsion[1] / hypotf(repulsion[0], repulsion[1]);
+                float c[2];
+                c[0] = teamCoM[0] / hypotf(teamCoM[0], teamCoM[1]);
+                c[1] = teamCoM[1] / hypotf(teamCoM[0], teamCoM[1]);
+                float b[2];
+                b[0]= baseLoc[0] / hypotf(baseLoc[0], baseLoc[1]);
+                b[1] = baseLoc[1] / hypotf(baseLoc[0], baseLoc[1]);
+
+                goal[0] = 1 * r[0] + 1 * c[0] + 100 * b[0] / 102;
+                goal[1] = 1 * r[1] + 1 * c[1] + 100 * b[1] / 102;
+                goal[2] = 0;
+                endPoint = goal;
             }
             else {
-                endPoint = flagLoc;
+                float r[2];
+                //to get unit vectors of repulsion, COM, Flag
+                r[0] = repulsion[0] / hypotf(getPosition()[0] - repulsion[0], getPosition()[1] - repulsion[1]);
+                r[1] = repulsion[1] / hypotf(getPosition()[0] - repulsion[0], getPosition()[1] - repulsion[1]);
+                float c[2];
+                c[0] = teamCoM[0] / hypotf(teamCoM[0] - getPosition()[0], teamCoM[1] - getPosition()[1]);
+                c[1] = teamCoM[1] / hypotf(teamCoM[0] - getPosition()[0], teamCoM[1] - getPosition()[1]);
+                float f[2];
+                f[0] = baseLoc[0] / hypotf(flagLoc[0], flagLoc[1]);
+                f[1] = baseLoc[1] / hypotf(flagLoc[0], flagLoc[1]);
+
+                goal[0] = ((1 * r[0]) + (1 * c[0]) + (100 * f[0])) / 102;
+                goal[1] = ((1 * r[1]) + (1 * c[1]) + (100 * f[1])) / 102;
+                goal[2] = 0;
+                endPoint = goal;
+
             }
             char buffer[128];
             sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",

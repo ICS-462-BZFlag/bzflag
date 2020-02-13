@@ -472,14 +472,14 @@ void            RobotPlayer::doUpdateMotion(float dt)
             else {
                 float r[2];
                 //to get unit vectors of repulsion, COM, Flag
-                r[0] = repulsion[0] / hypotf(getPosition()[0] - repulsion[0], getPosition()[1] - repulsion[1]);
-                r[1] = repulsion[1] / hypotf(getPosition()[0] - repulsion[0], getPosition()[1] - repulsion[1]);
+                r[0] = (getPosition()[0] - repulsion[0]) / hypotf(repulsion[0],repulsion[1]);
+                r[1] = (getPosition()[1] - repulsion[1]) / hypotf(repulsion[0],repulsion[1]);;
                 float c[2];
-                c[0] = teamCoM[0] / hypotf(teamCoM[0] - getPosition()[0], teamCoM[1] - getPosition()[1]);
-                c[1] = teamCoM[1] / hypotf(teamCoM[0] - getPosition()[0], teamCoM[1] - getPosition()[1]);
+                c[0] = teamCoM[0] - getPosition()[0] / hypotf(teamCoM[0], teamCoM[1]);
+                c[1] = teamCoM[1] - getPosition()[1]/ hypotf(teamCoM[0], teamCoM[1]);
                 float f[2];
-                f[0] = baseLoc[0] / hypotf(flagLoc[0], flagLoc[1]);
-                f[1] = baseLoc[1] / hypotf(flagLoc[0], flagLoc[1]);
+                f[0] = flagLoc[0] / hypotf(flagLoc[0], flagLoc[1]);
+                f[1] = flagLoc[1] / hypotf(flagLoc[0], flagLoc[1]);
 
                 goal[0] = ((1 * r[0]) + (1 * c[0]) + (100 * f[0])) / 102;
                 goal[1] = ((1 * r[1]) + (1 * c[1]) + (100 * f[1])) / 102;

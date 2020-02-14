@@ -236,18 +236,16 @@ void RobotPlayer::calcRepulse(float r[])
                 teamAmount++;
                 float x = p->getPosition()[0] - getPosition()[0];
                 float y = p->getPosition()[1] - getPosition()[1];
-                if (x != 0 && y != 0) {
-                    repulse = 1 / pow(hypotf(x, y), 3);
-                    temp[0] = getPosition()[0] - p->getPosition()[0];
-                    temp[1] = getPosition()[1] - p->getPosition()[1];
-                    dir[0] += temp[0] * repulse;
-                    dir[1] += temp[1] * repulse;
-                }
+                repulse = 1 / pow(hypotf(x, y), 2);
+                temp[0] = getPosition()[0] - p->getPosition()[0];
+                temp[1] = getPosition()[1] - p->getPosition()[1];
+                dir[0] += temp[0] * repulse;
+                dir[1] += temp[1] * repulse;
             }
         }
     }
-    r[0] = dir[0];
-    r[1] = dir[1];
+    r[0] = dir[0] / teamAmount;
+    r[1] = dir[1] / teamAmount;
     r[2] = 0;
 }
 /*

@@ -215,10 +215,11 @@ the function will be used to keep tanks off each other.
 */
 void RobotPlayer::calcRepulse(float r[])
 {
-    float repulse;
+    //float repulse;
+    float teamAmount = 0;
     float dir[2];
-    dir[0] = 0.0;
-    dir[1] = 0.0;
+    dir[0] = 10.0;
+    dir[1] = 10.0;
     Player* p = 0;
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
@@ -232,19 +233,20 @@ void RobotPlayer::calcRepulse(float r[])
             if (p->getTeam() == getTeam())
             {
                 float temp[2];
-                if (p->getId() != getId())
-                { 
-                    temp[0] = getPosition()[0] - p->getPosition()[0];
-                    temp[1] = getPosition()[1] - p->getPosition()[1];
-                    repulse = 1 / pow(hypotf(temp[0], temp[1]), 3);
-                    dir[0] += temp[0] * repulse;
-                    dir[1] += temp[1] * repulse;
+                if (p != getMyTank())
+                {
+                    teamAmount++;
+                    temp[0] = p->getPosition()[0] - getPosition()[0];
+                    temp[1] = p->getPosition()[1] - getPosition()[1];
+                    //repulse = 1 / pow(hypotf(temp[0], temp[1]), 3);
+                    dir[0] += temp[0];// * repulse;
+                    dir[1] += temp[1];// * repulse;
                 }
             }
         }
     }
-    r[0] = dir[0];
-    r[1] = dir[1];
+    r[0] = dir[0]/teamAmount;
+    r[1] = dir[1]/teamAmount;
     r[2] = 0;
 }
 /*
@@ -421,7 +423,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
         }
 
         // when we are not evading, follow the path
-        if (!evading && dt > 0.0 && pathIndex < (int)path.size())
+        if (!evading && dt > 0.0)
         {
             float distance;
             float v[2];
@@ -447,8 +449,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float* endPoint;
             float goal[3];
             float r[2];
-            r[0] = repulsion[0];
-            r[1] = repulsion[1];
+            r[0] = position[0] - repulsion[0];
+            r[1] = position[1] - repulsion[1];
             float c[2];
             c[0] = teamCoM[0] - position[0];
             c[1] = teamCoM[1] - position[1];
@@ -469,20 +471,24 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 g[0] = g[0] / hypotf(g[0], g[1]);
                 g[1] = g[1] / hypotf(g[0], g[1]);
             }
-            goal[0] = (0 * g[0] + 1 * r[0] + 0 * c[0]) / 1;
-            goal[1] = (0 * g[1] + 1 * r[1] + 0 * c[1]) / 1;
+            float wg = 1;
+            float wr = 0;
+            float wc = 1;
+            float tot = wg + wr + wc;
+            goal[0] = (wg * g[0] + wr * r[0] + wc * c[0]) / tot;
+            goal[1] = (wg * g[1] + wr * r[1] + wc * c[1]) / tot;
             goal[2] = 0;
             endPoint = goal;
-
-            char buffer[128];
-            sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",
-                endPoint[0], endPoint[1], endPoint[2]);
-            controlPanel->addMessage(buffer);
-            memset(buffer, 0, sizeof buffer);
-
+            if (getTeam() == RedTeam) {
+                char buffer[128];
+                sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",
+                    endPoint[0], endPoint[1], endPoint[2]);
+                controlPanel->addMessage(buffer);
+                memset(buffer, 0, sizeof buffer);
+            }
             // find how long it will take to get to next path segment
-            v[0] = goal[0];
-            v[1] = goal[1];
+            v[0] = endPoint[0];
+            v[1] = endPoint[1];
             distance = hypotf(v[0], v[1]);
             float tankRadius = BZDBCache::tankRadius;
             // smooth path a little by turning early at corners, might get us stuck, though

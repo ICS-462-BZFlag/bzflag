@@ -236,20 +236,14 @@ void RobotPlayer::calcRepulse(float r[])
                 if (p != getMyTank())
                 {
                     teamAmount++;
-                    temp[0] = p->getPosition()[0] - getPosition()[0];
-                    temp[1] = p->getPosition()[1] - getPosition()[1];
                     dir[0] += p->getPosition()[0] - getPosition()[0];
-                    dir[1] = p->getPosition()[1] - getPosition()[1];
-
-                    //normalizing
-                    repulse = 1 / hypotf(temp[0], temp[1]);
-                    dir[0] += temp[0] * repulse;
-                    dir[1] += temp[1] * repulse;
+                    dir[1] += p->getPosition()[1] - getPosition()[1];
                 }
             }
         }
     }
-    
+    dir[0] /= teamAmount;
+    dir[1] /= teamAmount;
     r[0] = dir[0] * -1;
     r[1] = dir[1] * -1;
     r[2] = 0;

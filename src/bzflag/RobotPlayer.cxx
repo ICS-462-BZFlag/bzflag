@@ -215,7 +215,7 @@ the function will be used to keep tanks off each other.
 */
 void RobotPlayer::calcRepulse(float r[])
 {
-    //float repulse;
+    float repulse = 0;
     float teamAmount = 0;
     float dir[2];
     dir[0] = 10.0;
@@ -238,15 +238,20 @@ void RobotPlayer::calcRepulse(float r[])
                     teamAmount++;
                     temp[0] = p->getPosition()[0] - getPosition()[0];
                     temp[1] = p->getPosition()[1] - getPosition()[1];
-                    //repulse = 1 / pow(hypotf(temp[0], temp[1]), 3);
-                    dir[0] += temp[0];// * repulse;
-                    dir[1] += temp[1];// * repulse;
+                    dir[0] += p->getPosition()[0] - getPosition()[0];
+                    dir[1] = p->getPosition()[1] - getPosition()[1];
+
+                    //normalizing
+                    repulse = 1 / hypotf(temp[0], temp[1]);
+                    dir[0] += temp[0] * repulse;
+                    dir[1] += temp[1] * repulse;
                 }
             }
         }
     }
-    r[0] = dir[0]/teamAmount;
-    r[1] = dir[1]/teamAmount;
+    
+    r[0] = dir[0] * -1;
+    r[1] = dir[1] * -1;
     r[2] = 0;
 }
 /*
@@ -471,8 +476,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 g[0] = g[0] / hypotf(g[0], g[1]);
                 g[1] = g[1] / hypotf(g[0], g[1]);
             }
-            float wg = 1;
-            float wr = 0;
+            float wg = 0;
+            float wr = 1;
             float wc = 1;
             float tot = wg + wr + wc;
             goal[0] = (wg * g[0] + wr * r[0] + wc * c[0]) / tot;

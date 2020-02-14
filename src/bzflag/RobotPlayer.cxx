@@ -219,7 +219,6 @@ void RobotPlayer::calcRepulse(float r[])
     float dir[2];
     dir[0] = 0.0;
     dir[1] = 0.0;
-    int teamAmount = 0;
     Player* p = 0;
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
@@ -233,13 +232,11 @@ void RobotPlayer::calcRepulse(float r[])
             if (p->getTeam() == getTeam())
             {
                 float temp[2];
-                teamAmount++;
-                float x = p->getPosition()[0] - getPosition()[0];
-                float y = p->getPosition()[1] - getPosition()[1];
-                if (x != 0 && y != 0) {
-                    repulse = 1 / pow(hypotf(x, y), 3);
+                if (p->getId() != getId())
+                { 
                     temp[0] = getPosition()[0] - p->getPosition()[0];
                     temp[1] = getPosition()[1] - p->getPosition()[1];
+                    repulse = 1 / pow(hypotf(temp[0], temp[1]), 3);
                     dir[0] += temp[0] * repulse;
                     dir[1] += temp[1] * repulse;
                 }
@@ -284,12 +281,6 @@ void RobotPlayer::calcCoM(float cm[3])
     cm[0] = totalTeamPosition[0] / teamAmount;
     cm[1] = totalTeamPosition[1] / teamAmount;
     cm[2] = totalTeamPosition[2] / teamAmount;
-
-    char buffer[128];
-    sprintf(buffer, "Center of Mass (x,y,z): (%.2f,%.2f,%.2f)",
-        cm[0], cm[1], cm[2]);
-    controlPanel->addMessage(buffer);
-    memset(buffer, 0, sizeof buffer);
 }
 
 void RobotPlayer::findFlag(float location[3]) {
@@ -455,48 +446,34 @@ void            RobotPlayer::doUpdateMotion(float dt)
              */
             float* endPoint;
             float goal[3];
+            float r[2];
+            r[0] = repulsion[0];
+            r[1] = repulsion[1];
+            float c[2];
+            c[0] = teamCoM[0] - position[0];
+            c[1] = teamCoM[1] - position[1];
+            c[0] = c[0] / hypotf(c[0], c[1]);
+            c[1] = c[1] / hypotf(c[0], c[1]);
+            float g[2];
             if (checkFlag() == true) {
-                float r[2];
-                r[0] = repulsion[0] / hypotf(repulsion[0], repulsion[1]);
-                r[1] = repulsion[1] / hypotf(repulsion[0], repulsion[1]);
-                float c[2];
-                c[0] = teamCoM[0] / hypotf(teamCoM[0], teamCoM[1]);
-                c[1] = teamCoM[1] / hypotf(teamCoM[0], teamCoM[1]);
-                float b[2];
-                b[0]= baseLoc[0] / hypotf(baseLoc[0], baseLoc[1]);
-                b[1] = baseLoc[1] / hypotf(baseLoc[0], baseLoc[1]);
-
-                goal[0] = 1 * r[0] + 1 * c[0] + 100 * b[0] / 102;
-                goal[1] = 1 * r[1] + 1 * c[1] + 100 * b[1] / 102;
-                goal[2] = 0;
-                endPoint = goal;
+                //for base
+                g[0] = baseLoc[0] - position[0];
+                g[1] = baseLoc[1] - position[1];
+                g[0] = g[0] / hypotf(g[0], g[1]);
+                g[1] = g[1] / hypotf(g[0], g[1]);
             }
             else {
-                float r[2];
-                //to get unit vectors of repulsion, COM, Flag
-                r[0] = getPosition()[0] - repulsion[0];
-                r[1] = getPosition()[1] - repulsion[1];
-                float hyr = hypotf(r[0], r[1]);
-                r[0] = r[0] / hyr;
-                r[1] = r[1] / hyr;
-                float c[2];
-                c[0] = teamCoM[0] - getPosition()[0];
-                c[1] = teamCoM[1] - getPosition()[1];
-                float hyc = hypotf(c[0], c[1]);
-                c[0] = c[0] / hyc;
-                c[1] = c[1] / hyc;
-                float f[2];
-                f[0] = flagLoc[0];
-                f[1] = flagLoc[1];
-                float hyf = hypotf(f[0], f[1]);
-                f[0] = f[0] / hyf;
-                f[1] = f[1] / hyf;
-                goal[0] = ((1 * r[0]) + (1 * c[0]) + (100 * f[0])) / 102;
-                goal[1] = ((1 * r[1]) + (1 * c[1]) + (100 * f[1])) / 102;
-                goal[2] = 0;
-                endPoint = goal;
-
+                //for flag
+                g[0] = flagLoc[0] - position[0];
+                g[1] = flagLoc[1] - position[1];
+                g[0] = g[0] / hypotf(g[0], g[1]);
+                g[1] = g[1] / hypotf(g[0], g[1]);
             }
+            goal[0] = (0 * g[0] + 1 * r[0] + 0 * c[0]) / 1;
+            goal[1] = (0 * g[1] + 1 * r[1] + 0 * c[1]) / 1;
+            goal[2] = 0;
+            endPoint = goal;
+
             char buffer[128];
             sprintf(buffer, "endPoint is now (x,y,z): (%f,%f,%f)",
                 endPoint[0], endPoint[1], endPoint[2]);
@@ -504,13 +481,13 @@ void            RobotPlayer::doUpdateMotion(float dt)
             memset(buffer, 0, sizeof buffer);
 
             // find how long it will take to get to next path segment
-            v[0] = endPoint[0] - position[0];
-            v[1] = endPoint[1] - position[1];
+            v[0] = goal[0];
+            v[1] = goal[1];
             distance = hypotf(v[0], v[1]);
             float tankRadius = BZDBCache::tankRadius;
             // smooth path a little by turning early at corners, might get us stuck, though
-            if (distance <= 1.0f * tankRadius)
-                pathIndex++;
+            //if (distance <= 1.0f * tankRadius)
+            //    pathIndex++;
 
             float segmentAzimuth = atan2f(v[1], v[0]);
             float azimuthDiff = segmentAzimuth - azimuth;

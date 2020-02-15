@@ -210,8 +210,12 @@ void            RobotPlayer::doUpdate(float dt)
     }
 }
 /*
-calcRepulse is a function to calculate the repulsion vectors of a tank
+Author: Jeffrey
+Params: float[]
+output: void
+Description:calcRepulse is a function to calculate the repulsion vectors of a tank
 the function will be used to keep tanks off each other.
+
 */
 void RobotPlayer::calcRepulse(float r[])
 {
@@ -222,23 +226,31 @@ void RobotPlayer::calcRepulse(float r[])
     float dist;
     float strength = 0;
     Player* p;
+    //forevery player in the world
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
         p = 0;
+        //set p to that player
         if (t < World::getWorld()->getCurMaxPlayers())
             p = World::getWorld()->getPlayer(t);
         else
             p = LocalPlayer::getMyTank();
+        //if it is a tank in the game
         if (p != NULL)
         {
+            //and the same team
             if (p->getTeam() == getTeam())
             {
+                //but not same tank
                 if (p != this
                     )
                 {
+                       //get the position and set it to dir[]
                     dir[0] = p->getPosition()[0] - getPosition()[0];
                     dir[1] = p->getPosition()[1] - getPosition()[1];
+                    //hypot for distance
                     dist = hypotf(dir[0], dir[1]);
+                    //if the distance is in range
                     if (dist < 10) {
                         strength = 1 / dist * dist;
                         dir[0] = dir[0] / dist;
@@ -248,14 +260,19 @@ void RobotPlayer::calcRepulse(float r[])
             }
         }
     }
+    //set the parameter to the calculations. technically there is no output only modifications of input
     r[0] = dir[0] * strength;
-    r[1] = dir[1] *strength;
+    r[1] = dir[1] * strength;
     r[2] = 0;
 }
 /*
- calcCoM is a function to calculate the center of mass of a team.
- The function will be used to create flocking behavior for bot tanks.
- */
+Author: Ioane 
+Params: float[3]
+output: void
+Description: calcCoM is a function to calculate the center of mass of a team.
+ The function will be used to create flocking behavior for bot tanks. 
+
+*/
 void RobotPlayer::calcCoM(float cm[3])
 {
     float totalTeamPosition[3];
@@ -264,18 +281,22 @@ void RobotPlayer::calcCoM(float cm[3])
     totalTeamPosition[2] = 0.0;
     int teamAmount = 0;
     Player* p;
-
+    //for every player in the world
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
         p = 0;
+        //and the player is a tank
         if (t < World::getWorld()->getCurMaxPlayers())
             p = World::getWorld()->getPlayer(t);
         else
             p = LocalPlayer::getMyTank();
+        //and they exist
         if (p != NULL)
         {
+            //and they are apart of the same team
             if (p->getTeam() == getTeam())
             {
+                //increment team by one and record the position
                 teamAmount++;
                 totalTeamPosition[0] += p->getPosition()[0];
                 totalTeamPosition[1] += p->getPosition()[1];
@@ -283,19 +304,28 @@ void RobotPlayer::calcCoM(float cm[3])
             }
         }
     }
-
+    //manipulation of input paramter to reflect the calculations
     cm[0] = totalTeamPosition[0] / teamAmount;
     cm[1] = totalTeamPosition[1] / teamAmount;
     cm[2] = totalTeamPosition[2] / teamAmount;
 }
+/*
+Author: Kain & jeff
+Params: float[3]
+output: void
+Description: finds the flag within the game. only find opposite team's flag
 
+*/
 void RobotPlayer::findFlag(float location[3]) {
    // char buffer[128];
     Flag tempF;
+    //for all flags in game
     for (int i = 0; i < World::getWorld()->getMaxFlags(); i++) {
         tempF = World::getWorld()->getFlag(i);
+        //if the flag is not apart of the team
         if (tempF.type->flagTeam != getTeam())
         {
+            //record the location
             location[0] = tempF.position[0];
             location[1] = tempF.position[1];
             location[2] = tempF.position[2];
@@ -303,7 +333,13 @@ void RobotPlayer::findFlag(float location[3]) {
     }
 
 }
+/*
+Author: kain & jeff
+Params: float[3]
+output: void
+Description: finds the bases within the game. only own base
 
+*/
 void RobotPlayer::findBase(float location[3]) {
     Player* p = 0;
     
@@ -312,20 +348,32 @@ void RobotPlayer::findBase(float location[3]) {
     location[1] = pointLoc[1];
     location[2] = pointLoc[2];
 }
+/*
+Author: kain & jeff
+Params: void
+output: bool
+Description: checks if you have am enemies flag
+
+*/
 bool RobotPlayer::checkFlag() {
     bool flagB = false;
     FlagType* myFlag;
     Player* p = 0;
+    //for all players in the game
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
+        //if they are a tank
         if (t < World::getWorld()->getCurMaxPlayers())
             p = World::getWorld()->getPlayer(t);
         else
             p = LocalPlayer::getMyTank();
+        //and they exist
         if (p != NULL)
         {
+            //and they are the same team
             if (p->getTeam() == getTeam())
             {
+                //get current flag and check if its not null, if the flag is not the team flag, if it is also not the same team then set to true. ELSE all of that its false
                 myFlag = p->getFlag();
                 if (myFlag != Flags::Null) {
                     if (myFlag->flagTeam != NoTeam) {
@@ -339,11 +387,24 @@ bool RobotPlayer::checkFlag() {
     }
     return flagB;
 }
+/*
+Author: kain & jeff
+Params: void
+output: void
+Description: cheks if you have your own flag
+
+*/
+
 void RobotPlayer::dropFlag() {
+    //get a flag
     FlagType* myFlag = getFlag();
+    //if its an existing flag
     if(myFlag != NULL){
+        //and its not a bad one
         if (myFlag->endurance != FlagSticky) {
+            //but apart of the same team
             if (myFlag->flagTeam == getTeam()) {
+                //drop em
                 serverLink->sendDropFlag(getId(), getPosition());
             }
         }
@@ -461,6 +522,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             c[0] = c[0] / hypotf(c[0], c[1]);
             c[1] = c[1] / hypotf(c[0], c[1]);
             float g[2];
+            //check if you have the flag. we set base location if so and flag loc if not
             if (checkFlag() == true) {
                 //for base
                 g[0] = baseLoc[0] - position[0];
@@ -475,13 +537,16 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 g[0] = g[0] / hypotf(g[0], g[1]);
                 g[1] = g[1] / hypotf(g[0], g[1]);
             }
-            float wg = 0;
-            float wr = 100;
-            float wc = 1;
+            //wieghts for the equation
+            float wg = 100;
+            float wr = 10;
+            float wc = 10;
             float tot = wg + wr + wc;
+            //the calculations
             goal[0] = (wg * g[0] + wr * r[0] + wc * c[0]) / tot;
             goal[1] = (wg * g[1] + wr * r[1] + wc * c[1]) / tot;
             goal[2] = 0;
+            //setting the endpooint to that location
             endPoint = goal;
             if (getTeam() == RedTeam) {
                 char buffer[128];

@@ -215,15 +215,16 @@ the function will be used to keep tanks off each other.
 */
 void RobotPlayer::calcRepulse(float r[])
 {
-    float repulse = 0;
-    float teamAmount = 0;
+
     float dir[2];
-    dir[0] = 10.0;
-    dir[1] = 10.0;
-    Player* p = 0;
+    dir[0] = 0;
+    dir[1] = 0;
+    float dist;
+    float strength = 0;
+    Player* p;
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
-        
+        p = 0;
         if (t < World::getWorld()->getCurMaxPlayers())
             p = World::getWorld()->getPlayer(t);
         else
@@ -232,20 +233,23 @@ void RobotPlayer::calcRepulse(float r[])
         {
             if (p->getTeam() == getTeam())
             {
-                float temp[2];
-                if (p != getMyTank())
+                if (p != this
+                    )
                 {
-                    teamAmount++;
-                    dir[0] += p->getPosition()[0] - getPosition()[0];
-                    dir[1] += p->getPosition()[1] - getPosition()[1];
+                    dir[0] = p->getPosition()[0] - getPosition()[0];
+                    dir[1] = p->getPosition()[1] - getPosition()[1];
+                    dist = hypotf(dir[0], dir[1]);
+                    if (dist < 10) {
+                        strength = 1 / dist * dist;
+                        dir[0] = dir[0] / dist;
+                        dir[1] = dir[1] / dist;
+                    }
                 }
             }
         }
     }
-    dir[0] /= teamAmount;
-    dir[1] /= teamAmount;
-    r[0] = dir[0] * -1;
-    r[1] = dir[1] * -1;
+    r[0] = dir[0] * strength;
+    r[1] = dir[1] *strength;
     r[2] = 0;
 }
 /*
@@ -259,10 +263,11 @@ void RobotPlayer::calcCoM(float cm[3])
     totalTeamPosition[1] = 0.0;
     totalTeamPosition[2] = 0.0;
     int teamAmount = 0;
-    Player* p = 0;
+    Player* p;
 
     for (int t = 0; t < World::getWorld()->getCurMaxPlayers(); t++)
     {
+        p = 0;
         if (t < World::getWorld()->getCurMaxPlayers())
             p = World::getWorld()->getPlayer(t);
         else
@@ -448,8 +453,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float* endPoint;
             float goal[3];
             float r[2];
-            r[0] = position[0] - repulsion[0];
-            r[1] = position[1] - repulsion[1];
+            r[0] = repulsion[0];
+            r[1] = repulsion[1];
             float c[2];
             c[0] = teamCoM[0] - position[0];
             c[1] = teamCoM[1] - position[1];
@@ -471,7 +476,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 g[1] = g[1] / hypotf(g[0], g[1]);
             }
             float wg = 0;
-            float wr = 1;
+            float wr = 100;
             float wc = 1;
             float tot = wg + wr + wc;
             goal[0] = (wg * g[0] + wr * r[0] + wc * c[0]) / tot;

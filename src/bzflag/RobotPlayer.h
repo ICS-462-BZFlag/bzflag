@@ -48,19 +48,7 @@ public:
 
 private:
     void        doUpdate(float dt);
-	void        calcRepulse(float r[]);
-	void        findFlag(float location[3]);
-    void        findBase(float location[3]);
-	bool        checkFlag();
-    void        dropFlag();
-	void        doUpdateMotion(float dt);
-
-    /*
-     Function declaration for calcCoM that calculates the
-     center of mass for a team.
-    */
-    void calcCoM(float cm[]);
-
+    void        doUpdateMotion(float dt);
     BzfRegion* findRegion(const float p[2], float nearest[2]) const;
     float       getRegionExitPoint(
         const float p1[2], const float p2[2],
@@ -72,6 +60,20 @@ private:
 
     void       projectPosition(const Player* targ, const float t, float& x, float& y, float& z) const;
     void       getProjectedPosition(const Player* targ, float* projpos) const;
+    /* lines added by David Chin */
+    void		findHomeBase(TeamColor teamColor, float location[3]);
+    bool		myTeamHoldingOpponentFlag(void);
+    void		findOpponentFlag(float location[3]);
+    int		computeCenterOfMass(float neighborhoodSize, float cmOut[3]);
+    int		computeRepulsion(float neighborhoodSize, float repulseOut[3]);
+    int		computeAlign(float neighborhoodSize, float avVOut[3], float* avAzimuthOut);
+    Player* lookupLocalPlayer(PlayerId id);
+
+    static const float		CohesionW;
+    static const float		SeparationW;
+    static const float		AlignW;
+    static const float		PathW;
+    /* end of lines added by David Chin */
 
 private:
     const Player* target;

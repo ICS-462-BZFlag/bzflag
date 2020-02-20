@@ -54,6 +54,7 @@ private:
         const float p1[2], const float p2[2],
         const float a[2], const float targetPoint[2],
         float mid[2], float& priority);
+    Node aSearch(int start[2], int goal[2]);
     void       findPath(RegionPriorityQueue& queue,
         BzfRegion* region, BzfRegion* targetRegion,
         const float targetPoint[2], int mailbox);
@@ -68,7 +69,6 @@ private:
     int		computeRepulsion(float neighborhoodSize, float repulseOut[3]);
     int		computeAlign(float neighborhoodSize, float avVOut[3], float* avAzimuthOut);
     Player* lookupLocalPlayer(PlayerId id);
-
     static const float		CohesionW;
     static const float		SeparationW;
     static const float		AlignW;

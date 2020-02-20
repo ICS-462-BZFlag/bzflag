@@ -28,6 +28,7 @@
 #include "World.h"
 #include "Intersect.h"
 #include "TargetingUtils.h"
+#include "Node.h"
 
 /* lines added by David Chin */
 #include "playing.h" // needed for numFlags, and controlPanel
@@ -577,6 +578,15 @@ float           RobotPlayer::getRegionExitPoint(
     priority = distance + hypotf(targetPoint[0] - mid[0], targetPoint[1] - mid[1]);
     // return distance traveled
     return distance;
+}
+
+Node        RobotPlayer::aSearch(Node parent, int goal[2]) {
+    if (parent->x == goal[0] && parent->y == goal[1]) {
+
+    }
+    else
+    {
+
 }
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,

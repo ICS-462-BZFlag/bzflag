@@ -537,6 +537,9 @@
     <ClInclude Include="..\..\src\bzflag\WorldPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bzflag.ico">

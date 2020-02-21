@@ -8,6 +8,7 @@ public:
     bool isEmpty();
     void addNode(Node add);
     Node remNode(Node rem);
+    std::string printList();
 private:
     Node* Head;
     Node* Tail;
@@ -33,14 +34,26 @@ void LinkedList::addNode(Node add) {
 }
 Node LinkedList::remNode(Node rem) {
     Node current = *Head;
+    Node prev;
     while (current != rem) {
+        prev = current;
         current = *current.getChild();
     }
+    prev.setChild(*current.getChild());
+    return current;
 }
+
 bool LinkedList::isEmpty() {
     if (Head != NULL) {
         return false;
     }
     return true;
+}
+std::string LinkedList::printList() {
+    std::string results = "";
+    Node current = *Head;
+    while (current.hasChild()) {
+        results += "(" + current.getX + "," + current.getY() + "," + current.getDistanceToGoal() +  "," + current.getWeight() + "," ")";
+    }
 }
 ;

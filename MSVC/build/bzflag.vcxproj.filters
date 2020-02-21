@@ -540,6 +540,7 @@
     <ClInclude Include="Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LinkedList.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bzflag.ico">

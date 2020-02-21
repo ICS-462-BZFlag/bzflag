@@ -1004,6 +1004,7 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClInclude Include="..\..\src\bzflag\WorldBuilder.h" />
     <ClInclude Include="..\..\src\bzflag\WorldPlayer.h" />
     <ClInclude Include="..\resource.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Node.h" />
   </ItemGroup>
   <ItemGroup>

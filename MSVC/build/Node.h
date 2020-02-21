@@ -29,6 +29,7 @@ Node::Node() {
     this->x = 0;
     this->y = 0;
     this->child = NULL;
+    this->childExists = false;
     this->distanceTraveled = 0;
     this->weight = 0;
 }

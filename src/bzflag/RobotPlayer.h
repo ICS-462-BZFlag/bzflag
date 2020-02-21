@@ -54,7 +54,6 @@ private:
         const float p1[2], const float p2[2],
         const float a[2], const float targetPoint[2],
         float mid[2], float& priority);
-    Node aSearch(Node parent, int goal[2]);
     void       findPath(RegionPriorityQueue& queue,
         BzfRegion* region, BzfRegion* targetRegion,
         const float targetPoint[2], int mailbox);

@@ -29,6 +29,7 @@
 #include "Intersect.h"
 #include "TargetingUtils.h"
 #include "Node.h"
+#include "LinkedList.h"
 
 /* lines added by David Chin */
 #include "playing.h" // needed for numFlags, and controlPanel
@@ -579,16 +580,18 @@ float           RobotPlayer::getRegionExitPoint(
     // return distance traveled
     return distance;
 }
+Node    aSearch(int start[2], int goal[2]) {
+    Node startNode = Node(start[0], start[1], 0, hypotf(goal[0] - start[0], goal[1] - start[1]));
+    LinkedList open = LinkedList(startNode);
+        while(!open.isEmpty()) {
+            Node lowest = open.lowestSearch();
+            if (lowest.getX() == goal[0], lowest.getY() == goal[1]) {
+                break;
+            }
 
-Node        RobotPlayer::aSearch(Node parent, int goal[2]) {
-    if (parent.getX() == goal[0] && parent.getY() == goal[1]) {
-        return Node(goal[0],goal[1]);
-    }
-    else
-    {
-
-    }
+        }
 }
+
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,
                                       BzfRegion* region,

@@ -581,12 +581,13 @@ float           RobotPlayer::getRegionExitPoint(
 }
 
 Node        RobotPlayer::aSearch(Node parent, int goal[2]) {
-    if (parent->x == goal[0] && parent->y == goal[1]) {
-
+    if (parent.getX() == goal[0] && parent.getY() == goal[1]) {
+        return Node(goal[0],goal[1]);
     }
     else
     {
 
+    }
 }
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,

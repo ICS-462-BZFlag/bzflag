@@ -268,6 +268,12 @@
     <ClCompile Include="..\..\src\bzflag\stars.cxx">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="LinkedList.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\bzflag\AudioMenu.h">
@@ -540,7 +546,9 @@
     <ClInclude Include="Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bzflag.ico">

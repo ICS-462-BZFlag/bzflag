@@ -904,6 +904,8 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClCompile Include="..\..\src\bzflag\ServerStartMenu.cxx" />
     <ClCompile Include="..\..\src\bzflag\defaultBZDB.cxx" />
     <ClCompile Include="..\..\src\bzflag\clientConfig.cxx" />
+    <ClCompile Include="LinkedList.cxx" />
+    <ClCompile Include="Node.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\bzflag.rc">

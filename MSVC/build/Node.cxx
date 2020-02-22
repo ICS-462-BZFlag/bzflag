@@ -1,3 +1,10 @@
+/************************************************
+*Node functions from Node.h
+* includes constructors, getter/setters, and hasChild
+*
+*************************************************/
+
+
 #include "Node.h"
 Node::Node() {
     this->x = 0;
@@ -64,8 +71,14 @@ int Node::getY() {
     return y;
 }
 void Node::setChild(Node child) {
-    this->child = &child;
-    this->childExists = true;
+    if (&child == nullptr) {
+        childExists = false;
+        this->child = false;
+    }
+    else {
+        this->child = &child;
+        this->childExists = true;
+    }
 }
 Node* Node::getChild() {
     return child;

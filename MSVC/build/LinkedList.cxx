@@ -15,6 +15,17 @@ Node LinkedList::lowestSearch() {
     }
     return lowest;
 }
+void LinkedList::addInOrder(Node add) {
+    Node current = *Head;
+    Node prev;
+    bool cont = true;
+    while (current.hasChild && cont) {
+        if (current.getWeight() > add.getWeight()) {
+            prev.setChild(add);
+
+        }
+    }
+}
 void LinkedList::addNode(Node add) {
     Tail->setChild(add);
     Tail = &add;
@@ -40,7 +51,7 @@ std::string LinkedList::printList() {
     std::string results = "";
     Node current = *Head;
     while (current.hasChild()) {
-        results += "(" + current.getX + "," + current.getY() + "," + current.getDistanceToGoal() + "," + current.getWeight() + ")";
+        results += "||(" + (std::string)current.getX() + "," + current.getY() + "," + current.getDistanceToGoal() + "," + current.getWeight() + ")";
     }
 }
 ;

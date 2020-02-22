@@ -337,6 +337,8 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
   <ItemGroup>
     <ClCompile Include="..\..\src\bzflag\ActionBinding.cxx" />
     <ClCompile Include="..\..\src\bzflag\AutoPilot.cxx" />
+    <ClCompile Include="..\..\src\bzflag\LinkedList.cxx" />
+    <ClCompile Include="..\..\src\bzflag\Node.cxx" />
     <ClCompile Include="..\..\src\bzflag\ServerListFilterHelpMenu.cxx" />
     <ClCompile Include="..\..\src\bzflag\ServerListFilterMenu.cxx" />
     <ClCompile Include="..\..\src\bzflag\bzflag.cxx">
@@ -904,8 +906,6 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClCompile Include="..\..\src\bzflag\ServerStartMenu.cxx" />
     <ClCompile Include="..\..\src\bzflag\defaultBZDB.cxx" />
     <ClCompile Include="..\..\src\bzflag\clientConfig.cxx" />
-    <ClCompile Include="LinkedList.cxx" />
-    <ClCompile Include="Node.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\bzflag.rc">
@@ -953,6 +953,7 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClInclude Include="..\..\src\bzflag\JoinMenu.h" />
     <ClInclude Include="..\..\src\bzflag\KeyboardMapMenu.h" />
     <ClInclude Include="..\..\include\ListServer.h" />
+    <ClInclude Include="..\..\src\bzflag\LinkedList.h" />
     <ClInclude Include="..\..\src\bzflag\LocalCommand.h" />
     <ClInclude Include="..\..\src\bzflag\LocalPlayer.h" />
     <ClInclude Include="..\..\src\bzflag\MainMenu.h" />
@@ -960,6 +961,7 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClInclude Include="..\..\src\bzflag\MenuDefaultKey.h" />
     <ClInclude Include="..\..\src\bzflag\motd.h" />
     <ClInclude Include="..\..\src\bzflag\NewVersionMenu.h" />
+    <ClInclude Include="..\..\src\bzflag\Node.h" />
     <ClInclude Include="..\..\src\bzflag\OptionsMenu.h" />
     <ClInclude Include="..\..\src\bzflag\Plan.h" />
     <ClInclude Include="..\..\src\bzflag\Player.h" />
@@ -1006,8 +1008,6 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClInclude Include="..\..\src\bzflag\WorldBuilder.h" />
     <ClInclude Include="..\..\src\bzflag\WorldPlayer.h" />
     <ClInclude Include="..\resource.h" />
-    <ClInclude Include="LinkedList.h" />
-    <ClInclude Include="Node.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bzflag.ico" />

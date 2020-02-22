@@ -268,10 +268,10 @@
     <ClCompile Include="..\..\src\bzflag\stars.cxx">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="LinkedList.cxx">
+    <ClCompile Include="..\..\src\bzflag\Node.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cxx">
+    <ClCompile Include="..\..\src\bzflag\LinkedList.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -543,10 +543,10 @@
     <ClInclude Include="..\..\src\bzflag\WorldPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
+    <ClInclude Include="..\..\src\bzflag\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LinkedList.h">
+    <ClInclude Include="..\..\src\bzflag\LinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

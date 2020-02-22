@@ -8,11 +8,11 @@ public:
     bool isEmpty();
     void addNode(Node add);
     Node remNode(Node rem);
-    std::string printList();
-    void addInOrder(Node add);
+    int getLength();
 private:
     Node* Head;
     Node* Tail;
+    int length;
 };
 
 

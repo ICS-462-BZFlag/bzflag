@@ -1,10 +1,13 @@
 #pragma once
 #include "Node.h"
-#include "LinkedList.h"
+#include "LinkedList.h" 
 #include <string>
+
+using namespace std;
 LinkedList::LinkedList(Node start) {
     this->Head = &start;
     this->Tail = &start;
+    this->length = 1;
 }
 
 Node LinkedList::lowestSearch() {
@@ -22,6 +25,7 @@ Node LinkedList::lowestSearch() {
 void LinkedList::addNode(Node add) {
     Tail->setChild(add);
     Tail = &add;
+    length++;
 }
 
 Node LinkedList::remNode(Node rem) {
@@ -32,7 +36,13 @@ Node LinkedList::remNode(Node rem) {
         current = *current.getChild();
     }
     prev.setChild(*current.getChild());
+    length--;
     return current;
+}
+
+int LinkedList::getLength()
+{
+    return length;
 }
 
 bool LinkedList::isEmpty() {
@@ -41,13 +51,4 @@ bool LinkedList::isEmpty() {
     }
     return true;
 }
-/*
-std::string LinkedList::printList() {
-    std::string results = "";
-    Node current = *Head;
-    while (current.hasChild()) {
-    }
-    return results;
-}
-*/
 ;

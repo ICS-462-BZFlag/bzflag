@@ -580,21 +580,6 @@ float           RobotPlayer::getRegionExitPoint(
     // return distance traveled
     return distance;
 }
-Node    aSearch(int start[2], int goal[2]) {
-    int temp0 = goal[0] - start[0];
-    int temp1 = goal[1] - start[1];
-    float dist = hypotf(temp0, temp1);
-    bool finished = false;
-    Node startNode = Node(start[0], start[1], 0, (int)dist);
-    LinkedList open = LinkedList(startNode);
-        while(!open.isEmpty() && !finished) {
-            Node lowest = open.lowestSearch();
-            if (lowest.getX() == goal[0], lowest.getY() == goal[1]) {
-                finished = true;
-            }
-
-        }
-}
 
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,

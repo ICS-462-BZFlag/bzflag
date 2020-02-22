@@ -152,7 +152,7 @@ std::string LinkedList::printList() {
     std::string results = "";
     Node current = *Head;
     while (current.hasChild()) {
-        return results;
+        results += "(" + current.getX + "," + current.getY() + "," + current.getDistanceToGoal() + "," + current.getWeight() + "," ")";
     }
 }
 ;

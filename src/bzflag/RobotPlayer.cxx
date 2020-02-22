@@ -580,6 +580,7 @@ float           RobotPlayer::getRegionExitPoint(
     // return distance traveled
     return distance;
 }
+/*
 Node    aSearch(int start[2], int goal[2]) {
     Node startNode = Node(start[0], start[1], 0, hypotf(goal[0] - start[0], goal[1] - start[1]));
     LinkedList open = LinkedList(startNode);
@@ -590,8 +591,9 @@ Node    aSearch(int start[2], int goal[2]) {
             }
 
         }
+        return NULL;
 }
-
+*/
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,
                                       BzfRegion* region,

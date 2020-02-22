@@ -95,6 +95,7 @@ int Node::getWeight() {
 #pragma once
 #include "Node.h"
 #include <string>
+<<<<<<< Updated upstream
 class LinkedList {
 public:
     Node lowestSearch();
@@ -107,6 +108,10 @@ private:
     Node* Head;
     Node* Tail;
 };
+=======
+#include "LinkedList.h"
+
+>>>>>>> Stashed changes
 
 LinkedList::LinkedList(Node start) {
     this->Head = &start;
@@ -155,4 +160,8 @@ std::string LinkedList::printList() {
         results += "(" + current.getX + "," + current.getY() + "," + current.getDistanceToGoal() + "," + current.getWeight() + "," ")";
     }
 }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 ;

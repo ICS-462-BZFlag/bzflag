@@ -65,6 +65,4 @@ std::string LinkedList::printList() {
 
 void LinkedList::addOrdered(Node add)
 {
-}
-
-;
+};

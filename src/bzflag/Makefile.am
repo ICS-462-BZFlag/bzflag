@@ -85,6 +85,8 @@ bzflag_SOURCES =			\
 	LocalCommand.h			\
 	LocalPlayer.cxx			\
 	LocalPlayer.h			\
+        LinkedList.cxx			\
+        LinkedList.h 			\
 	MainMenu.cxx			\
 	MainMenu.h			\
 	MainWindow.cxx			\
@@ -95,6 +97,8 @@ bzflag_SOURCES =			\
 	motd.cxx			\
 	NewVersionMenu.cxx		\
 	NewVersionMenu.h		\
+        Node.cxx			\
+        Node.h				\
 	OptionsMenu.cxx			\
 	OptionsMenu.h			\
 	Player.cxx			\

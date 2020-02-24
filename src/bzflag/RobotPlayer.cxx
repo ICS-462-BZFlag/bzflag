@@ -581,6 +581,7 @@ float           RobotPlayer::getRegionExitPoint(
     return distance;
 }
 
+
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,
                                       BzfRegion* region,
                                       BzfRegion* targetRegion,

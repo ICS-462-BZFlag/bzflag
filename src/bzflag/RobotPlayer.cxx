@@ -918,12 +918,19 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 }
 /* end of lines added by David Chin */
 //Start of lines added by Group
+
+/*
+* generateDescendants
+*given a parent node, the directions of movement in x and y
+*and the goal, it will create a new node based on the movement from parent Node
+*/
 Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2])
 {
     //Node(int x, int y, int distance, int toGoal);
     int x = parent.getX() + addX;
     int y = parent.getY() + addY;
     float distToGoal = hypotf(goal[0] - x, goal[1] - y);
+    //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
     float distTraveled = parent.getDistanceTraveled + hypotf(addX, addY);
     return Node(x, y, distTraveled, distToGoal);
 
@@ -942,17 +949,16 @@ Node* RobotPlayer::aSearch(int start[2], int goal[2])
         else {
             for (int i = -1; i < 1; i++) {
                 for (int j = -1; i < 1; i++) {
+                    //for each node_successor of node_current
                     Node node_successor = generateDescendant(current, i, j,goal);
-                    //for each node_successor of node_current {
-                     //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
+                    //if node_successor is in the OPEN list {
                     if (open.contains(node_successor)) {
-                        //if node_successor is in the OPEN list {
                         //if g(node_successor) ? successor_current_cost continue
                     }
+                    // else if node_successor is in the CLOSED list{
                     else if (closed.contains(node_successor)) {
-                        // else if node_successor is in the CLOSED list{
-                        12              //if g(node_successor) >= successor_current_cost
-                                        //Move node_successor from the CLOSED list to the OPEN list
+                        //if g(node_successor) >= successor_current_cost
+                        //Move node_successor from the CLOSED list to the OPEN list
                     }
                     else {
                         //Add node_successor to the OPEN list

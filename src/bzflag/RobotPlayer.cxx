@@ -316,6 +316,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
         // when we are not evading, head to nearest enemy flag
         // or if team is already holding an enemy flag, head home
         {
+            float graph[185][185];
+            MakeGraph(graph, 185, 185);
             TeamColor myteam = getTeam();
             float distance;
             float v[2];

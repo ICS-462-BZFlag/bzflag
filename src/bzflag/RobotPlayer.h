@@ -54,6 +54,8 @@ private:
         const float p1[2], const float p2[2],
         const float a[2], const float targetPoint[2],
         float mid[2], float& priority);
+    void MakeGraph(float graph[185][185], int X, int Y);
+    void aStar();
     void       findPath(RegionPriorityQueue& queue,
         BzfRegion* region, BzfRegion* targetRegion,
         const float targetPoint[2], int mailbox);

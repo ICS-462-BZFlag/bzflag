@@ -580,22 +580,28 @@ float           RobotPlayer::getRegionExitPoint(
     // return distance traveled
     return distance;
 }
-/*
-Node    aSearch(int start[2], int goal[2]) {
-    Node startNode = Node(start[0], start[1], 0, hypotf(goal[0] - start[0], goal[1] - start[1]));
-    LinkedList open = LinkedList(startNode);
-        while(!open.isEmpty()) {
-            Node lowest = open.lowestSearch();
-            if (lowest.getX() == goal[0], lowest.getY() == goal[1]) {
-                break;
+
+void RobotPlayer::MakeGraph(float graph[185][185], int X, int Y) {
+    float locGraph[2];
+    char buffer[1000];
+    for (int i = 0; i <= X; i++) {
+        for (int j = 0; j <= Y; j++) {
+            locGraph[0] = i * BZDBCache::tankRadius;
+            locGraph[1] = j * BZDBCache::tankRadius;
+            if (World::getWorld()->inBuilding(locGraph, BZDBCache::tankRadius / 2, BZDBCache::tankHeight)) {
+                graph[i][j] = 1.0f;
             }
-
+            else {
+                graph[i][j] = 0.0f;
+            }
+            sprintf(buffer, "%f", graph[i][j]);
+            controlPanel->addMessage(buffer);
+            memset(buffer, '\0', sizeof(buffer));
         }
-        return NULL;
+    }
 }
-*/
 
-void            RobotPlayer::findPath(RegionPriorityQueue& queue,
+void          RobotPlayer::findPath(RegionPriorityQueue& queue,
                                       BzfRegion* region,
                                       BzfRegion* targetRegion,
                                       const float targetPoint[2],

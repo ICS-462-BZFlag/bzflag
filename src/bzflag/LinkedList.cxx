@@ -12,7 +12,7 @@ LinkedList::LinkedList() {
     this->length = 0;
 }
 
-Node LinkedList::lowestSearch() {
+Node* LinkedList::lowestSearch() {
     Node current = *Head;
     Node lowest = *Head;
     while (current.hasChild()) {
@@ -21,7 +21,7 @@ Node LinkedList::lowestSearch() {
         }
         current = *current.getChild();
     }
-    return lowest;
+    return &lowest;
 }
 
 void LinkedList::addNode(Node add) {
@@ -50,7 +50,7 @@ void LinkedList::addAtHead(Node add)
     }
 }
 
-Node LinkedList::remNode(Node rem) {
+Node* LinkedList::remNode(Node rem) {
     Node current = *Head;
     Node prev;
     while (current != rem) {
@@ -59,7 +59,7 @@ Node LinkedList::remNode(Node rem) {
     }
     prev.setChild(*current.getChild());
     length--;
-    return current;
+    return &current;
 }
 
 bool LinkedList::contains(Node check)

@@ -984,7 +984,10 @@ void RobotPlayer::scaleDown(float pos[2],int newPos[2]) {
         }
     }
 }
-LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
+/*
+aSearch takes a start position, goal position and a LinkedList path and sets path to the shortest path found.
+*/
+void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
 {
     bool finished = false;
     Node startNode = Node(start[0], start[1], 0,  (int)hypotf(goal[0] - start[0], goal[1] - start[1]));

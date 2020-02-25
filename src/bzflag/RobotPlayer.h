@@ -45,7 +45,7 @@ public:
 
     void        restart(const float* pos, float azimuth);
     void        explodeTank();
-
+    Node* aSearch(int start[2], int goal[2]);
 private:
     void        doUpdate(float dt);
     void        doUpdateMotion(float dt);

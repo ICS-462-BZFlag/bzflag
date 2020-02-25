@@ -423,6 +423,7 @@ void            RobotPlayer::explodeTank()
     path.clear();
 }
 
+
 void            RobotPlayer::restart(const float* pos, float _azimuth)
 {
     LocalPlayer::restart(pos, _azimuth);
@@ -580,20 +581,6 @@ float           RobotPlayer::getRegionExitPoint(
     // return distance traveled
     return distance;
 }
-/*
-Node    aSearch(int start[2], int goal[2]) {
-    Node startNode = Node(start[0], start[1], 0, hypotf(goal[0] - start[0], goal[1] - start[1]));
-    LinkedList open = LinkedList(startNode);
-        while(!open.isEmpty()) {
-            Node lowest = open.lowestSearch();
-            if (lowest.getX() == goal[0], lowest.getY() == goal[1]) {
-                break;
-            }
-
-        }
-        return NULL;
-}
-*/
 
 void            RobotPlayer::findPath(RegionPriorityQueue& queue,
                                       BzfRegion* region,
@@ -930,6 +917,50 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 	return NULL;
 }
 /* end of lines added by David Chin */
+//Start of lines added by Group
+
+Node* RobotPlayer::aSearch(int start[2], int goal[2])
+{
+    bool finished = false;
+    Node startNode = Node(start[0], start[1], 0,  (int)hypotf(goal[0] - start[0], goal[1] - start[1]));
+    LinkedList open = LinkedList(startNode);
+    LinkedList closed = LinkedList();
+    while (!open.isEmpty() && !finished) {
+        Node lowest = open.lowestSearch();
+        if (lowest.getX() == goal[0], lowest.getY() == goal[1]) {
+            finished = true;
+        }
+        else {
+            for (int i = -1; i < 1; i++) {
+                for (int j = -1; i < 1; i++) {
+
+
+                }
+            }
+            //for each node_successor of node_current {
+            //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
+            if (open.contains(node_successor)) {
+                //if node_successor is in the OPEN list {
+                //if g(node_successor) ? successor_current_cost continue
+            }
+            else if(closed.contains(node_successor)){
+                // else if node_successor is in the CLOSED list{
+12              //if g(node_successor) >= successor_current_cost
+                //Move node_successor from the CLOSED list to the OPEN list
+            }
+            else {
+                //Add node_successor to the OPEN list
+                //Set h(node_successor) to be the heuristic distance to node_goal
+            }
+            //Set g(node_successor) = successor_current_cost
+            //Set the parent of node_successor to node_current
+        }
+        //Add node_current to the CLOSED list
+
+    }
+    ////if (node_current != node_goal) exit with error(the OPEN list is empty)
+    return nullptr;
+}
 
 // Local Variables: ***
 // mode: C++ ***

@@ -22,12 +22,12 @@ Node::Node(int x, int y, int distanceTraveled, int distToGoal) {
     this->childExists = false;
     this->child = nullptr;
 }
-Node::Node(int x, int y, int distance, int toGoal, Node child)
+Node::Node(int x, int y, int distanceTraveled, int toGoal, Node child)
 {
     this->x = x;
     this->y = y;
-    this->distanceTraveled = distance;
-    this->weight = distance + toGoal;
+    this->distanceTraveled = distanceTraveled;
+    this->weight = distanceTraveled + toGoal;
     this->child = &child;
     this->childExists = true;
 }

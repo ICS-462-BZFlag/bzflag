@@ -2,10 +2,10 @@
 class Node
 {
 public:
-    Node(int x, int y, int distance, int toGoal, Node child);
+    Node(int x, int y, int distTraveled, int toGoal, Node child);
     bool operator==(Node check);
     bool operator!=(Node check);
-    Node(int x, int y, int distance, int toGoal);
+    Node(int x, int y, int distTraveled, int toGoal);
     Node();
     int getX();
     int getY();

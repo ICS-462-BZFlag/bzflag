@@ -18,6 +18,8 @@
 #define BZF_ROBOT_PLAYER_H
 
 #include "common.h"
+#include "LinkedList.h"
+#include "Node.h"
 
   /* system interface headers */
 #include <vector>

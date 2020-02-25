@@ -941,6 +941,7 @@ LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
     Node startNode = Node(start[0], start[1], 0,  hypotf(goal[0] - start[0], goal[1] - start[1]));
     LinkedList open = LinkedList(startNode);
     LinkedList closed = LinkedList();
+    
     while (!open.isEmpty() && !finished) {
         Node current = open.lowestSearch();
         if (current.getX() == goal[0], current.getY() == goal[1]) {
@@ -973,7 +974,7 @@ LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
                 }
             }
     ////if (node_current != node_goal) exit with error(the OPEN list is empty)
-    return nullptr;
+    return *new LinkedList;
 }
 
 // Local Variables: ***

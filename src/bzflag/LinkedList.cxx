@@ -25,7 +25,7 @@ Node LinkedList::lowestSearch() {
 }
 
 void LinkedList::addNode(Node add) {
-    if (Head == nullptr) {
+    if (Head == nullptr && Tail == nullptr){
         Head = &add;
         Tail = &add;
     }
@@ -34,6 +34,20 @@ void LinkedList::addNode(Node add) {
         Tail = &add;
     }
     length++;
+}
+
+void LinkedList::addAtHead(Node add)
+{
+    if (Head == nullptr && Tail == nullptr)
+    {
+        Head = &add;
+        Tail = &add;
+    }
+    else {
+        Node temp = *Head;
+        Head = &add;
+        Head->setChild(temp);
+    }
 }
 
 Node LinkedList::remNode(Node rem) {
@@ -68,7 +82,7 @@ int LinkedList::getLength()
 }
 
 bool LinkedList::isEmpty() {
-    if (Head != NULL) {
+    if (Head != nullptr) {
         return false;
     }
     return true;

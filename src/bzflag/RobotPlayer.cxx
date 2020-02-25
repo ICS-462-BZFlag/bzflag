@@ -920,7 +920,7 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 //Start of lines added by Group
 
 /*
-* generateDescendants
+*generateDescendant
 *given a parent node, the directions of movement in x and y
 *and the goal, it will create a new node based on the movement from parent Node
 */
@@ -929,13 +929,13 @@ Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2
     //Node(int x, int y, int distance, int toGoal);
     int x = parent.getX() + addX;
     int y = parent.getY() + addY;
-    float distToGoal = hypotf(goal[0] - x, goal[1] - y);
+    int distToGoal = (int)hypotf(goal[0] - x, goal[1] - y);
     //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
-    float distTraveled = parent.getDistanceTraveled + hypotf(addX, addY);
+    int distTraveled = parent.getDistanceTraveled() + (int)hypotf(addX, addY);
     return Node(x, y, distTraveled, distToGoal);
 
 }
-Node* RobotPlayer::aSearch(int start[2], int goal[2])
+LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
 {
     bool finished = false;
     Node startNode = Node(start[0], start[1], 0,  hypotf(goal[0] - start[0], goal[1] - start[1]));

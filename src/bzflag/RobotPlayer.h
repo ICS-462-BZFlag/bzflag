@@ -45,8 +45,9 @@ public:
 
     void        restart(const float* pos, float azimuth);
     void        explodeTank();
-    Node generateDescendant(Node parent, int addX, int addY, int goal[2]);
-    Node* aSearch(int start[2], int goal[2]);
+    Node        generateDescendant(Node parent, int addX, int addY, int goal[2]);
+    LinkedList  aSearch(int start[2], int goal[2]);
+
 private:
     void        doUpdate(float dt);
     void        doUpdateMotion(float dt);

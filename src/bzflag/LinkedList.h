@@ -7,6 +7,7 @@ public:
     Node lowestSearch();
     bool isEmpty();
     void addNode(Node add);
+    void addAtHead(Node add);
     Node remNode(Node rem);
     bool contains(Node check);
     int getLength();

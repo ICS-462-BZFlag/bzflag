@@ -943,11 +943,46 @@ bool RobotPlayer::isLegal(int x, int y) {
     float f[2];
     f[0] = (float)x;
     f[1] = (float)y;
-    const Obstacle* obst = World::getWorld()->inBuilding(f, BZDBCache::tankRadius, BZDBCache::tankHeight/2);
+    const Obstacle* obst = World::getWorld()->inBuilding(f, BZDBCache::tankRadius, BZDBCache::tankHeight / 2);
     if (obst == nullptr) {
         return true;
     }
     return false;
+}
+/*
+Scales up integer of tank size to float of map units
+*/
+void RobotPlayer::scaleUp(int pos[2], float newPos[2]) {
+    float newPos[2];
+    newPos[0] = pos[1] * BZDBCache::tankRadius;
+    newPos[1] = pos[1] * BZDBCache::tankRadius;
+}
+/*
+Scales down float of map units to integer of tank size
+*/
+void RobotPlayer::scaleDown(float pos[2],int newPos[2]) {
+    int newPos[2];
+    newPos[0] = round(pos[0] / BZDBCache::tankRadius);
+    newPos[1] = round(pos[1] / BZDBCache::tankRadius);
+    if (isLegal(newPos[0], newPos[1])) {
+        
+    }
+    else {
+        int x = 0;
+        int y = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                x = BZDBCache::tankRadius * (newPos[0] + i);
+                y = BZDBCache::tankRadius * (newPos[1] + i);
+                if (isLegal(x, y)) {
+                    newPos[0] = x;
+                    newPos[1] = y;
+                    break;
+                    break;
+                }
+            }
+        }
+    }
 }
 LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
 {
@@ -962,8 +997,8 @@ LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
             finished = true;
         }
         else {
-            for (int i = -1; i < 1; i++) {
-                for (int j = -1; i < 1; i++) {
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; i <= 1; i++) {
                     //for each node_successor of node_current
                     Node node_successor = generateDescendant(current, i, j,goal);
                     //if node_successor is in the OPEN list {

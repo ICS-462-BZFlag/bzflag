@@ -49,6 +49,8 @@ public:
     void        explodeTank();
     Node        generateDescendant(Node parent, int addX, int addY, int goal[2]);
 	bool isLegal(int x, int y);
+    void scaleUp(int pos[2], float results[2]);
+    void scaleDown(float pos[2], int results[2]);
     LinkedList  aSearch(int start[2], int goal[2]);
 
 private:

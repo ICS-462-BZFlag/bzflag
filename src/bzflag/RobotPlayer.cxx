@@ -28,6 +28,7 @@
 #include "World.h"
 #include "Intersect.h"
 #include "TargetingUtils.h"
+/*Self Made Classes*/
 #include "Node.h"
 #include "LinkedList.h"
 
@@ -932,13 +933,26 @@ Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2
     int distToGoal = (int)hypotf(goal[0] - x, goal[1] - y);
     //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
     int distTraveled = parent.getDistanceTraveled() + (int)hypotf(addX, addY);
-    return Node(x, y, distTraveled, distToGoal);
-
+    Node successor = Node(x, y, distTraveled, distToGoal);
+    if (isLegal(successor.getX(), successor.getY())) {
+        return successor;
+    }
+    return *new Node();
+}
+bool RobotPlayer::isLegal(int x, int y) {
+    float f[2];
+    f[0] = (float)x;
+    f[1] = (float)y;
+    const Obstacle* obst = World::getWorld()->inBuilding(f, BZDBCache::tankRadius, BZDBCache::tankHeight/2);
+    if (obst == nullptr) {
+        return true;
+    }
+    return false;
 }
 LinkedList RobotPlayer::aSearch(int start[2], int goal[2])
 {
     bool finished = false;
-    Node startNode = Node(start[0], start[1], 0,  hypotf(goal[0] - start[0], goal[1] - start[1]));
+    Node startNode = Node(start[0], start[1], 0,  (int)hypotf(goal[0] - start[0], goal[1] - start[1]));
     LinkedList open = LinkedList(startNode);
     LinkedList closed = LinkedList();
     

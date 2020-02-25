@@ -15,6 +15,7 @@ public:
     int getDistanceTraveled();
     int getWeight();
     int getDistanceToGoal();
+    bool isNode(Node check);
 
 
 private:
@@ -23,5 +24,5 @@ private:
     int distanceTraveled;
     int weight;
     Node* child;
-
+    bool actualNode;
 };

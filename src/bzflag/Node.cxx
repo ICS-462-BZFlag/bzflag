@@ -13,6 +13,7 @@ Node::Node() {
     this->childExists = false;
     this->distanceTraveled = 0;
     this->weight = 0;
+    this->actualNode = false;
 }
 Node::Node(int x, int y, int distanceTraveled, int distToGoal) {
     this->x = x;
@@ -21,6 +22,7 @@ Node::Node(int x, int y, int distanceTraveled, int distToGoal) {
     this->weight = distanceTraveled + distToGoal;
     this->childExists = false;
     this->child = nullptr;
+    this->actualNode = true;
 }
 Node::Node(int x, int y, int distanceTraveled, int toGoal, Node child)
 {
@@ -30,6 +32,7 @@ Node::Node(int x, int y, int distanceTraveled, int toGoal, Node child)
     this->weight = distanceTraveled + toGoal;
     this->child = &child;
     this->childExists = true;
+    this->actualNode = true;
 }
 bool Node::operator==(Node check) {
     if (x = check.getX()) {
@@ -88,6 +91,10 @@ int Node::getDistanceTraveled() {
 }
 int Node::getDistanceToGoal() {
     return weight - distanceTraveled;
+}
+bool Node::isNode(Node check)
+{
+    return check.actualNode;
 }
 int Node::getWeight() {
     return weight;

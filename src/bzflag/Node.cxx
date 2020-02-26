@@ -83,6 +83,9 @@ void Node::setChild(Node child) {
         this->childExists = true;
     }
 }
+void Node::setWeight(float boat) {
+    this->weight = boat;
+}
 Node* Node::getChild() {
     return child;
 }

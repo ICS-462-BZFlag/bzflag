@@ -10,6 +10,7 @@ public:
     int getX();
     int getY();
     void setChild(Node child);
+	void setWeight(float boat);
     Node* getChild();
     bool hasChild();
     int getDistanceTraveled();

@@ -995,7 +995,7 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
     LinkedList closed = LinkedList();
     
     while (!open.isEmpty() && !finished) {
-        Node current = open.lowestSearch();
+        Node current = *open.lowestSearch();
         if (current.getX() == goal[0], current.getY() == goal[1]) {
             finished = true;
         }
@@ -1007,26 +1007,41 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
                     //if node_successor is in the OPEN list {
                     if (open.contains(node_successor)) {
                         //if g(node_successor) ? successor_current_cost continue
+                        if (node_successor.getDistanceTraveled <= current.getWeight ) {
+                            goto line20;
+                        }
                     }
                     // else if node_successor is in the CLOSED list{
                     else if (closed.contains(node_successor)) {
-                        //if g(node_successor) >= successor_current_cost
+                        //if g(node_successor) <= successor_current_cost
+                        if (node_successor.getDistanceTraveled <= current.getWeight) {
+                            goto line20;
+                        }
                         //Move node_successor from the CLOSED list to the OPEN list
+                        closed.remNode(node_successor);
+                        open.addNode(node_successor);
                     }
                     else {
                         //Add node_successor to the OPEN list
+                        open.addNode(node_successor);
                         //Set h(node_successor) to be the heuristic distance to node_goal
+                        node_successor.setWeight = node_successor.getDistanceTraveled + (int)hypotf(goal[0] - node_successor.getX, goal[1] - node_successor.getY);
+
                     }
                     //Set g(node_successor) = successor_current_cost
+                    node_successor.setWeight = current.getWeight;
                     //Set the parent of node_successor to node_current
+                    //parent?
                 }
+                line20:
                 //Add node_current to the CLOSED list
+                closed.addNode(current);
 
             }
                 }
             }
     ////if (node_current != node_goal) exit with error(the OPEN list is empty)
-    return *new LinkedList;
+    //return *new LinkedList;
 }
 
 // Local Variables: ***

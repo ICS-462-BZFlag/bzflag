@@ -953,7 +953,6 @@ bool RobotPlayer::isLegal(int x, int y) {
 Scales up integer of tank size to float of map units
 */
 void RobotPlayer::scaleUp(int pos[2], float newPos[2]) {
-    float newPos[2];
     newPos[0] = pos[1] * BZDBCache::tankRadius;
     newPos[1] = pos[1] * BZDBCache::tankRadius;
 }
@@ -961,9 +960,8 @@ void RobotPlayer::scaleUp(int pos[2], float newPos[2]) {
 Scales down float of map units to integer of tank size
 */
 void RobotPlayer::scaleDown(float pos[2],int newPos[2]) {
-    int newPos[2];
-    newPos[0] = round(pos[0] / BZDBCache::tankRadius);
-    newPos[1] = round(pos[1] / BZDBCache::tankRadius);
+    newPos[0] = (int)round(pos[0] / BZDBCache::tankRadius);
+    newPos[1] = (int)round(pos[1] / BZDBCache::tankRadius);
     if (isLegal(newPos[0], newPos[1])) {
         
     }
@@ -1007,14 +1005,14 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
                     //if node_successor is in the OPEN list {
                     if (open.contains(node_successor)) {
                         //if g(node_successor) ? successor_current_cost continue
-                        if (node_successor.getDistanceTraveled <= current.getWeight ) {
+                        if (node_successor.getDistanceTraveled() <= current.getWeight()) {
                             goto line20;
                         }
                     }
                     // else if node_successor is in the CLOSED list{
                     else if (closed.contains(node_successor)) {
                         //if g(node_successor) <= successor_current_cost
-                        if (node_successor.getDistanceTraveled <= current.getWeight) {
+                        if (node_successor.getDistanceTraveled() <= current.getWeight()) {
                             goto line20;
                         }
                         //Move node_successor from the CLOSED list to the OPEN list
@@ -1025,12 +1023,13 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
                         //Add node_successor to the OPEN list
                         open.addNode(node_successor);
                         //Set h(node_successor) to be the heuristic distance to node_goal
-                        node_successor.setWeight = node_successor.getDistanceTraveled + (int)hypotf(goal[0] - node_successor.getX, goal[1] - node_successor.getY);
+                        node_successor.setWeight(node_successor.getDistanceTraveled() + (int)hypotf(goal[0] - node_successor.getX(), goal[1] - node_successor.getY()));
 
                     }
                     //Set g(node_successor) = successor_current_cost
-                    node_successor.setWeight = current.getWeight;
+                    node_successor.setWeight(current.getWeight());
                     //Set the parent of node_successor to node_current
+                    open.addAtHead(current);
                     //parent?
                 }
                 line20:

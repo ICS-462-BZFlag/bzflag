@@ -995,15 +995,15 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
     LinkedList closed = LinkedList();
     
     while (!open.isEmpty() && !finished) {
-        Node current = open.lowestSearch();
-        if (current.getX() == goal[0], current.getY() == goal[1]) {
+        Node* current = open.lowestSearch();
+        if (current->getX() == goal[0], current->getY() == goal[1]) {
             finished = true;
         }
         else {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; i <= 1; i++) {
                     //for each node_successor of node_current
-                    Node node_successor = generateDescendant(current, i, j,goal);
+                    Node node_successor = generateDescendant(*current, i, j,goal);
                     //if node_successor is in the OPEN list {
                     if (open.contains(node_successor)) {
                         //if g(node_successor) ? successor_current_cost continue
@@ -1026,7 +1026,7 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
                 }
             }
     ////if (node_current != node_goal) exit with error(the OPEN list is empty)
-    return *new LinkedList;
+    path = LinkedList();
 }
 
 // Local Variables: ***

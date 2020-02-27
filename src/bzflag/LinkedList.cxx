@@ -61,6 +61,11 @@ Node* LinkedList::remNode(Node rem) {
     length--;
     return &current;
 }
+Node LinkedList::popHead() {
+    Node ret = *Head;
+    Head = Head->getChild();
+    return ret;
+}
 
 bool LinkedList::contains(Node check)
 {

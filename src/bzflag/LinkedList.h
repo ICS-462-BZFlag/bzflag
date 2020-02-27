@@ -11,6 +11,7 @@ public:
     Node* remNode(Node rem);
     bool contains(Node check);
     int getLength();
+    Node popHead();
 private:
     Node* Head;
     Node* Tail;

@@ -1003,9 +1003,9 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
     Node startNode = Node(start[0], start[1], 0,  (int)hypotf(goal[0] - start[0], goal[1] - start[1]));
     LinkedList open = LinkedList(startNode);
     LinkedList closed = LinkedList();
-    
+    Node current;
     while (!open.isEmpty() && !finished) {
-        Node current = *open.lowestSearch();
+        open.lowestSearch(current);
         if (current.getX() == goal[0], current.getY() == goal[1]) {
             finished = true;
         }

@@ -4,11 +4,11 @@ class LinkedList {
 public:
     LinkedList();
     LinkedList(Node start);
-    Node* lowestSearch();
+    void lowestSearch(Node lowest);
     bool isEmpty();
     void addNode(Node add);
     void addAtHead(Node add);
-    Node* remNode(Node rem);
+    void remNode(Node rem);
     bool contains(Node check);
     int getLength();
     Node popHead();

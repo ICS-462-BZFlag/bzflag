@@ -362,13 +362,13 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 path[0] -= position[0];
                 path[1] -= position[1];
             }
-            //scaleDown(path, intPath);
+            scaleDown(path, intPath);
             aSearch(intPosition, intPath, goalPath);
             goalPath.printList();
-            //Node next = goalPath.popHead();
-            //intPath[0] = next.getX();
-            //intPath[1] = next.getY();
-            scaleUp(intPath, path);
+            //Node next = *goalPath.pop();
+            //intPath[0] = next.x;
+            //intPath[1] = next.y;
+            //scaleUp(intPath, path);
             distance = hypotf(path[0], path[1]);
             path[0] /= distance;
             path[1] /= distance;

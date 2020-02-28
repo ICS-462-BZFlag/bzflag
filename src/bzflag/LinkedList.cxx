@@ -45,6 +45,10 @@ bool LinkedList::contains(Node check)
 void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceToGoal)
 {
     Node temp;
+    char buffer[128];
+    sprintf(buffer, "I am Being Called");
+    controlPanel->addMessage(buffer);
+    memset(buffer, 0, sizeof(buffer));
     /*1. check if the given prev_node is NULL */
     if (Head == nullptr)
     {
@@ -67,6 +71,7 @@ void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceT
     new_node->distanceTraveled = distanceTraveled;
     new_node->distanceToGoal = distanceToGoal;
     new_node->weight = distanceToGoal + distanceTraveled;
+    print(new_node);
     //check if head is < new node
     if (Head->weight > new_node->weight) {
         new_node->child = Head;
@@ -104,16 +109,16 @@ void LinkedList::printList()
         //cout << "DistTraveled: " << node->distanceTraveled << endl;
         //cout << "DistGoal: " << node->distanceToGoal << endl;
         //cout << "Weigth: " << node->weight << endl;
-        sprintf(buffer, "(Position X, Position Y, DisTrav, DistGoal, Weight)\n (%d,%d,%d,%d,$d)", node->x, node->y, node->distanceTraveled, node->distanceToGoal, node->weight);
+        sprintf(buffer, "(%d,%d,%d,%d,$d)", node->x, node->y, node->distanceTraveled, node->distanceToGoal, node->weight);
         controlPanel->addMessage(buffer);
         memset(buffer, 0, sizeof(buffer));
         node = node->child;
     }
-    if (node == nullptr) {
-        sprintf(buffer, "no nodes in this list");
-        controlPanel->addMessage(buffer);
-        memset(buffer, 0, sizeof(buffer));
-    }
+    //if (node == nullptr) {
+    //    sprintf(buffer, "no nodes in this list");
+    //    controlPanel->addMessage(buffer);
+    //    memset(buffer, 0, sizeof(buffer));
+    //}
 }
 void LinkedList::printHead()
 {
@@ -141,12 +146,16 @@ Node* LinkedList::pop() {
 }
 void LinkedList::print(Node* print)
 {
-    cout << endl;
-    cout << "X: " << print->x << endl;
-    cout << "Y: " << print->y << endl;
-    cout << "DistTraveled: " << print->distanceTraveled << endl;
-    cout << "DistGoal: " << print->distanceToGoal << endl;
-    cout << "Weigth: " << print->weight << endl;
+    char buffer[128];
+    sprintf(buffer, "(%d,%d,%d,%d,$d)", print->x, print->y, print->distanceTraveled, print->distanceToGoal, print->weight);
+    controlPanel->addMessage(buffer);
+    memset(buffer, 0, sizeof(buffer));
+    //cout << endl;
+    //cout << "X: " << print->x << endl;
+    //cout << "Y: " << print->y << endl;
+    //cout << "DistTraveled: " << print->distanceTraveled << endl;
+    //cout << "DistGoal: " << print->distanceToGoal << endl;
+    //cout << "Weigth: " << print->weight << endl;
 }
 bool LinkedList::remove(int x, int y, int distTraveled, int distGoal)
 {

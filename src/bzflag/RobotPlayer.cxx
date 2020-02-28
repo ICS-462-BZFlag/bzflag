@@ -40,10 +40,10 @@
 std::vector<BzfRegion*>* RobotPlayer::obstacleList = NULL;
 
 /* lines added by David Chin */
-const float RobotPlayer::CohesionW = 1.0f;
-const float RobotPlayer::SeparationW = 2.0f;
-const float RobotPlayer::AlignW = 0.5f;
-const float RobotPlayer::PathW = 3.0f;
+const float RobotPlayer::CohesionW = 0.0f; //1.0
+const float RobotPlayer::SeparationW = 0.0f; //2.0
+const float RobotPlayer::AlignW = 0.0f;//.5
+const float RobotPlayer::PathW = 3.0f;//3.0
 /* end of lines added by David Chin */
 
 RobotPlayer::RobotPlayer(const PlayerId& _id, const char* _name,
@@ -366,10 +366,11 @@ void            RobotPlayer::doUpdateMotion(float dt)
             aSearch(intPosition, intPath, goalPath);
             //goalPath.insertInOrder(3, 3, 3, 3);
             goalPath.printList();
-            //Node next = *goalPath.pop();
-            //intPath[0] = next.x;
-            //intPath[1] = next.y;
-            //scaleUp(intPath, path);
+            Node next = *goalPath.pop();
+            //goalPath.print(&next);
+            intPath[0] = next.x;
+            intPath[1] = next.y;
+            scaleUp(intPath, path);
             distance = hypotf(path[0], path[1]);
             path[0] /= distance;
             path[1] /= distance;
@@ -942,10 +943,10 @@ Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2
     Node* new_node = new Node();
     new_node->x = parent.x + addX;
     new_node->y = parent.y + addY;
-    new_node->distanceTraveled = parent.distanceTraveled;
+    new_node->distanceTraveled = parent.distanceTraveled + (int)hypotf(parent.x + addX,parent.y + addY);
     new_node->distanceToGoal = hypotf(goal[0] - new_node->x, goal[1] - new_node->y);
     new_node->weight = new_node->distanceTraveled + new_node->distanceToGoal;
-    parent.child = new_node;
+    new_node->parent = &parent;
     return *new_node;
 
 }
@@ -999,7 +1000,8 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
     bool finished = false;
     LinkedList open = LinkedList();
     LinkedList closed = LinkedList();
-    Node* current;
+    Node* current = nullptr;
+    open.add(start[0], start[1], 0, hypotf((goal[0] - start[0]), (goal[1] - start[1])));
     char buffer[128];
     sprintf(buffer, "called 1");
     controlPanel->addMessage(buffer);
@@ -1023,22 +1025,23 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
                 for (int j = -1; i <= 1; i++) {
                     //for each node_successor of node_current
                     Node node_successor = generateDescendant(*current, i, j, goal);
+                    node_successor.parent = current;
                     //if node_successor is in the OPEN list {
                     if (open.contains(node_successor)) {
-                        //if g(node_successor) ? successor_current_cost continue
-                        if (node_successor.distanceTraveled <= current->weight) {
+                        //if g(node_successor) < successor_current_cost continue
+                        if (node_successor.distanceTraveled <= current->distanceTraveled) {
                             goto line20;
                         }
                     }
                     // else if node_successor is in the CLOSED list{
                     else if (closed.contains(node_successor)) {
                         //if g(node_successor) <= successor_current_cost
-                        if (node_successor.distanceTraveled <= current->weight) {
+                        if (node_successor.distanceTraveled <= current->distanceTraveled) {
                             goto line20;
                         }
                         //Move node_successor from the CLOSED list to the OPEN list
-                        closed.remove(node_successor.x,node_successor.y, node_successor.distanceTraveled,node_successor.distanceToGoal);
-                        //open.insertInOrder(node_successor);
+                        closed.remove(node_successor.x,node_successor.y);
+                        open.insertInOrder(node_successor.x, node_successor.y, node_successor.distanceTraveled, node_successor.distanceToGoal);
                     }
                     else {
                         //Add node_successor to the OPEN list
@@ -1050,7 +1053,9 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
                     //Set g(node_successor) = successor_current_cost
                     node_successor.weight = current->weight;
                     //Set the parent of node_successor to node_current
-                    open.insertInOrder(current->x,current->y,current->distanceTraveled,current->distanceToGoal);
+                    node_successor.parent = current;
+                    current->child = &node_successor;
+
                     //parent?
                 }
             line20:
@@ -1061,10 +1066,12 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
         }
     }
     ////if (node_current != node_goal) exit with error(the OPEN list is empty)
-    open.printList();
-    closed.printList();
-
+    while (current->parent != nullptr) {
+        path.add(current->x,current->y,current->distanceTraveled,current->distanceToGoal);
+        current = current->parent;
+    }
     //return *new LinkedList;
+
 }
 
 // Local Variables: ***

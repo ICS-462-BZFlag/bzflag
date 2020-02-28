@@ -7,4 +7,5 @@ public:
     int distanceToGoal;
     int weight;
     Node* child;
+    Node* parent;
 };

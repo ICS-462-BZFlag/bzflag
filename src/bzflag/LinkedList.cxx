@@ -1,7 +1,6 @@
 /************************************************
-*Node functions from Node.h
-* includes constructors, getter/setters, and hasChild
-*
+Modified from https://www.geeksforgeeks.org/data-structures/linked-list/
+
 *************************************************/
 
 
@@ -40,7 +39,35 @@ bool LinkedList::contains(Node check)
     }
     return false;
 }
+void LinkedList::add(int x, int y, int distanceTraveled, int distanceToGoal) {
+    Node temp;
+    if (Head == nullptr) {
+        Head = &temp;
+        Head->x = x;
+        Head->y = y;
+        Head->distanceTraveled = distanceTraveled;
+        Head->distanceToGoal = distanceToGoal;
+        Head->weight = distanceToGoal + distanceTraveled;
+        Tail = Head;
+        return;
+    }
 
+    /* 2. allocate new node */
+    Node* new_node = &temp;
+
+    /* 3. put in the data  */
+    new_node->x = x;
+    new_node->y = y;
+    new_node->distanceTraveled = distanceTraveled;
+    new_node->distanceToGoal = distanceToGoal;
+    new_node->weight = distanceToGoal + distanceTraveled;
+
+    /*4. attach to Head*/
+    Head->parent = new_node;
+    new_node->child = Head;
+    new_node->parent = nullptr;
+    Head = new_node;
+}
 /* Given data, insert into the list based on weight */
 void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceToGoal)
 {
@@ -62,7 +89,7 @@ void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceT
         return;
     }
 
-    /* 2. allocate new node */
+     /* 2. allocate new node */
     Node* new_node = &temp;
 
     /* 3. put in the data  */
@@ -71,10 +98,11 @@ void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceT
     new_node->distanceTraveled = distanceTraveled;
     new_node->distanceToGoal = distanceToGoal;
     new_node->weight = distanceToGoal + distanceTraveled;
-    print(new_node);
+
     //check if head is < new node
     if (Head->weight > new_node->weight) {
         new_node->child = Head;
+        new_node->child->parent = new_node;
         Head = new_node;
         //exit
         return;
@@ -89,9 +117,11 @@ void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceT
     }
     /*5. set new_node child to prev nodes child*/
     new_node->child = prev_node->child;
+    new_node->child->parent = new_node;
 
     /* 6. set the child of previous node to new_node */
     prev_node->child = new_node;
+    new_node->parent = prev_node;
 }
 
 void LinkedList::printList()
@@ -157,10 +187,10 @@ void LinkedList::print(Node* print)
     //cout << "DistGoal: " << print->distanceToGoal << endl;
     //cout << "Weigth: " << print->weight << endl;
 }
-bool LinkedList::remove(int x, int y, int distTraveled, int distGoal)
+bool LinkedList::remove(int x, int y)
 {
     bool found = false;
-    if (Head->x == x && Head->y == y && Head->distanceTraveled == distTraveled && Head->distanceToGoal == distGoal)
+    if (Head->x == x && Head->y == y)
     {
         found = true;
         Head = Head->child;
@@ -172,7 +202,7 @@ bool LinkedList::remove(int x, int y, int distTraveled, int distGoal)
             found = false;
             break;
         }
-        else if (current->x == x && current->y == y && current->distanceTraveled == distTraveled && current->distanceToGoal == distGoal) {
+        else if (current->x == x && current->y == y) {
             previous->child = current->child;
             found = true;
         }

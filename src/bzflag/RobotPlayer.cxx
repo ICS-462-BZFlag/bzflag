@@ -935,10 +935,17 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 *given a parent node, the directions of movement in x and y
 *and the goal, it will create a new node based on the movement from parent Node
 */
-//Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2])
-//{
-//   
-//}
+Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2])
+{
+    Node* new_node = new Node();
+    new_node->x = parent.x + addX;
+    new_node->y = parent.y + addY;
+    new_node->distanceTraveled = parent.distanceTraveled;
+    new_node->distanceToGoal = hypotf(goal[0] - new_node->x, goal[1] - new_node->y);
+    new_node->weight = new_node->distanceTraveled + new_node->distanceToGoal;
+    return *new_node;
+
+}
 bool RobotPlayer::isLegal(int x, int y) {
     float f[2];
     f[0] = (float)x;

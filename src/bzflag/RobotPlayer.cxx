@@ -1004,7 +1004,7 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
     sprintf(buffer, "called 1");
     controlPanel->addMessage(buffer);
     memset(buffer, 0, sizeof(buffer));
-    while (open.isEmpty() == false && finished == false) {
+    while (!open.isEmpty() && !finished) { //  while (open.isEmpty() == false && finished == false) {
         current = open.pop();
         sprintf(buffer, "called 2");
         controlPanel->addMessage(buffer);

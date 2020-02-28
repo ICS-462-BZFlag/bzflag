@@ -938,13 +938,12 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2])
 {
     //Node(int x, int y, int distance, int toGoal);
-    int x = parent.getX() + addX;
-    int y = parent.getY() + addY;
+    int x = parent.x + addX;
+    int y = parent.y + addY;
     int distToGoal = (int)hypotf(goal[0] - x, goal[1] - y);
     //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
-    int distTraveled = parent.getDistanceTraveled() + (int)hypotf(addX, addY);
-    Node successor = Node(x, y, distTraveled, distToGoal);
-    if (isLegal(successor.getX(), successor.getY())) {
+    int distTraveled = parent.distanceTraveled + (int)hypotf(addX, addY);
+    if (isLegal(x, y) {
         return successor;
     }
     return *new Node();
@@ -998,13 +997,12 @@ aSearch takes a start position, goal position and a LinkedList path and sets pat
 void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
 {
     bool finished = false;
-    Node startNode = Node(start[0], start[1], 0,  (int)hypotf(goal[0] - start[0], goal[1] - start[1]));
-    LinkedList open = LinkedList(startNode);
+    LinkedList open = LinkedList();
     LinkedList closed = LinkedList();
-    Node current;
+    Node* current;
     while (!open.isEmpty() && !finished) {
-        open.lowestSearch(current);
-        if (current.getX() == goal[0], current.getY() == goal[1]) {
+        current = open.pop();
+        if (current->x() == goal[0], current->y() == goal[1]) {
             finished = true;
         }
         else {
@@ -1015,19 +1013,19 @@ void RobotPlayer::aSearch(int start[2], int goal[2],LinkedList path)
                     //if node_successor is in the OPEN list {
                     if (open.contains(node_successor)) {
                         //if g(node_successor) ? successor_current_cost continue
-                        if (node_successor.getDistanceTraveled() <= current.getWeight()) {
+                        if (node_successor.distanceTraveled <= current.weight) {
                             goto line20;
                         }
                     }
                     // else if node_successor is in the CLOSED list{
                     else if (closed.contains(node_successor)) {
                         //if g(node_successor) <= successor_current_cost
-                        if (node_successor.getDistanceTraveled() <= current.getWeight()) {
+                        if (node_successor->distanceTraveled() <= current.weight) {
                             goto line20;
                         }
                         //Move node_successor from the CLOSED list to the OPEN list
                         closed.remNode(node_successor);
-                        open.addNode(node_successor);
+                        open.insertInOrder(node_successor);
                     }
                     else {
                         //Add node_successor to the OPEN list

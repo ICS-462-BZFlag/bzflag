@@ -7,6 +7,7 @@
 
 #include "Node.h"
 #include "LinkedList.h"
+#include "playing.h"
 #include <iostream>
 #include <string>
 
@@ -89,16 +90,28 @@ void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceT
 
 void LinkedList::printList()
 {
+    char buffer[128];
+    //sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
+    //    getId(), location[0], location[1], location[2]);
+    //controlPanel->addMessage(buffer);
     Node* node = Head;
     while (node != nullptr)
     {
-        cout << endl;
-        cout << "X: " << node->x << endl;
-        cout << "Y: " << node->y << endl;
-        cout << "DistTraveled: " << node->distanceTraveled << endl;
-        cout << "DistGoal: " << node->distanceToGoal << endl;
-        cout << "Weigth: " << node->weight << endl;
+        //cout << endl;
+        //cout << "X: " << node->x << endl;
+        //cout << "Y: " << node->y << endl;
+        //cout << "DistTraveled: " << node->distanceTraveled << endl;
+        //cout << "DistGoal: " << node->distanceToGoal << endl;
+        //cout << "Weigth: " << node->weight << endl;
+        sprintf(buffer, "(Position X, Position Y, DisTrav, DistGoal, Weight)\n (%d,%d,%d,%d,$d)", node->x, node->y, node->distanceTraveled, node->distanceToGoal, node->weight);
+        controlPanel->addMessage(buffer);
+        memset(buffer, 0, sizeof(buffer));
         node = node->child;
+    }
+    if (node == nullptr) {
+        sprintf(buffer, "no nodes in this list");
+        controlPanel->addMessage(buffer);
+        memset(buffer, 0, sizeof(buffer));
     }
 }
 void LinkedList::printHead()

@@ -15,7 +15,7 @@
  */
 
 /* lines added by David Chin */
-#define TRACE
+//#define TRACE 
 /* end of lines added by David Chin */
 
 // interface header
@@ -362,8 +362,9 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 path[0] -= position[0];
                 path[1] -= position[1];
             }
-            scaleDown(path, intPath);
-            //aSearch(intPosition, intPath, goalPath);
+            //scaleDown(path, intPath);
+            aSearch(intPosition, intPath, goalPath);
+            goalPath.printList();
             //Node next = goalPath.popHead();
             //intPath[0] = next.getX();
             //intPath[1] = next.getY();
@@ -943,6 +944,7 @@ Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2
     new_node->distanceTraveled = parent.distanceTraveled;
     new_node->distanceToGoal = hypotf(goal[0] - new_node->x, goal[1] - new_node->y);
     new_node->weight = new_node->distanceTraveled + new_node->distanceToGoal;
+    parent.child = new_node;
     return *new_node;
 
 }
@@ -982,7 +984,6 @@ void RobotPlayer::scaleDown(float pos[2],int newPos[2]) {
                 if (isLegal(x, y)) {
                     newPos[0] = x;
                     newPos[1] = y;
-                    break;
                     break;
                 }
             }
@@ -1046,6 +1047,9 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
         }
     }
     ////if (node_current != node_goal) exit with error(the OPEN list is empty)
+    open.printList();
+    closed.printList();
+
     //return *new LinkedList;
 }
 

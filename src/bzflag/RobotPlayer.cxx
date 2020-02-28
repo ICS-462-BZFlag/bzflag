@@ -364,6 +364,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             }
             scaleDown(path, intPath);
             aSearch(intPosition, intPath, goalPath);
+            //goalPath.insertInOrder(3, 3, 3, 3);
             goalPath.printList();
             //Node next = *goalPath.pop();
             //intPath[0] = next.x;
@@ -999,12 +1000,25 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
     LinkedList open = LinkedList();
     LinkedList closed = LinkedList();
     Node* current;
-    while (!open.isEmpty() && !finished) {
+    char buffer[128];
+    sprintf(buffer, "called 1");
+    controlPanel->addMessage(buffer);
+    memset(buffer, 0, sizeof(buffer));
+    while (open.isEmpty() == false && finished == false) {
         current = open.pop();
-        if (current->x == goal[0], current->y == goal[1]) {
+        sprintf(buffer, "called 2");
+        controlPanel->addMessage(buffer);
+        memset(buffer, 0, sizeof(buffer));
+        if (current->x == goal[0] && current->y == goal[1]) {
             finished = true;
+            sprintf(buffer, "Called 3");
+            controlPanel->addMessage(buffer);
+            memset(buffer, 0, sizeof(buffer));
         }
         else {
+            sprintf(buffer, "called 4");
+            controlPanel->addMessage(buffer);
+            memset(buffer, 0, sizeof(buffer));
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; i <= 1; i++) {
                     //for each node_successor of node_current

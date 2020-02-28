@@ -356,19 +356,17 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 findHomeBase(myteam, path);
                 path[0] -= position[0];
                 path[1] -= position[1];
-                scaleDown(path, intPath);
-                aSearch(intPosition, intPath, goalPath);
             }
             else {
                 findOpponentFlag(path);
                 path[0] -= position[0];
                 path[1] -= position[1];
-                scaleDown(path, intPath);
-                aSearch(intPosition, intPath, goalPath);
             }
-            Node next = goalPath.popHead();
-            intPath[0] = next.getX();
-            intPath[1] = next.getY();
+            scaleDown(path, intPath);
+            //aSearch(intPosition, intPath, goalPath);
+            //Node next = goalPath.popHead();
+            //intPath[0] = next.getX();
+            //intPath[1] = next.getY();
             scaleUp(intPath, path);
             distance = hypotf(path[0], path[1]);
             path[0] /= distance;

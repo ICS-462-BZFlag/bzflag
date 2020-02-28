@@ -76,7 +76,7 @@ int Node::getY() {
 void Node::setChild(Node child) {
     if (&child == nullptr) {
         childExists = false;
-        this->child = false;
+        this->child = nullptr;
     }
     else {
         this->child = &child;

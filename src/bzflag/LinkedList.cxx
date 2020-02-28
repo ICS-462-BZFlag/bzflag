@@ -44,10 +44,11 @@ bool LinkedList::contains(Node check)
 /* Given data, insert into the list based on weight */
 void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceToGoal)
 {
+    Node temp;
     /*1. check if the given prev_node is NULL */
     if (Head == nullptr)
     {
-        Head = new Node();
+        Head = &temp;
         Head->x = x;
         Head->y = y;
         Head->distanceTraveled = distanceTraveled;
@@ -58,7 +59,7 @@ void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceT
     }
 
     /* 2. allocate new node */
-    Node* new_node = new Node();
+    Node* new_node = &temp;
 
     /* 3. put in the data  */
     new_node->x = x;

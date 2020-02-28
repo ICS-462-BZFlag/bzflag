@@ -11,7 +11,7 @@ public:
     void printTail();
     Node* pop();
     void print(Node* print);
-    void remNode(Node* rem);
+    bool remove(int x, int y, int distTraveled, int distGoal);
 private:
     Node* Head;
     Node* Tail;

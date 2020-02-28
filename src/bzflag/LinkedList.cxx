@@ -20,7 +20,7 @@ LinkedList::LinkedList()
 }
 
 bool LinkedList::isEmpty() {
-    if (Head != nullptr && Tail != nullptr) {
+    if (Head != nullptr) {
         return false;
     }
     return true;
@@ -134,8 +134,30 @@ void LinkedList::print(Node* print)
     cout << "DistGoal: " << print->distanceToGoal << endl;
     cout << "Weigth: " << print->weight << endl;
 }
-
-void LinkedList::remNode(Node* rem) {
-
+bool LinkedList::remove(int x, int y, int distTraveled, int distGoal)
+{
+    bool found = false;
+    if (Head->x == x && Head->y == y && Head->distanceTraveled == distTraveled && Head->distanceToGoal == distGoal)
+    {
+        found = true;
+        Head = Head->child;
+    }
+    Node* current = Head;
+    Node* previous = Head;
+    while (!found) {
+        if (current == nullptr) {
+            found = false;
+            break;
+        }
+        else if (current->x == x && current->y == y && current->distanceTraveled == distTraveled && current->distanceToGoal == distGoal) {
+            previous->child = current->child;
+            found = true;
+        }
+        else {
+            previous = current;
+            current = current->child;
+        }
+    }
+    return found;
 }
 ;

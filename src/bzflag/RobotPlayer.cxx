@@ -937,16 +937,7 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 */
 Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2])
 {
-    //Node(int x, int y, int distance, int toGoal);
-    int x = parent.x + addX;
-    int y = parent.y + addY;
-    int distToGoal = (int)hypotf(goal[0] - x, goal[1] - y);
-    //Set successor_current_cost = g(node_current) + w(node_current, node_successor)
-    int distTraveled = parent.distanceTraveled + (int)hypotf(addX, addY);
-    if (isLegal(x, y) {
-        return successor;
-    }
-    return *new Node();
+    
 }
 bool RobotPlayer::isLegal(int x, int y) {
     float f[2];

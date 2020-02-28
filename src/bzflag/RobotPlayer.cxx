@@ -1001,7 +1001,7 @@ void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
     Node* current;
     while (!open.isEmpty() && !finished) {
         current = open.pop();
-        if (current->x == goal[0], current->y == goal[1]) {
+        if (current->x == goal[0] && current->y == goal[1]) {
             finished = true;
         }
         else {

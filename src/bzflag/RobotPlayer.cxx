@@ -999,7 +999,18 @@ Node* RobotPlayer::GenerateNode(Node* parent, int x, int y, int distanceTrav, in
     temp->weight = temp->distanceToGoal + temp->distanceTraveled;
     return temp;
 }
-
+void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) {
+    std::priority_queue <Node*> temp;
+    temp = open;
+    while(!temp.empty()){
+        if (temp.top() == node) {
+            open.pop();
+        }
+        temp.push(open.top());
+        open.pop();
+    }
+    open = temp;
+}
 bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
     std::priority_queue <Node*> temp;
     temp = open;
@@ -1007,6 +1018,7 @@ bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
         if (node == temp.top()) {
             return true;
         }
+        temp.pop();
     }
     return false;
 }
@@ -1066,7 +1078,8 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
                             goto line20;
                         }
-                        closed.pop(); //doesn't this just pop the first in closed rather than the actual nodesuccesor
+                        //closed.pop(); //doesn't this just pop the first in closed rather than the actual nodesuccesor
+                        RobotPlayer::PopACertainNode(node_successor, closed);
                         open.push(node_successor);
                     }
                     else {

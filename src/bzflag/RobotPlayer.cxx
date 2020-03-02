@@ -1026,6 +1026,17 @@ bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
     return false;
 }
 
+void RobotPlayer::printQueue(std::priority_queue <Node*> open) {
+    std::priority_queue <Node*> temp = open;
+    Node* temper = new Node();
+    char buffer[128];
+    while (!temp.empty()) {
+        temper = temp.top();
+        sprintf(buffer, "%d, %d\n", temper->x, temper->y);
+        controlPanel->addMessage(buffer);
+        temp.pop();
+    }
+}
 void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
     bool foundGoal = false;
 

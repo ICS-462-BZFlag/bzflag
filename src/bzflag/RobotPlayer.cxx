@@ -42,6 +42,8 @@
 
 std::vector<BzfRegion*>* RobotPlayer::obstacleList = NULL;
 
+bool flip = false;
+
 /* lines added by David Chin */
 const float RobotPlayer::CohesionW = 0.0f; //1.0
 const float RobotPlayer::SeparationW = 0.0f; //2.0
@@ -375,7 +377,10 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 path[1] -= position[1];
             }
             //scaleDown(path, intPath);
-            aStar(intPosition, intPath, goalPath);
+            if (flip == false) {
+                aStar(position, path, goalPath);
+                flip = true;
+            }
             //aSearch(intPosition, intPath, goalPath);
             //goalPath.insertInOrder(3, 3, 3, 3);
             //goalPath.printList();
@@ -1037,7 +1042,7 @@ void RobotPlayer::printQueue(std::priority_queue <Node*> open) {
         temp.pop();
     }
 }
-void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
+void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) {
     bool foundGoal = false;
 
     int c = 0;
@@ -1093,6 +1098,7 @@ void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
             }
         }
     }
+    RobotPlayer::printQueue(open);
     while (!open.empty()) {
         path.insert(path.begin(), open.top());
         open.pop();

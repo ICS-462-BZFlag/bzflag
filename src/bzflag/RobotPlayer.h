@@ -57,6 +57,7 @@ public:
     bool IsInQueue(Node* node, std::priority_queue<Node*> open);
     Node * GenerateNode(int x, int y, int distanceTrav, int distanceGoal, Node* temp);
     void printQueue(std::priority_queue<Node*> open);
+    void aStar(float start[2], float goal[2], std::vector<Node*> path);
     void aStar(int start[2], int goal[2], std::vector<Node*> path);
     void aSearch(int start[2], int goal[2], LinkedList path);
 

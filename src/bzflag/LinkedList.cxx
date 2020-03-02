@@ -39,35 +39,36 @@ bool LinkedList::contains(Node check)
     }
     return false;
 }
-void LinkedList::add(int x, int y, int distanceTraveled, int distanceToGoal) {
-    Node temp;
-    if (Head == nullptr) {
-        Head = &temp;
-        Head->x = x;
-        Head->y = y;
-        Head->distanceTraveled = distanceTraveled;
-        Head->distanceToGoal = distanceToGoal;
-        Head->weight = distanceToGoal + distanceTraveled;
-        Tail = Head;
-        return;
-    }
-
-    /* 2. allocate new node */
-    Node* new_node = &temp;
-
-    /* 3. put in the data  */
-    new_node->x = x;
-    new_node->y = y;
-    new_node->distanceTraveled = distanceTraveled;
-    new_node->distanceToGoal = distanceToGoal;
-    new_node->weight = distanceToGoal + distanceTraveled;
-
-    /*4. attach to Head*/
-    Head->parent = new_node;
-    new_node->child = Head;
-    new_node->parent = nullptr;
-    Head = new_node;
-}
+//void LinkedList::add(int x, int y, int distanceTraveled, int distanceToGoal) {
+//    Node *temp = new Node;
+//
+//    if (Head == nullptr) {
+//        Head = &temp;
+//        Head->x = x;
+//        Head->y = y;
+//        Head->distanceTraveled = distanceTraveled;
+//        Head->distanceToGoal = distanceToGoal;
+//        Head->weight = distanceToGoal + distanceTraveled;
+//        Tail = Head;
+//        return;
+//    }
+//
+//    /* 2. allocate new node */
+//    Node* new_node = &temp;
+//
+//    /* 3. put in the data  */
+//    new_node->x = x;
+//    new_node->y = y;
+//    new_node->distanceTraveled = distanceTraveled;
+//    new_node->distanceToGoal = distanceToGoal;
+//    new_node->weight = distanceToGoal + distanceTraveled;
+//
+//    /*4. attach to Head*/
+//    Head->parent = new_node;
+//    new_node->child = Head;
+//    new_node->parent = nullptr;
+//    Head = new_node;
+//}
 /* Given data, insert into the list based on weight */
 void LinkedList::insertInOrder(int x, int y, int distanceTraveled, int distanceToGoal)
 {

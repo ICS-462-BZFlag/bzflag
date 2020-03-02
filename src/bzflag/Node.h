@@ -9,3 +9,4 @@ public:
     Node* child;
     Node* parent;
 };
+

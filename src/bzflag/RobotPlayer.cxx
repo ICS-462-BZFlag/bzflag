@@ -1012,8 +1012,8 @@ void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
 }
 Node* RobotPlayer::GenerateNode(int x, int y, int distanceTrav, int distanceGoal) {
     Node* temp = new Node;
-    temp->x = x;
-    temp->y = y;
+    temp->x = x * BZDBCache::tankRadius;
+    temp->y = y * BZDBCache::tankRadius;
     temp->distanceToGoal = distanceGoal;
     temp->distanceTraveled = distanceTrav;
     temp->weight = temp->distanceToGoal + temp->distanceTraveled;
@@ -1098,7 +1098,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
             }
         }
     }
-    RobotPlayer::printQueue(open);
+   // RobotPlayer::printQueue(open);
     while (!open.empty()) {
         path.insert(path.begin(), open.top());
         open.pop();

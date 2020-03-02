@@ -1012,8 +1012,8 @@ void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
 }
 Node* RobotPlayer::GenerateNode(int x, int y, int distanceTrav, int distanceGoal) {
     Node* temp = new Node;
-    temp->x = x * BZDBCache::tankRadius;
-    temp->y = y * BZDBCache::tankRadius;
+    temp->x = x;
+    temp->y = y;
     temp->distanceToGoal = distanceGoal;
     temp->distanceTraveled = distanceTrav;
     temp->weight = temp->distanceToGoal + temp->distanceTraveled;
@@ -1054,19 +1054,21 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
 
     std::priority_queue <Node*> open;
     std::priority_queue <Node*> closed;
-
-    //open.push(GenerateNode(1, 1, 0, 6, current));
-    //open.push(GenerateNode(1, 1, 0, 1, current));
-    //open.push(GenerateNode(1, 1, 0, 5, current));
-    //open.push(GenerateNode(1, 1, 0, 2, current));
-    //open.push(GenerateNode(1, 1, 0, 4, current));
-    //open.push(GenerateNode(1, 1, 0, 3, current));
-    open.push(GenerateNode(start[0], start[1], 0, hypotf((goal[0] - start[0]), (goal[1] - start[1]))));
+    int newStart[2];
+    int newGoal[2];
+    scaleDown(start, newStart);
+    scaleDown(goal, newGoal);
+    open.push(GenerateNode(newStart[0], newStart[1], 0, hypotf((newGoal[0] - newStart[0]), (newGoal[1] - newStart[1]))));
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();
-        if (current->x == goal[0] && current->y == goal[1]) {
+        if (current->x == newGoal[0] && current->y == newGoal[1]) {
             foundGoal = true;
+            while (current->parent != nullptr) {
+                path.insert(path.begin(), current);
+                current = current->parent;
+    
+            }
             return;
         }
         else
@@ -1088,7 +1090,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                         open.push(node_successor);
                     }
                     else {
-                        node_successor->weight = node_successor->distanceTraveled + (int)hypotf(goal[0] - node_successor->x, goal[1] - node_successor->y);
+                        node_successor->weight = node_successor->distanceTraveled + (int)hypotf(newGoal[0] - node_successor->x, newGoal[1] - node_successor->y);
                         open.push(node_successor);
                     }
                     node_successor->weight = current->weight;
@@ -1099,10 +1101,6 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
         }
     }
    // RobotPlayer::printQueue(open);
-    while (!open.empty()) {
-        path.insert(path.begin(), open.top());
-        open.pop();
-    }
 }
 /*
 aSearch takes a start position, goal position and a LinkedList path and sets path to the shortest path found.

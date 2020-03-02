@@ -32,6 +32,8 @@
 #include "RegionPriorityQueue.h"
 #include "ServerLink.h"
 
+#include<queue>
+
 
 class RobotPlayer : public LocalPlayer
 {
@@ -51,8 +53,10 @@ public:
 	bool isLegal(int x, int y);
     void scaleUp(int pos[2], float results[2]);
     void scaleDown(float pos[2], int results[2]);
-    Node GenerateNode(int x, int y, int distanceTrav, int distanceGoal);
-    void aStar(int start[2], int goal[2], std::vector<Node> path);
+    Node* GenerateNode(int x, int y, int distanceTrav, int distanceGoal);
+    bool IsInQueue(Node* node, std::priority_queue<Node*> open);
+    Node * GenerateNode(int x, int y, int distanceTrav, int distanceGoal, Node* temp);
+    void aStar(int start[2], int goal[2], std::vector<Node*> path);
     void aSearch(int start[2], int goal[2], LinkedList path);
 
 private:

@@ -1010,7 +1010,7 @@ void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
         }
     }
 }
-Node* RobotPlayer::GenerateNode(int x, int y, int distanceTrav, int distanceGoal) {
+Node* RobotPlayer::GenerateNode(Node* parent, int x, int y, int distanceTrav, int distanceGoal) {
     Node* temp = new Node;
     temp->x = x;
     temp->y = y;
@@ -1058,7 +1058,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
     int newGoal[2];
     scaleDown(start, newStart);
     scaleDown(goal, newGoal);
-    open.push(GenerateNode(newStart[0], newStart[1], 0, hypotf((newGoal[0] - newStart[0]), (newGoal[1] - newStart[1]))));
+    open.push(GenerateNode(nullptr,newStart[0], newStart[1], 0, hypotf((newGoal[0] - newStart[0]), (newGoal[1] - newStart[1]))));
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();
@@ -1075,8 +1075,8 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
         {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; i <= 1; i++) {
-                    Node* node_successor = new Node();
-                    node_successor = GenerateNode(current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
+                    //Node* node_successor = new Node();
+                    Node* node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
                     if (RobotPlayer::IsInQueue(node_successor, open)) {
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
                             goto line20;
@@ -1086,7 +1086,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
                             goto line20;
                         }
-                        closed.pop();
+                        closed.pop(); //doesn't this just pop the first in closed rather than the actual nodesuccesor
                         open.push(node_successor);
                     }
                     else {

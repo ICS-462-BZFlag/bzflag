@@ -381,6 +381,11 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 aStar(scalePosition, scalePath, goalPath);
                 flip = true;
             }
+            for (int i = 0; i < goalPath.size(); i++) {
+                scalePath[0] = goalPath.at(i).x;
+                scalePath[1] = goalPath.at(i).y;
+            }
+            scaleUp(scalePath, path);
             distance = hypotf(path[0], path[1]);
             path[0] /= distance;
             path[1] /= distance;
@@ -388,6 +393,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             // find how long it will take to get to next path segment
             //v[0] = endPoint[0] - position[0];
             //v[1] = endPoint[1] - position[1];
+
             v[0] = CohesionW * cohesionV[0] + SeparationW * separationV[0] + AlignW * align[0] + PathW * path[0];
             v[1] = CohesionW * cohesionV[1] + SeparationW * separationV[1] + AlignW * align[1] + PathW * path[1];
             float weightSum = CohesionW + SeparationW + AlignW + PathW;

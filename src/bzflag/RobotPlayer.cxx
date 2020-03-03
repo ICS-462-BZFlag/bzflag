@@ -1015,7 +1015,7 @@ void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) 
 bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
     std::priority_queue <Node*> temp;
     while (!open.empty()) {
-        if (node->x == temp.top()->x && node->y == temp.top()->y) {
+        if (node->x == open.top()->x && node->y == open.top()->y) {
             while (!temp.empty()) {
                 open.push(temp.top());
                 temp.pop();
@@ -1076,7 +1076,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
         {
             closed.push(current);
             for (int i = -1; i <= 1; i++) {
-                for (int j = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
                     if (i == 0 && j == 0) {
                         continue;
                     }

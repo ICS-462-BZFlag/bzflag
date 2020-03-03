@@ -1047,12 +1047,12 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
     Node* temp = new Node();
 
     std::priority_queue <Node*> open;
-    std::priority_queue <Node*> closed;
+    std::priority_queue <Node*> closed; //doesnt have to be a priority queue hash. 
     //int newStart[2];
     //int newGoal[2];
     //scaleDown(start, newStart);
     //scaleDown(goal, newGoal);
-    open.push(GenerateNode(temp,ceil(start[0]), ceil(start[1]), 0, hypotf((ceil(goal[0]) - ceil(start[0])), (ceil(goal[1]) - ceil(start[1])))));
+    open.push(GenerateNode(nullptr,ceil(start[0]), ceil(start[1]), 0, hypotf((ceil(goal[0]) - ceil(start[0])), (ceil(goal[1]) - ceil(start[1])))));
     //RobotPlayer::printQueue(open);
     while (!open.empty() && !foundGoal) {
         current = open.top();
@@ -1062,38 +1062,42 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
             while (current->parent != nullptr) {
                 path.insert(path.begin(), current);
                 current = current->parent;
-    
             }
             return;
         }
         else
         {
+            closed.push(current);
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; i <= 1; i++) {
-                    //Node* node_successor = new Node();
+                    if (i == 0 && j == 0) {
+                        continue;
+                    }
                     Node* node_successor = new Node();
                     node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
                     if (RobotPlayer::IsInQueue(node_successor, open)) {
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
-                            goto line20;
+                            open.push(node_successor);
+                        }
+                        else {
+                            continue;
                         }
                     }
                     else if (RobotPlayer::IsInQueue(node_successor, closed)) {
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
-                            goto line20;
+                            RobotPlayer::PopACertainNode(node_successor, closed);
+                            open.push(node_successor);
+
                         }
-                        //closed.pop(); //doesn't this just pop the first in closed rather than the actual nodesuccesor
-                        RobotPlayer::PopACertainNode(node_successor, closed);
-                        open.push(node_successor);
+                        else {
+                            continue;
+                        }
                     }
                     else {
                         node_successor->weight = node_successor->distanceTraveled + (int)hypotf(goal[0] - node_successor->x, goal[1] - node_successor->y);
                         open.push(node_successor);
                     }
-                    node_successor->weight = current->weight;
                 }
-                line20:
-                closed.push(current);
             }
         }
     } 

@@ -41,6 +41,8 @@
 
 std::vector<BzfRegion*>* RobotPlayer::obstacleList = NULL;
 
+bool flip = false;
+
 /* lines added by David Chin */
 const float RobotPlayer::CohesionW = 0.0f; //1.0
 const float RobotPlayer::SeparationW = 0.0f; //2.0
@@ -361,6 +363,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float path[3];
             int intPath[3];
             int intPosition[3];
+            float testStart[2] = { 0,0 };
+            float testGoal[2] = { 20,20 };
             //scaleDown(position, intPosition);
             std::vector<Node*> goalPath;
             if (myTeamHoldingOpponentFlag()) {
@@ -374,10 +378,10 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 path[1] -= position[1];
             }
             //scaleDown(path, intPath);
-            aStar(intPosition, intPath, goalPath);
-            //aSearch(intPosition, intPath, goalPath);
-            //goalPath.insertInOrder(3, 3, 3, 3);
-            //goalPath.printList();
+            if (flip == false) {
+                aStar(testStart, testGoal, goalPath);
+                flip = true;
+            }
             //Node next = *goalPath.pop();
             //goalPath.print(&next);
             //intPath[0] = next.x;
@@ -945,23 +949,6 @@ Player*		RobotPlayer::lookupLocalPlayer(PlayerId id)
 /* end of lines added by David Chin */
 //Start of lines added by Group
 
-/*
-*generateDescendant
-*given a parent node, the directions of movement in x and y
-*and the goal, it will create a new node based on the movement from parent Node
-*/
-Node RobotPlayer::generateDescendant(Node parent, int addX, int addY, int goal[2])
-{
-    Node* new_node = new Node();
-    new_node->x = parent.x + addX;
-    new_node->y = parent.y + addY;
-    new_node->distanceTraveled = parent.distanceTraveled + (int)hypotf(parent.x + addX,parent.y + addY);
-    new_node->distanceToGoal = hypotf(goal[0] - new_node->x, goal[1] - new_node->y);
-    new_node->weight = new_node->distanceTraveled + new_node->distanceToGoal;
-    new_node->parent = &parent;
-    return *new_node;
-
-}
 bool RobotPlayer::isLegal(int x, int y) {
     float f[2];
     f[0] = (float)x;
@@ -1004,7 +991,7 @@ void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
         }
     }
 }
-Node* RobotPlayer::GenerateNode(int x, int y, int distanceTrav, int distanceGoal) {
+Node* RobotPlayer::GenerateNode(Node* parent, int x, int y, int distanceTrav, int distanceGoal) {
     Node* temp = new Node;
     temp->x = x;
     temp->y = y;
@@ -1013,7 +1000,18 @@ Node* RobotPlayer::GenerateNode(int x, int y, int distanceTrav, int distanceGoal
     temp->weight = temp->distanceToGoal + temp->distanceTraveled;
     return temp;
 }
-
+void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) {
+    std::priority_queue <Node*> temp;
+    temp = open;
+    while(!temp.empty()){
+        if (temp.top() == node) {
+            open.pop();
+        }
+        temp.push(open.top());
+        open.pop();
+    }
+    open = temp;
+}
 bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
     std::priority_queue <Node*> temp;
     temp = open;
@@ -1021,11 +1019,23 @@ bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
         if (node == temp.top()) {
             return true;
         }
+        temp.pop();
     }
     return false;
 }
 
-void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
+void RobotPlayer::printQueue(std::priority_queue <Node*> open) {
+    std::priority_queue <Node*> temp = open;
+    Node* temper = new Node();
+    char buffer[128];
+    while (!temp.empty()) {
+        temper = temp.top();
+        sprintf(buffer, "%d, %d\n", temper->x, temper->y);
+        controlPanel->addMessage(buffer);
+        temp.pop();
+    }
+}
+void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) {
     bool foundGoal = false;
 
     int c = 0;
@@ -1037,27 +1047,31 @@ void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
 
     std::priority_queue <Node*> open;
     std::priority_queue <Node*> closed;
-
-    //open.push(GenerateNode(1, 1, 0, 6, current));
-    //open.push(GenerateNode(1, 1, 0, 1, current));
-    //open.push(GenerateNode(1, 1, 0, 5, current));
-    //open.push(GenerateNode(1, 1, 0, 2, current));
-    //open.push(GenerateNode(1, 1, 0, 4, current));
-    //open.push(GenerateNode(1, 1, 0, 3, current));
-    open.push(GenerateNode(start[0], start[1], 0, hypotf((goal[0] - start[0]), (goal[1] - start[1]))));
+    //int newStart[2];
+    //int newGoal[2];
+    //scaleDown(start, newStart);
+    //scaleDown(goal, newGoal);
+    open.push(GenerateNode(temp,ceil(start[0]), ceil(start[1]), 0, hypotf((ceil(goal[0]) - ceil(start[0])), (ceil(goal[1]) - ceil(start[1])))));
+    //RobotPlayer::printQueue(open);
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();
         if (current->x == goal[0] && current->y == goal[1]) {
             foundGoal = true;
+            while (current->parent != nullptr) {
+                path.insert(path.begin(), current);
+                current = current->parent;
+    
+            }
             return;
         }
         else
         {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; i <= 1; i++) {
+                    //Node* node_successor = new Node();
                     Node* node_successor = new Node();
-                    node_successor = GenerateNode(current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
+                    node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
                     if (RobotPlayer::IsInQueue(node_successor, open)) {
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
                             goto line20;
@@ -1067,7 +1081,8 @@ void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
                             goto line20;
                         }
-                        closed.pop();
+                        //closed.pop(); //doesn't this just pop the first in closed rather than the actual nodesuccesor
+                        RobotPlayer::PopACertainNode(node_successor, closed);
                         open.push(node_successor);
                     }
                     else {
@@ -1080,93 +1095,9 @@ void RobotPlayer::aStar(int start[2], int goal[2], std::vector<Node*> path) {
                 closed.push(current);
             }
         }
-    }
-    while (!open.empty()) {
-        path.insert(path.begin(), open.top());
-        open.pop();
-    }
+    } 
+   RobotPlayer::printQueue(open);
 }
-/*
-aSearch takes a start position, goal position and a LinkedList path and sets path to the shortest path found.
-*/
-//void RobotPlayer::aSearch(int start[2], int goal[2], LinkedList path)
-//{
-//    bool finished = false;
-//    LinkedList open = LinkedList();
-//    LinkedList closed = LinkedList();
-//    Node* current = nullptr;
-//   // open.add(start[0], start[1], 0, hypotf((goal[0] - start[0]), (goal[1] - start[1])));
-//    char buffer[128];
-//    sprintf(buffer, "called 1");
-//    controlPanel->addMessage(buffer);
-//    memset(buffer, 0, sizeof(buffer));
-//    while (!open.isEmpty() && !finished) { //  while (open.isEmpty() == false && finished == false) {
-//        current = open.pop();
-//        sprintf(buffer, "called 2");
-//        controlPanel->addMessage(buffer);
-//        memset(buffer, 0, sizeof(buffer));
-//        if (current->x == goal[0] && current->y == goal[1]) {
-//            finished = true;
-//            sprintf(buffer, "Called 3");
-//            controlPanel->addMessage(buffer);
-//            memset(buffer, 0, sizeof(buffer));
-//        }
-//        else {
-//            sprintf(buffer, "called 4");
-//            controlPanel->addMessage(buffer);
-//            memset(buffer, 0, sizeof(buffer));
-//            for (int i = -1; i <= 1; i++) {
-//                for (int j = -1; i <= 1; i++) {
-//                    //for each node_successor of node_current
-//                    Node node_successor = generateDescendant(*current, i, j, goal);
-//                    node_successor.parent = current;
-//                    //if node_successor is in the OPEN list {
-//                    if (open.contains(node_successor)) {
-//                        //if g(node_successor) < successor_current_cost continue
-//                        if (node_successor.distanceTraveled <= current->distanceTraveled) {
-//                            goto line20;
-//                        }
-//                    }
-//                    // else if node_successor is in the CLOSED list{
-//                    else if (closed.contains(node_successor)) {
-//                        //if g(node_successor) <= successor_current_cost
-//                        if (node_successor.distanceTraveled <= current->distanceTraveled) {
-//                            goto line20;
-//                        }
-//                        //Move node_successor from the CLOSED list to the OPEN list
-//                        closed.remove(node_successor.x,node_successor.y);
-//                        open.insertInOrder(node_successor.x, node_successor.y, node_successor.distanceTraveled, node_successor.distanceToGoal);
-//                    }
-//                    else {
-//                        //Add node_successor to the OPEN list
-//                        open.insertInOrder(node_successor.x, node_successor.y, node_successor.distanceTraveled, node_successor.distanceToGoal);
-//                        //Set h(node_successor) to be the heuristic distance to node_goal
-//                        node_successor.weight = node_successor.distanceTraveled + (int)hypotf(goal[0] - node_successor.x, goal[1] - node_successor.y);
-//
-//                    }
-//                    //Set g(node_successor) = successor_current_cost
-//                    node_successor.weight = current->weight;
-//                    //Set the parent of node_successor to node_current
-//                    node_successor.parent = current;
-//                    current->child = &node_successor;
-//
-//                    //parent?
-//                }
-//            line20:
-//                //Add node_current to the CLOSED list
-//                closed.insertInOrder(current->x, current->y, current->distanceTraveled, current->distanceToGoal);
-//
-//            }
-//        }
-//    }
-//    ////if (node_current != node_goal) exit with error(the OPEN list is empty)
-//    while (current->parent != nullptr) {
-//        path.add(current->x,current->y,current->distanceTraveled,current->distanceToGoal);
-//        current = current->parent;
-//    }
-//    //return *new LinkedList;
-//
-//}
 
 // Local Variables: ***
 // mode: C++ ***

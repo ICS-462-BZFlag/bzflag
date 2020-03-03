@@ -1068,8 +1068,8 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
         }
         else
         {
-            for (int i = -1 * 20; i <= 1 * 20; i++) {
-                for (int j = -1 * 20; i <= 1 * 20; i++) {
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; i <= 1; i++) {
                     //Node* node_successor = new Node();
                     Node* node_successor = new Node();
                     node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);

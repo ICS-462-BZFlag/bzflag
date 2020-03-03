@@ -30,7 +30,6 @@
 #include "TargetingUtils.h"
 /*Self Made Classes*/
 #include "Node.h"
-#include "LinkedList.h"
 /*queue and vector*/
 #include <queue>
 #include <vector>

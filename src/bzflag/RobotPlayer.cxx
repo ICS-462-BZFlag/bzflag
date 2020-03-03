@@ -1053,7 +1053,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
     //scaleDown(start, newStart);
     //scaleDown(goal, newGoal);
     open.push(GenerateNode(temp,start[0], start[1], 0, hypotf((goal[0] - start[0]), (goal[1] - start[1]))));
-    RobotPlayer::printQueue(open);
+    //RobotPlayer::printQueue(open);
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();

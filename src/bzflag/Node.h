@@ -10,7 +10,15 @@ public:
     Node* parent;
     bool operator< (const Node& other) const
     {
-        return weight > other.weight;
+        return weight < other.weight;
+    }
+    bool operator> (const Node& other) const
+    {
+        return weight < other.weight;
+    }
+    bool operator== (const Node& other) const
+    {
+        return weight == other.weight;
     }
 };
 

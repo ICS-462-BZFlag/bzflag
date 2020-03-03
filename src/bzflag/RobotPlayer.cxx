@@ -965,16 +965,16 @@ bool RobotPlayer::isLegal(int x, int y) {
 /*
 Scales up integer of tank size to float of map units
 */
-void RobotPlayer::scaleUp(int pos[2], float newPos[2]) {
+void RobotPlayer::scaleUp(float pos[2], float newPos[2]) {
     newPos[0] = pos[1] * BZDBCache::tankRadius;
     newPos[1] = pos[1] * BZDBCache::tankRadius;
 }
 /*
 Scales down float of map units to integer of tank size
 */
-void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
-    newPos[0] = (int)round(pos[0] / BZDBCache::tankRadius);
-    newPos[1] = (int)round(pos[1] / BZDBCache::tankRadius);
+void RobotPlayer::scaleDown(float pos[2], float newPos[2]) {
+    newPos[0] = round(pos[0] / BZDBCache::tankRadius);
+    newPos[1] = round(pos[1] / BZDBCache::tankRadius);
     if (isLegal(newPos[0], newPos[1])) {
         //put code here
         return;
@@ -1050,22 +1050,11 @@ void RobotPlayer::printQueue(std::priority_queue <Node*> open) {
 }
 void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node> path) {
     bool foundGoal = false;
-
-    int c = 0;
-
-    char buffer[128];
-
     Node current;
     Node temp;
-
     std::priority_queue <Node> open;
-    std::priority_queue <Node> closed; //doesnt have to be a priority queue hash. 
-    //int newStart[2];
-    //int newGoal[2];
-    //scaleDown(start, newStart);
-    //scaleDown(goal, newGoal);
+    std::priority_queue <Node> closed;
     open.push(GenerateNode(nullptr,ceil(start[0]), ceil(start[1]), 0, hypotf((ceil(goal[0]) - ceil(start[0])), (ceil(goal[1]) - ceil(start[1])))));
-    //RobotPlayer::printQueue(open);
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();
@@ -1114,7 +1103,6 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node> path) {
                         }
                     }
                     else {
-                        //node_successor->weight = node_successor->distanceTraveled + hypotf(goal[0] - node_successor->x, goal[1] - node_successor->y);
                         open.push(node_successor);
                     }
                 }

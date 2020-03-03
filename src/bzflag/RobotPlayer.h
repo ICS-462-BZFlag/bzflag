@@ -49,11 +49,10 @@ public:
 
     void        restart(const float* pos, float azimuth);
     void        explodeTank();
-    Node        generateDescendant(Node parent, int addX, int addY, int goal[2]);
 	bool isLegal(int x, int y);
-    void scaleUp(int pos[2], float results[2]);
-    void scaleDown(float pos[2], int results[2]);
-    Node GenerateNode(Node* parent, int x, int y, float distanceTrav, float distanceGoal);
+    void scaleUp(float pos[2], float newPos[2]);
+	void scaleDown(float pos[2], float newPos[2]);
+	Node GenerateNode(Node* parent, int x, int y, float distanceTrav, float distanceGoal);
     void PopACertainNode(Node node, std::priority_queue<Node> open);
     bool IsInQueue(Node node, std::priority_queue<Node> open, Node* returnMe);
     void printQueue(std::priority_queue<Node*> open);

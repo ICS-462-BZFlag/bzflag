@@ -37,6 +37,7 @@
 /* lines added by David Chin */
 #include "playing.h" // needed for numFlags, and controlPanel
 #include "Roster.h" // needed for robots[]
+#include <cmath>
 /* end of lines added by David Chin */
 
 std::vector<BzfRegion*>* RobotPlayer::obstacleList = NULL;
@@ -366,7 +367,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float testStart[2] = { 0,0 };
             float testGoal[2] = { 20,20 };
             //scaleDown(position, intPosition);
-            std::vector<Node*> goalPath;
+            std::vector<Node> goalPath;
             if (myTeamHoldingOpponentFlag()) {
                 findHomeBase(myteam, path);
                 path[0] -= position[0];
@@ -992,18 +993,19 @@ void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
         }
     }
 }
-Node* RobotPlayer::GenerateNode(Node* parent, int x, int y, int distanceTrav, int distanceGoal) {
-    Node* temp = new Node;
-    temp->x = x;
-    temp->y = y;
-    temp->distanceToGoal = distanceGoal;
-    temp->distanceTraveled = distanceTrav;
-    temp->weight = temp->distanceToGoal + temp->distanceTraveled;
+Node RobotPlayer::GenerateNode(Node* parent, int x, int y, float distanceTrav, float distanceGoal) {
+    Node temp;
+    temp.x = x;
+    temp.y = y;
+    temp.distanceToGoal = distanceGoal;
+    temp.distanceTraveled = distanceTrav;
+    temp.weight = distanceGoal + distanceTrav;
+    temp.parent = parent;
     return temp;
 }
-void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) {
-    std::priority_queue <Node*> temp;
-    while(open.top()->x != node->x && open.top()->y != node->y){
+void RobotPlayer::PopACertainNode(Node node, std::priority_queue <Node> open) {
+    std::priority_queue <Node> temp;
+    while(open.top().x != node.x && open.top().y != node.y){
         temp.push(open.top());
         open.pop();
     }
@@ -1012,11 +1014,11 @@ void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) 
         temp.pop();
     }
 }
-bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open, Node* returnMe) {
-    std::priority_queue <Node*> temp;
+bool RobotPlayer::IsInQueue(Node node, std::priority_queue <Node> open, Node* returnMe) {
+    std::priority_queue <Node> temp;
     while (!open.empty()) {
-        if (node->x == open.top()->x && node->y == open.top()->y) {
-            returnMe = open.top();
+        if (node.x == open.top().x && node.y == open.top().y) {
+            *returnMe = open.top();
             while (!temp.empty()) {
                 open.push(temp.top());
                 temp.pop();
@@ -1044,18 +1046,18 @@ void RobotPlayer::printQueue(std::priority_queue <Node*> open) {
         temp.pop();
     }
 }
-void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) {
+void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node> path) {
     bool foundGoal = false;
 
     int c = 0;
 
     char buffer[128];
 
-    Node* current = new Node();
-    Node* temp = new Node();
+    Node current;
+    Node temp;
 
-    std::priority_queue <Node*> open;
-    std::priority_queue <Node*> closed; //doesnt have to be a priority queue hash. 
+    std::priority_queue <Node> open;
+    std::priority_queue <Node> closed; //doesnt have to be a priority queue hash. 
     //int newStart[2];
     //int newGoal[2];
     //scaleDown(start, newStart);
@@ -1065,11 +1067,11 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();
-        if (current->x == goal[0] && current->y == goal[1]) {
+        if (current.x == goal[0] && current.y == goal[1]) {
             foundGoal = true;
-            while (current->parent != nullptr) {
+            while (current.parent != nullptr) {
                 path.insert(path.begin(), current);
-                current = current->parent;
+                current = *current.parent;
             }
             return;
         }
@@ -1081,19 +1083,26 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                     if (i == 0 && j == 0) {
                         continue;
                     }
-                    Node* node_successor = new Node();
-                    Node* returnMe;
-                    node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
-                    if (RobotPlayer::IsInQueue(node_successor, open, returnMe)) {
-                        if (node_successor->distanceTraveled <= returnMe->distanceTraveled) {
+                    Node node_successor;
+                    Node returnMe;
+                    float distance;
+                    if (i == 0 || j == 0) {
+                        distance = 1;
+                    }
+                    else {
+                        distance = M_SQRT2;
+                    }
+                    node_successor = GenerateNode(&current, current.x + i, current.y + j, current.distanceTraveled + distance, hypotf((goal[0] - current.x - i),(goal[1] - current.y - j)));
+                    if (RobotPlayer::IsInQueue(node_successor, open, &returnMe)) {
+                        if (node_successor.distanceTraveled <= returnMe.distanceTraveled) {
                             open.push(node_successor);
                         }
                         else {
                             continue;
                         }
                     }
-                    else if (RobotPlayer::IsInQueue(node_successor, closed, returnMe)) {
-                        if (node_successor->distanceTraveled <= returnMe->distanceTraveled) {
+                    else if (RobotPlayer::IsInQueue(node_successor, closed, &returnMe)) {
+                        if (node_successor.distanceTraveled <= returnMe.distanceTraveled) {
                             RobotPlayer::PopACertainNode(node_successor, closed);
                             open.push(node_successor);
 
@@ -1103,14 +1112,14 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                         }
                     }
                     else {
-                        node_successor->weight = node_successor->distanceTraveled + (int)hypotf(goal[0] - node_successor->x, goal[1] - node_successor->y);
+                        //node_successor->weight = node_successor->distanceTraveled + hypotf(goal[0] - node_successor->x, goal[1] - node_successor->y);
                         open.push(node_successor);
                     }
                 }
             }
         }
     } 
-   RobotPlayer::printQueue(open);
+   //RobotPlayer::printQueue(open);
 }
 
 // Local Variables: ***

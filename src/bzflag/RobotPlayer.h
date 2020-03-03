@@ -53,12 +53,11 @@ public:
 	bool isLegal(int x, int y);
     void scaleUp(int pos[2], float results[2]);
     void scaleDown(float pos[2], int results[2]);
-    Node* GenerateNode(Node* parent, int x, int y, int distanceTrav, int distanceGoal);
-    void PopACertainNode(Node* node, std::priority_queue<Node*> open);
-	bool IsInQueue(Node* node, std::priority_queue<Node*> open, Node* returnMe);
-    bool IsInQueue(Node* node, std::priority_queue<Node*> open);
+    Node GenerateNode(Node* parent, int x, int y, float distanceTrav, float distanceGoal);
+    void PopACertainNode(Node node, std::priority_queue<Node> open);
+    bool IsInQueue(Node node, std::priority_queue<Node> open, Node* returnMe);
     void printQueue(std::priority_queue<Node*> open);
-    void aStar(float start[2], float goal[2], std::vector<Node*> path);
+    void aStar(float start[2], float goal[2], std::vector<Node> path);
 
 private:
     void        doUpdate(float dt);

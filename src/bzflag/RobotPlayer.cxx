@@ -362,11 +362,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
             else
                 cohesionV[0] = cohesionV[1] = 0;
             float path[3];
-            int intPath[3];
-            int intPosition[3];
-            float testStart[2] = { 0,0 };
-            float testGoal[2] = { 20,20 };
-            //scaleDown(position, intPosition);
+            float scalePosition[2];
+            float scalePath[2];
             std::vector<Node> goalPath;
             if (myTeamHoldingOpponentFlag()) {
                 findHomeBase(myteam, path);
@@ -378,16 +375,12 @@ void            RobotPlayer::doUpdateMotion(float dt)
                 path[0] -= position[0];
                 path[1] -= position[1];
             }
-            //scaleDown(path, intPath);
+            scaleDown(path, scalePath);
+            scaleDown(position, scalePosition);
             if (flip == false) {
-                aStar(testStart, testGoal, goalPath);
+                aStar(scalePosition, scalePath, goalPath);
                 flip = true;
             }
-            //Node next = *goalPath.pop();
-            //goalPath.print(&next);
-            //intPath[0] = next.x;
-            //intPath[1] = next.y;
-            //scaleUp(intPath, path);
             distance = hypotf(path[0], path[1]);
             path[0] /= distance;
             path[1] /= distance;

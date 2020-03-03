@@ -973,7 +973,8 @@ void RobotPlayer::scaleDown(float pos[2], int newPos[2]) {
     newPos[0] = (int)round(pos[0] / BZDBCache::tankRadius);
     newPos[1] = (int)round(pos[1] / BZDBCache::tankRadius);
     if (isLegal(newPos[0], newPos[1])) {
-
+        //put code here
+        return;
     }
     else {
         int x = 0;
@@ -1002,23 +1003,30 @@ Node* RobotPlayer::GenerateNode(Node* parent, int x, int y, int distanceTrav, in
 }
 void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) {
     std::priority_queue <Node*> temp;
-    temp = open;
-    while(!temp.empty()){
-        if (temp.top() == node) {
-            open.pop();
+    while(open.top()->x != node->x && open.top()->y != node->y){
+        temp.push(open.top());
+        open.pop();
+    }
+    while (!temp.empty()) {
+        open.push(temp.top());
+        temp.pop();
+    }
+}
+bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
+    std::priority_queue <Node*> temp;
+    while (!open.empty()) {
+        if (node->x == temp.top()->x && node->y == temp.top()->y) {
+            while (!temp.empty()) {
+                open.push(temp.top());
+                temp.pop();
+            }
+            return true;
         }
         temp.push(open.top());
         open.pop();
     }
-    open = temp;
-}
-bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
-    std::priority_queue <Node*> temp;
-    temp = open;
     while (!temp.empty()) {
-        if (node == temp.top()) {
-            return true;
-        }
+        open.push(temp.top());
         temp.pop();
     }
     return false;

@@ -1012,10 +1012,11 @@ void RobotPlayer::PopACertainNode(Node* node, std::priority_queue <Node*> open) 
         temp.pop();
     }
 }
-bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open) {
+bool RobotPlayer::IsInQueue(Node* node, std::priority_queue <Node*> open, Node* returnMe) {
     std::priority_queue <Node*> temp;
     while (!open.empty()) {
         if (node->x == open.top()->x && node->y == open.top()->y) {
+            returnMe = open.top();
             while (!temp.empty()) {
                 open.push(temp.top());
                 temp.pop();
@@ -1081,17 +1082,18 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                         continue;
                     }
                     Node* node_successor = new Node();
+                    Node* returnMe;
                     node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
-                    if (RobotPlayer::IsInQueue(node_successor, open)) {
-                        if (node_successor->distanceTraveled <= current->distanceTraveled) {
+                    if (RobotPlayer::IsInQueue(node_successor, open, returnMe)) {
+                        if (node_successor->distanceTraveled <= returnMe->distanceTraveled) {
                             open.push(node_successor);
                         }
                         else {
                             continue;
                         }
                     }
-                    else if (RobotPlayer::IsInQueue(node_successor, closed)) {
-                        if (node_successor->distanceTraveled <= current->distanceTraveled) {
+                    else if (RobotPlayer::IsInQueue(node_successor, closed, returnMe)) {
+                        if (node_successor->distanceTraveled <= returnMe->distanceTraveled) {
                             RobotPlayer::PopACertainNode(node_successor, closed);
                             open.push(node_successor);
 

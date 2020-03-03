@@ -56,7 +56,6 @@ public:
     Node* GenerateNode(Node* parent, int x, int y, int distanceTrav, int distanceGoal);
     void PopACertainNode(Node* node, std::priority_queue<Node*> open);
 	bool IsInQueue(Node* node, std::priority_queue<Node*> open, Node* returnMe);
-    bool IsInQueue(Node* node, std::priority_queue<Node*> open);
     void printQueue(std::priority_queue<Node*> open);
     void aStar(float start[2], float goal[2], std::vector<Node*> path);
 

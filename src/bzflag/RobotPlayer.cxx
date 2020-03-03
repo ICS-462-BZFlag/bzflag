@@ -955,7 +955,9 @@ bool RobotPlayer::isLegal(int x, int y) {
     f[1] = (float)y;
     const Obstacle* obst = World::getWorld()->inBuilding(f, BZDBCache::tankRadius, BZDBCache::tankHeight / 2);
     if (obst == nullptr) {
-        return true;
+        if (x > -BZDBCache::worldSize && x < BZDBCache::worldSize && y > -BZDBCache::worldSize && y < BZDBCache::worldSize) {
+            return true;
+        }
     }
     return false;
 }

@@ -364,6 +364,8 @@ void            RobotPlayer::doUpdateMotion(float dt)
             float path[3];
             int intPath[3];
             int intPosition[3];
+            float testStart[2] = { 0,0 };
+            float testGoal[2] = { 20,20 };
             //scaleDown(position, intPosition);
             std::vector<Node*> goalPath;
             if (myTeamHoldingOpponentFlag()) {
@@ -378,7 +380,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
             }
             //scaleDown(path, intPath);
             if (flip == false) {
-                aStar(position, path, goalPath);
+                aStar(testStart, testGoal, goalPath);
                 flip = true;
             }
             //Node next = *goalPath.pop();
@@ -1046,15 +1048,16 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
 
     std::priority_queue <Node*> open;
     std::priority_queue <Node*> closed;
-    int newStart[2];
-    int newGoal[2];
-    scaleDown(start, newStart);
-    scaleDown(goal, newGoal);
-    open.push(GenerateNode(nullptr,newStart[0], newStart[1], 0, hypotf((newGoal[0] - newStart[0]), (newGoal[1] - newStart[1]))));
+    //int newStart[2];
+    //int newGoal[2];
+    //scaleDown(start, newStart);
+    //scaleDown(goal, newGoal);
+    open.push(GenerateNode(temp,start[0], start[1], 0, hypotf((goal[0] - start[0]), (goal[1] - start[1]))));
+    RobotPlayer::printQueue(open);
     while (!open.empty() && !foundGoal) {
         current = open.top();
         open.pop();
-        if (current->x == newGoal[0] && current->y == newGoal[1]) {
+        if (current->x == goal[0] && current->y == goal[1]) {
             foundGoal = true;
             while (current->parent != nullptr) {
                 path.insert(path.begin(), current);
@@ -1065,10 +1068,11 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
         }
         else
         {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; i <= 1; i++) {
+            for (int i = -1 * 20; i <= 1 * 20; i++) {
+                for (int j = -1 * 20; i <= 1 * 20; i++) {
                     //Node* node_successor = new Node();
-                    Node* node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
+                    Node* node_successor = new Node();
+                    node_successor = GenerateNode(current, current->x + i, current->y + j, current->distanceTraveled, current->distanceToGoal);
                     if (RobotPlayer::IsInQueue(node_successor, open)) {
                         if (node_successor->distanceTraveled <= current->distanceTraveled) {
                             goto line20;
@@ -1083,7 +1087,7 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                         open.push(node_successor);
                     }
                     else {
-                        node_successor->weight = node_successor->distanceTraveled + (int)hypotf(newGoal[0] - node_successor->x, newGoal[1] - node_successor->y);
+                        node_successor->weight = node_successor->distanceTraveled + (int)hypotf(goal[0] - node_successor->x, goal[1] - node_successor->y);
                         open.push(node_successor);
                     }
                     node_successor->weight = current->weight;
@@ -1092,8 +1096,8 @@ void RobotPlayer::aStar(float start[2], float goal[2], std::vector<Node*> path) 
                 closed.push(current);
             }
         }
-    }
-   // RobotPlayer::printQueue(open);
+    } 
+   RobotPlayer::printQueue(open);
 }
 
 // Local Variables: ***

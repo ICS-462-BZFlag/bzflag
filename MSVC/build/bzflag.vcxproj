@@ -336,9 +336,10 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\bzflag\ActionBinding.cxx" />
+    <ClCompile Include="..\..\src\bzflag\Astar.cxx" />
+    <ClCompile Include="..\..\src\bzflag\AStarNode.cxx" />
     <ClCompile Include="..\..\src\bzflag\AutoPilot.cxx" />
-    <ClCompile Include="..\..\src\bzflag\LinkedList.cxx" />
-    <ClCompile Include="..\..\src\bzflag\Node.cxx" />
+    <ClCompile Include="..\..\src\bzflag\dectree.cxx" />
     <ClCompile Include="..\..\src\bzflag\ServerListFilterHelpMenu.cxx" />
     <ClCompile Include="..\..\src\bzflag\ServerListFilterMenu.cxx" />
     <ClCompile Include="..\..\src\bzflag\bzflag.cxx">
@@ -917,6 +918,9 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ResourceCompile Include="..\Version.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\bzflag\Astar.h" />
+    <ClInclude Include="..\..\src\bzflag\AStarNode.h" />
+    <ClInclude Include="..\..\src\bzflag\dectree.h" />
     <ClInclude Include="..\..\src\bzflag\defaultBZDB.h" />
     <ClInclude Include="..\..\src\bzflag\clientConfig.h" />
     <ClInclude Include="..\..\src\bzflag\AudioMenu.h" />
@@ -953,7 +957,6 @@ copy "$(BZ_DEPS)\licenses\*" "..\..\bin_$(Configuration)_$(Platform)\licenses\"<
     <ClInclude Include="..\..\src\bzflag\JoinMenu.h" />
     <ClInclude Include="..\..\src\bzflag\KeyboardMapMenu.h" />
     <ClInclude Include="..\..\include\ListServer.h" />
-    <ClInclude Include="..\..\src\bzflag\LinkedList.h" />
     <ClInclude Include="..\..\src\bzflag\LocalCommand.h" />
     <ClInclude Include="..\..\src\bzflag\LocalPlayer.h" />
     <ClInclude Include="..\..\src\bzflag\MainMenu.h" />

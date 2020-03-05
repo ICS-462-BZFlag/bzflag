@@ -268,12 +268,9 @@
     <ClCompile Include="..\..\src\bzflag\stars.cxx">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\bzflag\Node.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\bzflag\LinkedList.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="..\..\src\bzflag\Astar.cxx" />
+    <ClCompile Include="..\..\src\bzflag\AStarNode.cxx" />
+    <ClCompile Include="..\..\src\bzflag\dectree.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\bzflag\AudioMenu.h">
@@ -546,9 +543,9 @@
     <ClInclude Include="..\..\src\bzflag\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\bzflag\LinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="..\..\src\bzflag\Astar.h" />
+    <ClInclude Include="..\..\src\bzflag\AStarNode.h" />
+    <ClInclude Include="..\..\src\bzflag\dectree.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bzflag.ico">

@@ -29,24 +29,24 @@ public:
 	bool isAccessible(void);
 	static bool isAccessible(int x, int y);
 	double getHeuristic(const AStarNode * goalNode) const;
-	inline int AStarNode::getX(void) const { return x; }
-	inline int AStarNode::getY(void) const { return y; }
-	inline void AStarNode::setX(int newX) { x = newX; }
-	inline void AStarNode::setY(int newY) { y = newY; }
-	inline int AStarNode::getPrevX(void) const { return prevX; }
-	inline int AStarNode::getPrevY(void) const { return prevY; }
-	inline void AStarNode::setPrevX(int newX) { prevX = newX; }
-	inline void AStarNode::setPrevY(int newY) { prevY = newY; }
-	inline float AStarNode::getScaledX(void) const { return x * SCALE; }
-	inline float AStarNode::getScaledY(void) const { return y * SCALE; }
-	inline double AStarNode::getCostSoFar(void) const { return costSoFar; }
-	inline void AStarNode::setCostSoFar(double newCostSoFar) { costSoFar = newCostSoFar; }
-	inline double AStarNode::getTotalCost(void) const { return totalCost; }
-	inline void AStarNode::setTotalCost(double newTotalCost) { totalCost = newTotalCost; }
-	inline AStarStatus AStarNode::getStatus(void) const { return status; }
-	inline void AStarNode::setStatus(AStarStatus newStatus) { status = newStatus; }
-    inline AStarAccessible AStarNode::getAccessibleP(void) const { return accessibleP; }
-    inline void AStarNode::setAccessibleP(AStarAccessible newAccessibleP) { accessibleP = newAccessibleP; }
+  inline int getX(void) const { return x; }
+  inline int getY(void) const { return y; }
+  inline void setX(int newX) { x = newX; }
+  inline void setY(int newY) { y = newY; }
+  inline int getPrevX(void) const { return prevX; }
+  inline int getPrevY(void) const { return prevY; }
+  inline void setPrevX(int newX) { prevX = newX; }
+  inline void setPrevY(int newY) { prevY = newY; }
+  inline float getScaledX(void) const { return x * SCALE; }
+  inline float getScaledY(void) const { return y * SCALE; }
+  inline double getCostSoFar(void) const { return costSoFar; }
+  inline void setCostSoFar(double newCostSoFar) { costSoFar = newCostSoFar; }
+  inline double getTotalCost(void) const { return totalCost; }
+  inline void setTotalCost(double newTotalCost) { totalCost = newTotalCost; }
+  inline AStarStatus getStatus(void) const { return status; }
+  inline void setStatus(AStarStatus newStatus) { status = newStatus; }
+  inline AStarAccessible getAccessibleP(void) const { return accessibleP; }
+  inline void setAccessibleP(AStarAccessible newAccessibleP) { accessibleP = newAccessibleP; }
 private:
 	int x, y;
 	int prevX, prevY;

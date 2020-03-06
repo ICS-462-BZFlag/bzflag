@@ -49,14 +49,14 @@ public:
     void        restart(const float* pos, float azimuth);
     void        explodeTank();
 /* code added by David Chin */
-	bool		RobotPlayer::amAlive(float dt);
+  bool		amAlive(float dt);
 	bool		returnTrue(float dt);
 	bool		returnFalse(float dt);
-	void		RobotPlayer::a1(float dt);
-	void		RobotPlayer::a2(float dt);
-	void		RobotPlayer::a3(float dt);
-	void		RobotPlayer::a4(float dt);
-	void		RobotPlayer::a5(float dt);
+  void		a1(float dt);
+  void		a2(float dt);
+  void		a3(float dt);
+  void		a4(float dt);
+  void		a5(float dt);
 /* end of code added by David Chin */
 
 private:

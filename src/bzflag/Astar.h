@@ -26,8 +26,8 @@ struct pless : public std::binary_function<Type *, Type *, bool> {
 // Stores the local data needed for A* Search
 class AStarGraph {
 public:
-	AStarGraph::AStarGraph() {}
-	AStarGraph::AStarGraph(const float startPos[3], const float goalPos[3]);
+  AStarGraph() {}
+  AStarGraph(const float startPos[3], const float goalPos[3]);
 	static void		aStarSearch(const float startPos[3], const float goalPos[3], vector< AStarNode > & path);
 	inline AStarNode *		getRecord(AStarNode n) {
 		return &closedArray[n.getX() + indexShift][n.getY() + indexShift];
@@ -45,7 +45,7 @@ private:
 	set<AStarNode *, pless<AStarNode> > openQueue;
 	void					startAStar(vector< AStarNode > & path);
 	vector<AStarNode *>		getSuccessors(AStarNode * node);
-	inline void AStarGraph::addToQueue(AStarNode * neighborNode, AStarNode * currentNode, double incrementalCost) {
+  inline void addToQueue(AStarNode * neighborNode, AStarNode * currentNode, double incrementalCost) {
 		neighborNode->setStatus(open);
 		neighborNode->setCostSoFar(currentNode->getCostSoFar() + incrementalCost);
 		neighborNode->setTotalCost(neighborNode->getCostSoFar() + neighborNode->getHeuristic(goalNode));

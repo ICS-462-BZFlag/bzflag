@@ -11,7 +11,7 @@
 // A node of the A* search graph
 
 // status is unseen (not yet visited), on the open list or on the closed list
-enum AStarStatus {unseen, open, closed};
+enum AStarStatus {unseen, openList, closed};
 
 enum AStarAccessible { unknown, accessible, inaccessible };
 

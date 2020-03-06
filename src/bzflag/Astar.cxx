@@ -12,7 +12,7 @@ AStarGraph::AStarGraph(const float startPos[3], const float goalPos[3])
 {
   if (closedArraySize > closedArrayFixedSize) {
     char buffer[128];
-    sprintf_s(buffer, "***Astar.cpp: closedArrayFixedSize is too small, needs to be %i***",
+    sprintf_l(buffer, "***Astar.cpp: closedArrayFixedSize is too small, needs to be %i***",
       closedArraySize);
     controlPanel->addMessage(buffer);
   }
@@ -53,7 +53,7 @@ void		AStarGraph::aStarSearch(const float startPos[3], const float goalPos[3], v
 	myAStarGraph.startAStar(path);
 	if (path.empty()) {
 		char buffer[128];
-		sprintf_s(buffer, "***AStarGraph::aStarSearch: could not find a path from (%f, %f) to (%f, %f)***",
+		sprintf(buffer, "***AStarGraph::aStarSearch: could not find a path from (%f, %f) to (%f, %f)***",
 			startPos[0], startPos[1], goalPos[0], goalPos[1]);
 		controlPanel->addMessage(buffer);
 	}
@@ -117,7 +117,7 @@ void		AStarGraph::startAStar(vector< AStarNode > & path)
 
 	if (openQueue.empty()) {
 		char buffer[128];
-		sprintf_s(buffer, "***AStarGraph::startAStar: empty openQueue (%i, %i) to (%i, %i)***",
+		sprintf(buffer, "***AStarGraph::startAStar: empty openQueue (%i, %i) to (%i, %i)***",
 			startNode->getX(), startNode->getY(), goalNode->getX(), goalNode->getY());
 		controlPanel->addMessage(buffer);
 	}

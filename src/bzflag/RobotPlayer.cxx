@@ -1067,7 +1067,7 @@ doUpdateFlag Tree Prints
 */
 void		RobotPlayer::actiondF1(float dt)
 {
-    serverLink->sendDropFlag(getId(), getPosition())
+    serverLink->sendDropFlag(getId(), getPosition());
     controlPanel->addMessage("A5. Head for cover.");
 }
 /* end of lines added by David Chin */

@@ -153,74 +153,74 @@ void            RobotPlayer::doUpdate(float dt)
     LocalPlayer::doUpdate(dt);
 
     float tankRadius = BZDBCache::tankRadius;
-    const float shotRange  = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
+    const float shotRange = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
     const float shotRadius = BZDB.eval(StateDatabase::BZDB_SHOTRADIUS);
 
     // fire shot if any available
-    timerForShot  -= dt;
+    timerForShot -= dt;
     if (timerForShot < 0.0f)
         timerForShot = 0.0f;
 
     if (getFiringStatus() != Ready)
         return;
 
-    bool  shoot   = false;
+    bool  shoot = false;
     const float azimuth = getAngle();
     // Allow shooting only if angle is near and timer has elapsed
 /* lines modified by David Chin */
     //if ((!path.empty()) && timerForShot <= 0.0f)
     if (timerForShot <= 0.0f && target)
-/* end of lines modified by David Chin */
+        /* end of lines modified by David Chin */
     {
         float p1[3];
         getProjectedPosition(target, p1);
-        const float* p2     = getPosition();
+        const float* p2 = getPosition();
         float shootingAngle = atan2f(p1[1] - p2[1], p1[0] - p2[0]);
         if (shootingAngle < 0.0f)
             shootingAngle += (float)(2.0 * M_PI);
-        float azimuthDiff   = shootingAngle - azimuth;
+        float azimuthDiff = shootingAngle - azimuth;
         if (azimuthDiff > M_PI)
             azimuthDiff -= (float)(2.0 * M_PI);
         else if (azimuthDiff < -M_PI)
             azimuthDiff += (float)(2.0 * M_PI);
 
         const float targetdistance = hypotf(p1[0] - p2[0], p1[1] - p2[1]) -
-                                     BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - tankRadius;
+            BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - tankRadius;
 
         const float missby = fabs(azimuthDiff) *
-                             (targetdistance - BZDBCache::tankLength);
+            (targetdistance - BZDBCache::tankLength);
         // only shoot if we miss by less than half a tanklength and no building inbetween
         if (missby < 0.5f * BZDBCache::tankLength &&
-                p1[2] < shotRadius)
+            p1[2] < shotRadius)
         {
-            float pos[3] = {getPosition()[0], getPosition()[1],
-                            getPosition()[2] +  BZDB.eval(StateDatabase::BZDB_MUZZLEHEIGHT)
-                           };
-            float dir[3] = {cosf(azimuth), sinf(azimuth), 0.0f};
+            float pos[3] = { getPosition()[0], getPosition()[1],
+                            getPosition()[2] + BZDB.eval(StateDatabase::BZDB_MUZZLEHEIGHT)
+            };
+            float dir[3] = { cosf(azimuth), sinf(azimuth), 0.0f };
             Ray tankRay(pos, dir);
             float maxdistance = targetdistance;
             if (!ShotStrategy::getFirstBuilding(tankRay, -0.5f, maxdistance))
             {
-	            shoot=true;
+                shoot = true;
                 // try to not aim at teammates
-                for (int i=0; i <= World::getWorld()->getCurMaxPlayers(); i++)
+                for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
                 {
-                    Player *p = 0;
+                    Player* p = 0;
                     if (i < World::getWorld()->getCurMaxPlayers())
                         p = World::getWorld()->getPlayer(i);
                     else
                         p = LocalPlayer::getMyTank();
                     if (!p || p->getId() == getId() || validTeamTarget(p) ||
-                            !p->isAlive()) continue;
-                    float relpos[3] = {getPosition()[0] - p->getPosition()[0],
+                        !p->isAlive()) continue;
+                    float relpos[3] = { getPosition()[0] - p->getPosition()[0],
                                        getPosition()[1] - p->getPosition()[1],
                                        getPosition()[2] - p->getPosition()[2]
-                                      };
+                    };
                     Ray ray(relpos, dir);
                     float impact = rayAtDistanceFromOrigin(ray, 5 * BZDBCache::tankRadius);
                     if (impact > 0 && impact < shotRange)
                     {
-                        shoot=false;
+                        shoot = false;
                         timerForShot = 0.1f;
                         break;
                     }
@@ -233,14 +233,20 @@ void            RobotPlayer::doUpdate(float dt)
             }
         }
     }
-/* lines added by David Chin */
-  // drop any flags that are not opponent team flags
-  // that can be dropped (i.e., are not FlagSticky)
-  FlagType* myFlag = getFlag();
-  if (myFlag && (myFlag != Flags::Null) &&
-    (myFlag->endurance != FlagSticky) &&
-    ((myFlag->flagTeam == NoTeam) || (myFlag->flagTeam == getTeam())))
-    serverLink->sendDropFlag(getId(), getPosition());
+    /* lines added by David Chin */
+      // drop any flags that are not opponent team flags
+      // that can be dropped (i.e., are not FlagSticky)
+    FlagType* myFlag = getFlag(); //make this into a decision tree
+    if (myFlag && (myFlag != Flags::Null)) {
+        if (myFlag->endurance != FlagSticky) {
+            if (myFlag->flagTeam == NoTeam) {
+                serverLink->sendDropFlag(getId(), getPosition());
+            }
+            if (myFlag->flagTeam == getTeam()) {
+                serverLink->sendDropFlag(getId(), getPosition());
+            }
+        }
+    }
 /* end of lines added by David Chin */
 }
 
@@ -298,7 +304,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
                     float trueVec[2] = {(position[0]-shotPos[0])/dist,(position[1]-shotPos[1])/dist};
                     float dotProd = trueVec[0]*shotUnitVec[0]+trueVec[1]*shotUnitVec[1];
 
-                    if (dotProd > 0.97f)
+                    if (dotProd > 0.97f)// evading code
                     {
                         float rotation;
                         float rotation1 = (float)((shotAngle + M_PI/2.0) - azimuth);
@@ -315,6 +321,7 @@ void            RobotPlayer::doUpdateMotion(float dt)
                             rotation = rotation2;
                         setDesiredSpeed(1.0f);
                         setDesiredAngVel(rotation);
+                        controlPanel->addMessage("I am Evading");
                         evading = true;
                     }
                 }
@@ -1019,8 +1026,23 @@ bool		RobotPlayer::amAlive(float dt)
 {
 	return isAlive();
 }
+/*
+Drop Flags Decision Tree
+*/
+bool RobotPlayer::amHoldingFlag(float dt) {
+    return (getFlag() && (getFlag() != Flags::Null));
+}
+bool RobotPlayer::isFlagSticky(float dt) {
+    return (getFlag()->endurance != FlagSticky);
+}
+bool RobotPlayer::flagNoTeam(float dt) {
+    return (getFlag()->flagTeam == NoTeam);
+}
+bool RobotPlayer::flagMyTeam(float dt) {
+    return (getFlag()->flagTeam == getTeam());
+}
 
-void		RobotPlayer::a1(float dt)
+void	RobotPlayer::a1(float dt)
 {
 	controlPanel->addMessage("A1. Seek out enemies.");
 }
@@ -1038,6 +1060,14 @@ void		RobotPlayer::a4(float dt)
 }
 void		RobotPlayer::a5(float dt)
 {
+    controlPanel->addMessage("A5. Head for cover.");
+}
+/*
+doUpdateFlag Tree Prints
+*/
+void		RobotPlayer::actiondF1(float dt)
+{
+    serverLink->sendDropFlag(getId(), getPosition())
     controlPanel->addMessage("A5. Head for cover.");
 }
 /* end of lines added by David Chin */

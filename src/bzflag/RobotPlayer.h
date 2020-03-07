@@ -50,6 +50,10 @@ public:
     void        explodeTank();
 /* code added by David Chin */
 	bool		RobotPlayer::amAlive(float dt);
+	bool amHoldingFlag(float dt);
+	bool isFlagSticky(float dt);
+	bool flagNoTeam(float dt);
+	bool flagMyTeam(float dt);
 	bool		returnTrue(float dt);
 	bool		returnFalse(float dt);
 	void		RobotPlayer::a1(float dt);
@@ -57,6 +61,7 @@ public:
 	void		RobotPlayer::a3(float dt);
 	void		RobotPlayer::a4(float dt);
 	void		RobotPlayer::a5(float dt);
+	void actiondF1(float dt);
 /* end of code added by David Chin */
 
 private:

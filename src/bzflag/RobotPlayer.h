@@ -118,6 +118,8 @@ private:
     float targetdistance;
     float direction[3];
     bool shoot = false;
+    bool evading = false;
+    float shotAngle;
 };
 
 #endif // BZF_ROBOT_PLAYER_H

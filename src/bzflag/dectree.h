@@ -119,9 +119,9 @@ namespace aicore
 	public:
 		static void init();
 		// Holds our list of decisions
-		static DecisionPtr doUpdateMotionDecisions[7];
+		static DecisionPtr doUpdateMotionDecisions[2];
 		// Holds our list of actions
-		static ActionPtr doUpdateMotionActions[5];
+		static ActionPtr doUpdateMotionActions[3];
         //holds our list of decisions based on flags
         static DecisionPtr doUpdateFlagsDecisions[5];
         //Holes our list of actions based on flags

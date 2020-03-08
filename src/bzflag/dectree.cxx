@@ -78,35 +78,13 @@ namespace aicore
 		doUpdateMotionDecisions[0].trueBranch = &doUpdateMotionDecisions[1];
 		doUpdateMotionDecisions[0].falseBranch = &doUpdateMotionActions[0];
 
-		doUpdateMotionDecisions[1].decFuncPtr = &RobotPlayer::returnTrue;
-		doUpdateMotionDecisions[1].trueBranch = &doUpdateMotionActions[0];
-		doUpdateMotionDecisions[1].falseBranch = &doUpdateMotionActions[1];
+		doUpdateMotionDecisions[1].decFuncPtr = &RobotPlayer::isShotComing;
+		doUpdateMotionDecisions[1].trueBranch = &doUpdateMotionActions[1];
+		doUpdateMotionDecisions[1].falseBranch = &doUpdateMotionActions[2];
 
-		doUpdateMotionDecisions[2].decFuncPtr = &RobotPlayer::returnFalse;
-		doUpdateMotionDecisions[2].trueBranch = &doUpdateMotionDecisions[3];
-		doUpdateMotionDecisions[2].falseBranch = &doUpdateMotionDecisions[4];
-
-		doUpdateMotionDecisions[3].decFuncPtr = &RobotPlayer::returnTrue;
-		doUpdateMotionDecisions[3].trueBranch = &doUpdateMotionDecisions[5];
-		doUpdateMotionDecisions[3].falseBranch = &doUpdateMotionActions[2];
-
-		doUpdateMotionDecisions[4].decFuncPtr = &RobotPlayer::returnTrue;
-		doUpdateMotionDecisions[4].trueBranch = &doUpdateMotionActions[2];
-		doUpdateMotionDecisions[4].falseBranch = &doUpdateMotionActions[3];
-
-		doUpdateMotionDecisions[5].decFuncPtr = &RobotPlayer::returnTrue;
-		doUpdateMotionDecisions[5].trueBranch = &doUpdateMotionActions[2];
-		doUpdateMotionDecisions[5].falseBranch = &doUpdateMotionDecisions[6];
-
-		doUpdateMotionDecisions[6].decFuncPtr = &RobotPlayer::returnTrue;
-		doUpdateMotionDecisions[6].trueBranch = &doUpdateMotionActions[4];
-		doUpdateMotionDecisions[6].falseBranch = &doUpdateMotionActions[2];
-
-		doUpdateMotionActions[0].actFuncPtr = &RobotPlayer::a1;
-		doUpdateMotionActions[1].actFuncPtr = &RobotPlayer::a2;
-		doUpdateMotionActions[2].actFuncPtr = &RobotPlayer::a3;
-		doUpdateMotionActions[3].actFuncPtr = &RobotPlayer::a4;
-		doUpdateMotionActions[4].actFuncPtr = &RobotPlayer::a5;
+		doUpdateMotionActions[0].actFuncPtr = &RobotPlayer::doNothing;
+		doUpdateMotionActions[1].actFuncPtr = &RobotPlayer::EvasiveManeuvers;
+		doUpdateMotionActions[2].actFuncPtr = &RobotPlayer::followAStar;
         /*
         DoUpdate Shooting Tree
         */
@@ -164,8 +142,8 @@ namespace aicore
         doUpdateFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
 	}
 
-	DecisionPtr DecisionTrees::doUpdateMotionDecisions[7];
-	ActionPtr DecisionTrees::doUpdateMotionActions[5];
+	DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];
+	ActionPtr DecisionTrees::doUpdateMotionActions[3];
     DecisionPtr DecisionTrees::doUpdateFlagsDecisions[5];
     ActionPtr DecisionTrees::doUpdateFlagsActions[2];
     DecisionPtr DecisionTrees::doUpdateShootDecisions[6];

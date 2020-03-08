@@ -1041,6 +1041,122 @@ bool RobotPlayer::flagNoTeam(float dt) {
 bool RobotPlayer::flagMyTeam(float dt) {
     return (getFlag()->flagTeam == getTeam());
 }
+void RobotPlayer::aDropFlag(float dt)
+{
+    serverLink->sendDropFlag(getId(), getPosition());
+    controlPanel->addMessage("A5. Head for cover.");
+}
+/*
+Do update Shooting Functions
+*/
+bool RobotPlayer::isFiringStatusReady(float dt) {
+    return getFiringStatus() == Ready;
+}
+bool RobotPlayer::hasShotTimerElapsed(float dt) {
+    return timerForShot <= 0.0f;
+}
+bool RobotPlayer::willTheShotMiss(float dt) {
+/*
+creation of variables to use in this function
+*/
+    float p1[3];
+    const float azimuth = getAngle();
+    float tankRadius = BZDBCache::tankRadius;
+    const float shotRadius = BZDB.eval(StateDatabase::BZDB_SHOTRADIUS);
+    if (target) {
+        /*
+        Actual function stolen from the original doUpdate function
+        */
+        getProjectedPosition(target, p1);
+        const float* p2 = getPosition();
+        float shootingAngle = atan2f(p1[1] - p2[1], p1[0] - p2[0]);
+        if (shootingAngle < 0.0f)
+            shootingAngle += (float)(2.0 * M_PI);
+        float azimuthDiff = shootingAngle - azimuth;
+        if (azimuthDiff > M_PI)
+            azimuthDiff -= (float)(2.0 * M_PI);
+        else if (azimuthDiff < -M_PI)
+            azimuthDiff += (float)(2.0 * M_PI);
+
+        targetdistance = hypotf(p1[0] - p2[0], p1[1] - p2[1]) -
+            BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - tankRadius;
+
+        const float missby = fabs(azimuthDiff) *
+            (targetdistance - BZDBCache::tankLength);
+        return (missby < 0.5f * BZDBCache::tankLength && p1[2] < shotRadius);
+    }
+    else {
+        return false;
+    }
+}
+bool RobotPlayer::isBlockedByBuildings(float dt) {
+    shoot = true;
+    const float azimuth = getAngle();
+    float pos[3] = {
+        getPosition()[0],
+        getPosition()[1],
+        getPosition()[2] + BZDB.eval(StateDatabase::BZDB_MUZZLEHEIGHT)
+    };
+    direction[0] = cosf(azimuth);
+    direction[1] = sinf(azimuth);
+    direction[2] = 0.0f;
+    
+    Ray tankRay(pos, direction);
+    float maxdistance = targetdistance;
+    return ShotStrategy::getFirstBuilding(tankRay, -0.5f, maxdistance);
+}
+bool RobotPlayer::isBlockedByTeammates(float dt) {
+    const float shotRange = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
+    for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
+    {
+        Player* p = 0;
+        if (i < World::getWorld()->getCurMaxPlayers())
+            p = World::getWorld()->getPlayer(i);
+        else
+            p = LocalPlayer::getMyTank();
+        if (!p || p->getId() == getId() || validTeamTarget(p) ||
+            !p->isAlive()) continue;
+        float relpos[3] = { getPosition()[0] - p->getPosition()[0],
+                           getPosition()[1] - p->getPosition()[1],
+                           getPosition()[2] - p->getPosition()[2]
+        };
+        Ray ray(relpos, direction);
+        float impact = rayAtDistanceFromOrigin(ray, 5 * BZDBCache::tankRadius);
+        if (impact > 0 && impact < shotRange)
+        {
+            shoot = false;
+            return true;
+        }
+    }
+    return false;
+}
+void RobotPlayer::setShotTimer(float dt) {
+    timerForShot = 0.1f;
+}
+void RobotPlayer::fireTheShot(float dt) {
+    if (shoot && fireShot())
+    {
+        timerForShot = float(bzfrand()) * 0.6f + 0.2f;
+    }
+}
+/*
+Do Updaate Motion A*
+*/
+bool RobotPlayer::isShotComing(float dt) {
+    return true;
+}
+void RobotPlayer::EvasiveManeuvers(float dt) {
+
+}
+void RobotPlayer::followAStar(float dt) {
+
+}
+/*
+General Do Nothing Function
+*/
+void RobotPlayer::doNothing(float dt) {
+    controlPanel->addMessage("Doing Nothing");
+}
 
 void	RobotPlayer::a1(float dt)
 {
@@ -1062,14 +1178,7 @@ void		RobotPlayer::a5(float dt)
 {
     controlPanel->addMessage("A5. Head for cover.");
 }
-/*
-doUpdateFlag Tree Prints
-*/
-void		RobotPlayer::actiondF1(float dt)
-{
-    serverLink->sendDropFlag(getId(), getPosition());
-    controlPanel->addMessage("A5. Head for cover.");
-}
+
 /* end of lines added by David Chin */
 
 // Local Variables: ***

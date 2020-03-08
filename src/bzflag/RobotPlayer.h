@@ -54,14 +54,25 @@ public:
 	bool isFlagSticky(float dt);
 	bool flagNoTeam(float dt);
 	bool flagMyTeam(float dt);
+	bool isFiringStatusReady(float dt);
+	bool hasShotTimerElapsed(float dt);
+	bool willTheShotMiss(float dt);
+	bool isBlockedByBuildings(float dt);
+	bool isBlockedByTeammates(float dt);
+    void setShotTimer(float dt);
+    void fireTheShot(float dt);
+    bool isShotComing(float dt);
+    void EvasiveManeuvers(float dt);
+    void followAStar(float dt);
 	bool		returnTrue(float dt);
 	bool		returnFalse(float dt);
+	void doNothing(float dt);
 	void		RobotPlayer::a1(float dt);
 	void		RobotPlayer::a2(float dt);
 	void		RobotPlayer::a3(float dt);
 	void		RobotPlayer::a4(float dt);
 	void		RobotPlayer::a5(float dt);
-	void actiondF1(float dt);
+	void aDropFlag(float dt);
 /* end of code added by David Chin */
 
 private:
@@ -104,6 +115,9 @@ private:
     std::vector< AStarNode > AstarPath; // planner result path
     AStarNode pathGoalNode;	// goal position for current planner result
 /* end of lines added by David Chin */
+    float targetdistance;
+    float direction[3];
+    bool shoot = false;
 };
 
 #endif // BZF_ROBOT_PLAYER_H

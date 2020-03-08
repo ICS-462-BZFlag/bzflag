@@ -107,21 +107,50 @@ namespace aicore
 		doUpdateMotionActions[2].actFuncPtr = &RobotPlayer::a3;
 		doUpdateMotionActions[3].actFuncPtr = &RobotPlayer::a4;
 		doUpdateMotionActions[4].actFuncPtr = &RobotPlayer::a5;
+        /*
+        DoUpdate Shooting Tree
+        */
+        doUpdateShootDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
+        doUpdateShootDecisions[0].trueBranch = &doUpdateShootDecisions[1];
+        doUpdateShootDecisions[0].falseBranch = &doUpdateShootActions[0];
 
+        doUpdateShootDecisions[1].decFuncPtr = &RobotPlayer::isFiringStatusReady;
+        doUpdateShootDecisions[1].trueBranch = &doUpdateShootDecisions[2];
+        doUpdateShootDecisions[1].falseBranch = &doUpdateShootActions[0];
+
+        doUpdateShootDecisions[2].decFuncPtr = &RobotPlayer::hasShotTimerElapsed;
+        doUpdateShootDecisions[2].trueBranch = &doUpdateShootDecisions[3];
+        doUpdateShootDecisions[2].falseBranch = &doUpdateShootActions[0];
+
+        doUpdateShootDecisions[3].decFuncPtr = &RobotPlayer::willTheShotMiss;
+        doUpdateShootDecisions[3].trueBranch = &doUpdateShootDecisions[4];
+        doUpdateShootDecisions[3].falseBranch = &doUpdateShootActions[0];
+
+        doUpdateShootDecisions[4].decFuncPtr = &RobotPlayer::isBlockedByBuildings;
+        doUpdateShootDecisions[4].trueBranch = &doUpdateShootDecisions[5];
+        doUpdateShootDecisions[4].falseBranch = &doUpdateShootActions[0];
+
+        doUpdateShootDecisions[5].decFuncPtr = &RobotPlayer::isBlockedByTeammates;
+        doUpdateShootDecisions[5].trueBranch = &doUpdateShootActions[1];
+        doUpdateShootDecisions[5].falseBranch = &doUpdateShootActions[2];
+
+        doUpdateShootActions[0].actFuncPtr = &RobotPlayer::doNothing;
+        doUpdateShootActions[1].actFuncPtr = &RobotPlayer::setShotTimer;
+        doUpdateShootActions[2].actFuncPtr = &RobotPlayer::fireTheShot;
         /*
         DropFlags Decision Tree
         */
         doUpdateFlagsDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
         doUpdateFlagsDecisions[0].trueBranch = &doUpdateFlagsDecisions[1];
-        doUpdateFlagsDecisions[0].falseBranch = &doUpdateFlagsDecisions[0];
+        doUpdateFlagsDecisions[0].falseBranch = &doUpdateFlagsActions[0];
         
         doUpdateFlagsDecisions[1].decFuncPtr = &RobotPlayer::amHoldingFlag;
         doUpdateFlagsDecisions[1].trueBranch = &doUpdateFlagsDecisions[2];
-        doUpdateFlagsDecisions[1].falseBranch = &doUpdateFlagsDecisions[0];
+        doUpdateFlagsDecisions[1].falseBranch = &doUpdateFlagsActions[0];
 
         doUpdateFlagsDecisions[2].decFuncPtr = &RobotPlayer::isFlagSticky;
         doUpdateFlagsDecisions[2].trueBranch = &doUpdateFlagsDecisions[3];
-        doUpdateFlagsDecisions[2].falseBranch = &doUpdateFlagsDecisions[0];
+        doUpdateFlagsDecisions[2].falseBranch = &doUpdateFlagsActions[0];
 
         doUpdateFlagsDecisions[3].decFuncPtr = &RobotPlayer::flagNoTeam;
         doUpdateFlagsDecisions[3].trueBranch = &doUpdateFlagsActions[0];
@@ -129,14 +158,17 @@ namespace aicore
 
         doUpdateFlagsDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
         doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsActions[0];
-        doUpdateFlagsDecisions[4].falseBranch = &doUpdateFlagsDecisions[0];
+        doUpdateFlagsDecisions[4].falseBranch = &doUpdateFlagsActions[0];
 
-        doUpdateFlagsActions[0].actFuncPtr = &RobotPlayer::actiondF1;
+        doUpdateFlagsActions[0].actFuncPtr = &RobotPlayer::doNothing;
+        doUpdateFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
 	}
 
 	DecisionPtr DecisionTrees::doUpdateMotionDecisions[7];
 	ActionPtr DecisionTrees::doUpdateMotionActions[5];
     DecisionPtr DecisionTrees::doUpdateFlagsDecisions[5];
-    ActionPtr DecisionTrees::doUpdateFlagsActions[1];
+    ActionPtr DecisionTrees::doUpdateFlagsActions[2];
+    DecisionPtr DecisionTrees::doUpdateShootDecisions[6];
+    ActionPtr DecisionTrees::doUpdateShootActions[3];
 
 }; // end of namespace

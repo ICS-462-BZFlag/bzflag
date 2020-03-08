@@ -220,7 +220,7 @@
 		0370A48D1B0C924B00FEC9F7 /* modeltool.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0370A4691B0C8FBA00FEC9F7 /* modeltool.cxx */; };
 		0370A48E1B0C924B00FEC9F7 /* Q3BSP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0370A46A1B0C8FBA00FEC9F7 /* Q3BSP.cxx */; };
 		0370A48F1B0C924B00FEC9F7 /* wavefrontOBJ.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0370A46C1B0C8FBA00FEC9F7 /* wavefrontOBJ.cxx */; };
-      037D645620A1EB25000E5586 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 037D645520A1EB25000E5586 /* libGLEW.a */; };
+		037D645620A1EB25000E5586 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 037D645520A1EB25000E5586 /* libGLEW.a */; };
 		038D05E51DB5A59300A00C9E /* COPYING.LGPL in Resources */ = {isa = PBXBuildFile; fileRef = 038D05E41DB5A59300A00C9E /* COPYING.LGPL */; };
 		038DA4DB1BB645CA0009F369 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 038DA4DA1BB645CA0009F369 /* libz.tbd */; };
 		038DA4DD1BB645D80009F369 /* libcurl.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 038DA4DC1BB645D80009F369 /* libcurl.tbd */; };
@@ -525,6 +525,9 @@
 		C353B1E71AE23CA900C5AED5 /* CustomZoneSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C353B1E01AE23C8100C5AED5 /* CustomZoneSample.cpp */; };
 		C39F69371E3D3E8100132C55 /* customPollTypeSample.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = C333EFC91E2B9F0800B4B182 /* customPollTypeSample.dylib */; };
 		DF28982B16B4F5AE006C78AC /* ShotManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DF28982916B4F5AE006C78AC /* ShotManager.cxx */; };
+		EC6E64DF24154D130056C9AF /* AStarNode.cxx in Sources */ = {isa = PBXBuildFile; fileRef = EC6E64DD24154D130056C9AF /* AStarNode.cxx */; };
+		EC6E64E024154D130056C9AF /* Astar.cxx in Sources */ = {isa = PBXBuildFile; fileRef = EC6E64DE24154D130056C9AF /* Astar.cxx */; };
+		EC6E64E324154D1F0056C9AF /* dectree.cxx in Sources */ = {isa = PBXBuildFile; fileRef = EC6E64E224154D1E0056C9AF /* dectree.cxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1595,7 +1598,7 @@
 		0370A4861B0C921A00FEC9F7 /* modeltool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = modeltool; sourceTree = BUILT_PRODUCTS_DIR; };
 		037C3B81166C8F0E00BA90F1 /* BZFlag-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BZFlag-Info.plist"; sourceTree = "<group>"; };
 		037D645520A1EB25000E5586 /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGLEW.a; path = /usr/local/lib/libGLEW.a; sourceTree = "<absolute>"; };
-      03835D06166CB12D008CE9C3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		03835D06166CB12D008CE9C3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		038D05E41DB5A59300A00C9E /* COPYING.LGPL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = COPYING.LGPL; path = ../COPYING.LGPL; sourceTree = "<group>"; };
 		038DA4DA1BB645CA0009F369 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		038DA4DC1BB645D80009F369 /* libcurl.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.tbd; path = usr/lib/libcurl.tbd; sourceTree = SDKROOT; };
@@ -1756,6 +1759,12 @@
 		DF8950DD16E42CF800BA9DD5 /* playerHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = playerHandler.cpp; path = ../plugins/serverSidePlayerSample/playerHandler.cpp; sourceTree = "<group>"; };
 		DF8950DE16E42CF800BA9DD5 /* playerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = playerHandler.h; path = ../plugins/serverSidePlayerSample/playerHandler.h; sourceTree = "<group>"; };
 		DF8950DF16E42CF800BA9DD5 /* serverSidePlayerSample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = serverSidePlayerSample.cpp; path = ../plugins/serverSidePlayerSample/serverSidePlayerSample.cpp; sourceTree = "<group>"; };
+		EC6E64DB24154D130056C9AF /* AStarNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AStarNode.h; sourceTree = "<group>"; };
+		EC6E64DC24154D130056C9AF /* Astar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Astar.h; sourceTree = "<group>"; };
+		EC6E64DD24154D130056C9AF /* AStarNode.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AStarNode.cxx; sourceTree = "<group>"; };
+		EC6E64DE24154D130056C9AF /* Astar.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Astar.cxx; sourceTree = "<group>"; };
+		EC6E64E124154D1E0056C9AF /* dectree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dectree.h; sourceTree = "<group>"; };
+		EC6E64E224154D1E0056C9AF /* dectree.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dectree.cxx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2111,7 +2120,7 @@
 				03C8EF11167AC52800BB07A5 /* libcommon.a in Frameworks */,
 				0394E7E3167B18CF007F4035 /* libnet.a in Frameworks */,
 				03C8EF13167AC53000BB07A5 /* libgame.a in Frameworks */,
-            037D645620A1EB25000E5586 /* libGLEW.a in Frameworks */,
+				037D645620A1EB25000E5586 /* libGLEW.a in Frameworks */,
 				03C8EF1E167AC59A00BB07A5 /* libtank.a in Frameworks */,
 				03C8EF14167AC53400BB07A5 /* libgeometry.a in Frameworks */,
 				03C8EF15167AC53700BB07A5 /* libobstacle.a in Frameworks */,
@@ -2407,6 +2416,12 @@
 		0355431D166C846F008806E9 /* bzflag */ = {
 			isa = PBXGroup;
 			children = (
+				EC6E64E224154D1E0056C9AF /* dectree.cxx */,
+				EC6E64E124154D1E0056C9AF /* dectree.h */,
+				EC6E64DE24154D130056C9AF /* Astar.cxx */,
+				EC6E64DC24154D130056C9AF /* Astar.h */,
+				EC6E64DD24154D130056C9AF /* AStarNode.cxx */,
+				EC6E64DB24154D130056C9AF /* AStarNode.h */,
 				0355431E166C846F008806E9 /* ActionBinding.cxx */,
 				0355431F166C846F008806E9 /* ActionBinding.h */,
 				03554320166C846F008806E9 /* AudioMenu.cxx */,
@@ -3446,7 +3461,7 @@
 				038DA4DC1BB645D80009F369 /* libcurl.tbd */,
 				038DA4DA1BB645CA0009F369 /* libz.tbd */,
 				03DBE9AC1B30D2ED00711E71 /* libcares.a */,
-            037D645520A1EB25000E5586 /* libGLEW.a */,
+				037D645520A1EB25000E5586 /* libGLEW.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -4735,6 +4750,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 03BFC2FF166C637600836142;
@@ -5511,6 +5527,7 @@
 				03C8EE7A167AC26A00BB07A5 /* daylight.cxx in Sources */,
 				03C8EE7C167AC26A00BB07A5 /* defaultBZDB.cxx in Sources */,
 				03C8EE7E167AC26A00BB07A5 /* DisplayMenu.cxx in Sources */,
+				EC6E64DF24154D130056C9AF /* AStarNode.cxx in Sources */,
 				03C8EE80167AC26A00BB07A5 /* Downloads.cxx in Sources */,
 				03C8EE82167AC26A00BB07A5 /* EffectsMenu.cxx in Sources */,
 				03C8EE84167AC26A00BB07A5 /* effectsRenderer.cxx in Sources */,
@@ -5522,6 +5539,7 @@
 				03C8EE90167AC26A00BB07A5 /* GUIOptionsMenu.cxx in Sources */,
 				03C8EE92167AC26A00BB07A5 /* HelpMenu.cxx in Sources */,
 				03C8EE94167AC26A00BB07A5 /* HUDDialog.cxx in Sources */,
+				EC6E64E024154D130056C9AF /* Astar.cxx in Sources */,
 				03C8EE96167AC26A00BB07A5 /* HUDDialogStack.cxx in Sources */,
 				03C8EE98167AC26A00BB07A5 /* HUDRenderer.cxx in Sources */,
 				03C8EE9A167AC26A00BB07A5 /* HUDui.cxx in Sources */,
@@ -5562,6 +5580,7 @@
 				03C8EEDD167AC26A00BB07A5 /* ScoreboardRenderer.cxx in Sources */,
 				03C8EEDF167AC26A00BB07A5 /* SegmentedShotStrategy.cxx in Sources */,
 				03C8EEE1167AC26A00BB07A5 /* ServerCommandKey.cxx in Sources */,
+				EC6E64E324154D1F0056C9AF /* dectree.cxx in Sources */,
 				03C8EEE3167AC26A00BB07A5 /* ServerLink.cxx in Sources */,
 				03C8EEE5167AC26A00BB07A5 /* ServerListFilter.cxx in Sources */,
 				03C8EEE7167AC26A00BB07A5 /* ServerMenu.cxx in Sources */,

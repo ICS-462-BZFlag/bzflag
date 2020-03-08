@@ -739,35 +739,43 @@ bool		RobotPlayer::amAlive(float dt)
 {
 	return isAlive();
 }
+
 /*
 Drop Flags Decision Tree
 */
 bool RobotPlayer::amHoldingFlag(float dt) {
     return (getFlag() && (getFlag() != Flags::Null));
 }
+
 bool RobotPlayer::isFlagSticky(float dt) {
     return (getFlag()->endurance != FlagSticky);
 }
+
 bool RobotPlayer::flagNoTeam(float dt) {
     return (getFlag()->flagTeam == NoTeam);
 }
+
 bool RobotPlayer::flagMyTeam(float dt) {
     return (getFlag()->flagTeam == getTeam());
 }
+
 void RobotPlayer::aDropFlag(float dt)
 {
     serverLink->sendDropFlag(getId(), getPosition());
     controlPanel->addMessage("A5. Head for cover.");
 }
+
 /*
 Do update Shooting Functions
 */
 bool RobotPlayer::isFiringStatusReady(float dt) {
     return getFiringStatus() == Ready;
 }
+
 bool RobotPlayer::hasShotTimerElapsed(float dt) {
     return timerForShot <= 0.0f;
 }
+
 bool RobotPlayer::willTheShotMiss(float dt) {
 /*
 creation of variables to use in this function
@@ -802,6 +810,7 @@ creation of variables to use in this function
         return false;
     }
 }
+
 bool RobotPlayer::isBlockedByBuildings(float dt) {
     shoot = true;
     const float azimuth = getAngle();
@@ -818,6 +827,7 @@ bool RobotPlayer::isBlockedByBuildings(float dt) {
     float maxdistance = targetdistance;
     return ShotStrategy::getFirstBuilding(tankRay, -0.5f, maxdistance);
 }
+
 bool RobotPlayer::isBlockedByTeammates(float dt) {
     const float shotRange = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
     for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
@@ -843,15 +853,18 @@ bool RobotPlayer::isBlockedByTeammates(float dt) {
     }
     return false;
 }
+
 void RobotPlayer::setShotTimer(float dt) {
     timerForShot = 0.1f;
 }
+
 void RobotPlayer::fireTheShot(float dt) {
     if (shoot && fireShot())
     {
         timerForShot = float(bzfrand()) * 0.6f + 0.2f;
     }
 }
+
 /*
 Do Updaate Motion A*
 */
@@ -909,6 +922,7 @@ bool RobotPlayer::isShotComing(float dt) {
     }
     return false;
 }
+
 void RobotPlayer::EvasiveManeuvers(float dt) {
     float azimuth = getAngle();
     float rotation;
@@ -928,6 +942,7 @@ void RobotPlayer::EvasiveManeuvers(float dt) {
     setDesiredAngVel(rotation);
     evading = true;
 }
+
 void RobotPlayer::followAStar(float dt) {
     float distance;
     float v[2];
@@ -1040,6 +1055,7 @@ void RobotPlayer::followAStar(float dt) {
             setDesiredSpeed(1.0f);
     }
 }
+
 /*
 General Do Nothing Function
 */
@@ -1051,18 +1067,22 @@ void	RobotPlayer::a1(float dt)
 {
 	controlPanel->addMessage("A1. Seek out enemies.");
 }
+
 void		RobotPlayer::a2(float dt)
 {
     controlPanel->addMessage("A2. Seek out health packs.");
 }
+
 void		RobotPlayer::a3(float dt)
 {
     controlPanel->addMessage("A3. Attack enemy.");
 }
+
 void		RobotPlayer::a4(float dt)
 {
     controlPanel->addMessage("A4. Run away from enemy.");
 }
+
 void		RobotPlayer::a5(float dt)
 {
     controlPanel->addMessage("A5. Head for cover.");

@@ -51,7 +51,7 @@ public:
 /* code added by David Chin */
 	bool		RobotPlayer::amAlive(float dt);
 	bool amHoldingFlag(float dt);
-	bool isFlagSticky(float dt);
+	bool isFlagNotSticky(float dt);
 	bool flagNoTeam(float dt);
 	bool flagMyTeam(float dt);
 	bool isFiringStatusReady(float dt);

@@ -120,15 +120,15 @@ namespace aicore
                 /*
                     DropFlags Decision Tree
                 */
-		doUpdateFlagsDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
+		        doUpdateFlagsDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
                 doUpdateFlagsDecisions[0].trueBranch = &doUpdateFlagsDecisions[1];
                 doUpdateFlagsDecisions[0].falseBranch = &doUpdateFlagsActions[0];
         
-		doUpdateFlagsDecisions[1].decFuncPtr = &RobotPlayer::amHoldingFlag;
+		        doUpdateFlagsDecisions[1].decFuncPtr = &RobotPlayer::amHoldingFlag;
                 doUpdateFlagsDecisions[1].trueBranch = &doUpdateFlagsDecisions[2];
-		doUpdateFlagsDecisions[1].falseBranch = &doUpdateFlagsActions[0];
+		        doUpdateFlagsDecisions[1].falseBranch = &doUpdateFlagsActions[0];
 
-                doUpdateFlagsDecisions[2].decFuncPtr = &RobotPlayer::isFlagSticky;
+                doUpdateFlagsDecisions[2].decFuncPtr = &RobotPlayer::isFlagNotSticky;
                 doUpdateFlagsDecisions[2].trueBranch = &doUpdateFlagsDecisions[3];
                 doUpdateFlagsDecisions[2].falseBranch = &doUpdateFlagsActions[0];
 
@@ -136,12 +136,12 @@ namespace aicore
                 doUpdateFlagsDecisions[3].trueBranch = &doUpdateFlagsActions[1];
                 doUpdateFlagsDecisions[3].falseBranch = &doUpdateFlagsDecisions[4];
 
-		doUpdateFlagsDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
+		        doUpdateFlagsDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
                 doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsActions[1];
                 doUpdateFlagsDecisions[4].falseBranch = &doUpdateFlagsActions[0];
 
                 doUpdateFlagsActions[0].actFuncPtr = &RobotPlayer::doNothing;
-		doUpdateFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
+		        doUpdateFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
 	}
 
 	DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];

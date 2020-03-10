@@ -744,25 +744,29 @@ bool		RobotPlayer::amAlive(float dt)
 Drop Flags Decision Tree
 */
 bool RobotPlayer::amHoldingFlag(float dt) {
+    controlPanel->addMessage("am holding flag");
     return (getFlag() && (getFlag() != Flags::Null));
 }
 
-bool RobotPlayer::isFlagSticky(float dt) {
+bool RobotPlayer::isFlagNotSticky(float dt) { //change to is not Sticky
+    controlPanel->addMessage("is Flag not sticky");
     return (getFlag()->endurance != FlagSticky);
 }
 
 bool RobotPlayer::flagNoTeam(float dt) {
+    controlPanel->addMessage("flag no team");
     return (getFlag()->flagTeam == NoTeam);
 }
 
 bool RobotPlayer::flagMyTeam(float dt) {
+    controlPanel->addMessage("flag my team");
     return (getFlag()->flagTeam == getTeam());
 }
 
 void RobotPlayer::aDropFlag(float dt)
 {
     serverLink->sendDropFlag(getId(), getPosition());
-    controlPanel->addMessage("A5. Head for cover.");
+    controlPanel->addMessage("drop flag");
 }
 
 /*
@@ -943,116 +947,118 @@ void RobotPlayer::EvasiveManeuvers(float dt) {
     evading = true;
 }
 
-void RobotPlayer::followAStar(float dt) {
-    float distance;
-    float v[2];
-    float endPoint[3];
-    endPoint[0] = AstarPath[pathIndex].getScaledX();
-    endPoint[1] = AstarPath[pathIndex].getScaledY();
-    const float oldAzimuth = getAngle();
-    const float* oldPosition = getPosition();
-    float position[3];
-    position[0] = oldPosition[0];
-    position[1] = oldPosition[1];
-    position[2] = oldPosition[2];
-    float azimuth = oldAzimuth;
-    float tankAngVel = BZDB.eval(StateDatabase::BZDB_TANKANGVEL);
-    float tankSpeed = BZDBCache::tankSpeed;
+void RobotPlayer::followAStar(float dt) {//
+    if (pathIndex >= 0) {
+        float distance;
+        float v[2];
+        float endPoint[3];
+        endPoint[0] = AstarPath[pathIndex].getScaledX();
+        endPoint[1] = AstarPath[pathIndex].getScaledY();
+        const float oldAzimuth = getAngle();
+        const float* oldPosition = getPosition();
+        float position[3];
+        position[0] = oldPosition[0];
+        position[1] = oldPosition[1];
+        position[2] = oldPosition[2];
+        float azimuth = oldAzimuth;
+        float tankAngVel = BZDB.eval(StateDatabase::BZDB_TANKANGVEL);
+        float tankSpeed = BZDBCache::tankSpeed;
 #ifdef TRACE2
-    char buffer[128];
-    sprintf(buffer, "Robot(%d) at (%f, %f) heading toward (%f, %f)",
-        getId(), position[0], position[1], endPoint[0], endPoint[1]);
-    controlPanel->addMessage(buffer);
+        char buffer[128];
+        sprintf(buffer, "Robot(%d) at (%f, %f) heading toward (%f, %f)",
+            getId(), position[0], position[1], endPoint[0], endPoint[1]);
+        controlPanel->addMessage(buffer);
 #endif
-    // find how long it will take to get to next path segment
-    float path[3];
-    path[0] = endPoint[0] - position[0];
-    path[1] = endPoint[1] - position[1];
-    distance = hypotf(path[0], path[1]);
-    float tankRadius = BZDBCache::tankRadius;
-    // find how long it will take to get to next path segment
-    if (distance <= dt * tankSpeed + 2.0f * BZDBCache::tankRadius)
-        pathIndex--;
-
-    float centerOfMass[3];
-    float cohesionV[2], separationV[3];
-    int numCohesionNeighbors = computeCenterOfMass(BZDBCache::tankRadius * 15.0f, centerOfMass);
-    // uncomment out one of the following 2 code sections to get either
-    // lines 1-7: repulsion from center of mass of neighbors
-    // line 9: inverse square law repulsion from each neighbor
-    //float separation[3];
-    //int numSeparationNeighbors = computeCenterOfMass(BZDBCache::tankRadius * 5.0f, separation);
-    //if (numSeparationNeighbors) {
-    //    separationV[0] = position[0] - separation[0];
-    //    separationV[1] = position[1] - separation[1];
-    //} else
-    //    separationV[0] = separationV[1] = 0;
-    // above lines for repulsion from CoM, line below for repulsion from each neighbor
-    int numSeparationNeighbors = computeRepulsion(BZDBCache::tankRadius * 5.0f, separationV);
-    float alignAzimuth;
-    float align[3] = { 0.0f, 0.0f, 0.0f };
-    int numAlignNeighbors = computeAlign(BZDBCache::tankRadius * 15.0f, align, &alignAzimuth);
-    if (numCohesionNeighbors) {
-        cohesionV[0] = centerOfMass[0] - position[0];
-        cohesionV[1] = centerOfMass[1] - position[1];
-        distance = hypotf(cohesionV[0], cohesionV[1]);
-        cohesionV[0] /= distance;
-        cohesionV[1] /= distance;
-    }
-    else
-        cohesionV[0] = cohesionV[1] = 0;
-    //const float* endPoint = path[pathIndex].get();
-    // find how long it will take to get to next path segment
-    //v[0] = endPoint[0] - position[0];
-    //v[1] = endPoint[1] - position[1];
-    v[0] = CohesionW * cohesionV[0] + SeparationW * separationV[0] + AlignW * align[0] + PathW * path[0];
-    v[1] = CohesionW * cohesionV[1] + SeparationW * separationV[1] + AlignW * align[1] + PathW * path[1];
-    float weightSum = CohesionW + SeparationW + AlignW + PathW;
-    v[0] /= weightSum;
-    v[1] /= weightSum;
-    distance = hypotf(v[0], v[1]);
-    //float tankRadius = BZDBCache::tankRadius;
-    // smooth path a little by turning early at corners, might get us stuck, though
-    //if (distance <= 2.5f * tankRadius)
-        //pathIndex++;
-/* end of lines added/modified by David Chin */
-
-    float segmentAzimuth = atan2f(v[1], v[0]);
-    float azimuthDiff = segmentAzimuth - azimuth;
-    if (azimuthDiff > M_PI) azimuthDiff -= (float)(2.0 * M_PI);
-    else if (azimuthDiff < -M_PI) azimuthDiff += (float)(2.0 * M_PI);
-    if (fabs(azimuthDiff) > 0.01f)
-    {
-        // drive backward when target is behind, try to stick to last direction
-        if (drivingForward)
-            drivingForward = fabs(azimuthDiff) < M_PI / 2 * 0.9 ? true : false;
-        else
-            drivingForward = fabs(azimuthDiff) < M_PI / 2 * 0.3 ? true : false;
-        setDesiredSpeed(drivingForward ? 1.0f : -1.0f);
-        // set desired turn speed
-        if (azimuthDiff >= dt * tankAngVel)
-            setDesiredAngVel(1.0f);
-        else if (azimuthDiff <= -dt * tankAngVel)
-            setDesiredAngVel(-1.0f);
-        else
-            setDesiredAngVel(azimuthDiff / dt / tankAngVel);
-    }
-    else
-    {
-        drivingForward = true;
-        // tank doesn't turn while moving forward
-        setDesiredAngVel(0.0f);
         // find how long it will take to get to next path segment
-        if (distance <= dt * tankSpeed)
-        {
-            /* lines modified by David Chin */
-                                //pathIndex++;
-            /* end of lines modified by David Chin */
-                                // set desired speed
-            setDesiredSpeed(distance / dt / tankSpeed);
+        float path[3];
+        path[0] = endPoint[0] - position[0];
+        path[1] = endPoint[1] - position[1];
+        distance = hypotf(path[0], path[1]);
+        float tankRadius = BZDBCache::tankRadius;
+        // find how long it will take to get to next path segment
+        if (distance <= dt * tankSpeed + 2.0f * BZDBCache::tankRadius)
+            pathIndex--;
+
+        float centerOfMass[3];
+        float cohesionV[2], separationV[3];
+        int numCohesionNeighbors = computeCenterOfMass(BZDBCache::tankRadius * 15.0f, centerOfMass);
+        // uncomment out one of the following 2 code sections to get either
+        // lines 1-7: repulsion from center of mass of neighbors
+        // line 9: inverse square law repulsion from each neighbor
+        //float separation[3];
+        //int numSeparationNeighbors = computeCenterOfMass(BZDBCache::tankRadius * 5.0f, separation);
+        //if (numSeparationNeighbors) {
+        //    separationV[0] = position[0] - separation[0];
+        //    separationV[1] = position[1] - separation[1];
+        //} else
+        //    separationV[0] = separationV[1] = 0;
+        // above lines for repulsion from CoM, line below for repulsion from each neighbor
+        int numSeparationNeighbors = computeRepulsion(BZDBCache::tankRadius * 5.0f, separationV);
+        float alignAzimuth;
+        float align[3] = { 0.0f, 0.0f, 0.0f };
+        int numAlignNeighbors = computeAlign(BZDBCache::tankRadius * 15.0f, align, &alignAzimuth);
+        if (numCohesionNeighbors) {
+            cohesionV[0] = centerOfMass[0] - position[0];
+            cohesionV[1] = centerOfMass[1] - position[1];
+            distance = hypotf(cohesionV[0], cohesionV[1]);
+            cohesionV[0] /= distance;
+            cohesionV[1] /= distance;
         }
         else
-            setDesiredSpeed(1.0f);
+            cohesionV[0] = cohesionV[1] = 0;
+        //const float* endPoint = path[pathIndex].get();
+        // find how long it will take to get to next path segment
+        //v[0] = endPoint[0] - position[0];
+        //v[1] = endPoint[1] - position[1];
+        v[0] = CohesionW * cohesionV[0] + SeparationW * separationV[0] + AlignW * align[0] + PathW * path[0];
+        v[1] = CohesionW * cohesionV[1] + SeparationW * separationV[1] + AlignW * align[1] + PathW * path[1];
+        float weightSum = CohesionW + SeparationW + AlignW + PathW;
+        v[0] /= weightSum;
+        v[1] /= weightSum;
+        distance = hypotf(v[0], v[1]);
+        //float tankRadius = BZDBCache::tankRadius;
+        // smooth path a little by turning early at corners, might get us stuck, though
+        //if (distance <= 2.5f * tankRadius)
+            //pathIndex++;
+    /* end of lines added/modified by David Chin */
+
+        float segmentAzimuth = atan2f(v[1], v[0]);
+        float azimuthDiff = segmentAzimuth - azimuth;
+        if (azimuthDiff > M_PI) azimuthDiff -= (float)(2.0 * M_PI);
+        else if (azimuthDiff < -M_PI) azimuthDiff += (float)(2.0 * M_PI);
+        if (fabs(azimuthDiff) > 0.01f)
+        {
+            // drive backward when target is behind, try to stick to last direction
+            if (drivingForward)
+                drivingForward = fabs(azimuthDiff) < M_PI / 2 * 0.9 ? true : false;
+            else
+                drivingForward = fabs(azimuthDiff) < M_PI / 2 * 0.3 ? true : false;
+            setDesiredSpeed(drivingForward ? 1.0f : -1.0f);
+            // set desired turn speed
+            if (azimuthDiff >= dt * tankAngVel)
+                setDesiredAngVel(1.0f);
+            else if (azimuthDiff <= -dt * tankAngVel)
+                setDesiredAngVel(-1.0f);
+            else
+                setDesiredAngVel(azimuthDiff / dt / tankAngVel);
+        }
+        else
+        {
+            drivingForward = true;
+            // tank doesn't turn while moving forward
+            setDesiredAngVel(0.0f);
+            // find how long it will take to get to next path segment
+            if (distance <= dt * tankSpeed)
+            {
+                /* lines modified by David Chin */
+                                    //pathIndex++;
+                /* end of lines modified by David Chin */
+                                    // set desired speed
+                setDesiredSpeed(distance / dt / tankSpeed);
+            }
+            else
+                setDesiredSpeed(1.0f);
+        }
     }
 }
 

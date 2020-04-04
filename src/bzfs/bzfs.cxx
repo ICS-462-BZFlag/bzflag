@@ -2270,7 +2270,27 @@ void AddPlayer(int playerIndex, GameKeeper::Player *playerData)
     }
 
     // pick a team
-    TeamColor t = autoTeamSelect(playerData->player.getTeam());
+  TeamColor t;
+  /* code changed by David Chin
+   * For the shootout, use a callsign beginning with "red", "green",
+   * "blue", or "purple" (all lower case) to have all your robot tanks be that color
+   */
+	std::string red("red");
+	std::string green("green");
+	std::string blue("blue");
+	std::string purple("purple");
+	std::string callsign(playerData->player.getCallSign());
+		if (callsign.compare(0, 3, red) == 0 && playerData->player.isBot())
+			t = RedTeam;
+		else if (callsign.compare(0, 5, green) == 0 && playerData->player.isBot())
+			t = GreenTeam;
+		else if (callsign.compare(0, 4, blue) == 0 && playerData->player.isBot())
+			t = BlueTeam;
+		else if (callsign.compare(0, 6, purple) == 0 && playerData->player.isBot())
+			t = PurpleTeam;
+		else
+	  t = autoTeamSelect(playerData->player.getTeam());
+   /* end of changes by David Chin */
 
     bz_GetAutoTeamEventData_V1 autoTeamData;
     autoTeamData.playerID = playerIndex;
@@ -2371,8 +2391,10 @@ void AddPlayer(int playerIndex, GameKeeper::Player *playerData)
     if (team[teamIndex].team.size == 1
             && Team::isColorTeam((TeamColor)teamIndex))
     {
-        team[teamIndex].team.setWins(0);
-        team[teamIndex].team.setLosses(0);
+// David Chin: commented out these next 2 lines to not reset
+// a team's scores when there is nobody left on the team
+        //team[teamIndex].team.setWins(0);
+        //team[teamIndex].team.setLosses(0);
     }
 
     // send new player updates on each player, all existing flags, and all teams.

@@ -54,6 +54,8 @@ public:
     bool isFlagNotSticky(float dt);
     bool flagNoTeam(float dt);
     bool flagMyTeam(float dt);
+	bool isShieldFlag(float dt);
+    bool isGenocideFlag(float dt);
     bool isFiringStatusReady(float dt);
     bool hasShotTimerElapsed(float dt);
     bool willTheShotMiss(float dt);

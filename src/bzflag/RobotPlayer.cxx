@@ -764,6 +764,16 @@ bool RobotPlayer::flagMyTeam(float dt) {
     return (getFlag()->flagTeam == getTeam());
 }
 
+bool RobotPlayer::isShieldFlag(float dt) {
+    controlPanel->addMessage("shield flag");
+    return (getFlag()->flagAbbv == "SH");
+}
+
+bool RobotPlayer::isGenocideFlag(float dt) {
+    controlPanel->addMessage("shield flag");
+    return (getFlag()->flagAbbv == "G");
+}
+
 void RobotPlayer::aDropFlag(float dt)
 {
     serverLink->sendDropFlag(getId(), getPosition());

@@ -766,11 +766,12 @@ bool RobotPlayer::flagMyTeam(float dt) {
 
 bool RobotPlayer::isShieldFlag(float dt) {
     controlPanel->addMessage("shield flag");
-    return (getFlag()->flagAbbv == "SH");
+    FlagType* flag = getFlag();
+    return (flag->flagAbbv == "SH");
 }
 
 bool RobotPlayer::isGenocideFlag(float dt) {
-    controlPanel->addMessage("shield flag");
+    controlPanel->addMessage("Genocide flag");
     return (getFlag()->flagAbbv == "G");
 }
 

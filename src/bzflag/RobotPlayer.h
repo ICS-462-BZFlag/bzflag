@@ -61,6 +61,8 @@ public:
     bool willTheShotMiss(float dt);
     bool isBlockedByBuildings(float dt);
     bool isBlockedByTeammates(float dt);
+    void RobotPlayer::findGenocideFlag(Flag& flag, float location[3]);
+    bool RobotPlayer::isGenocideTaken(Flag& flag);
     void setShotTimer(float dt);
     void fireTheShot(float dt);
     bool isShotComing(float dt);

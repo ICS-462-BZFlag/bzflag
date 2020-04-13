@@ -212,12 +212,31 @@ namespace aicore
 
         /*
         Boolean function: FlagmyTeam --checks if the flag is my team
-        True branch: drop flag
+        True branch: Proceed next decision
         false branch: do nothing
         */
         doUpdateFlagsDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
-        doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsActions[1];
+        doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsDecisions[5];
         doUpdateFlagsDecisions[4].falseBranch = &doUpdateFlagsActions[0];
+
+        /*
+        Boolean function: isShieldFlag --checks if the flag is shield
+        True branch: do nothing
+        False branch: proceed to next decision
+        */
+        doUpdateFlagsDecisions[5].decFuncPtr = &RobotPlayer::flagMyTeam;
+        doUpdateFlagsDecisions[5].trueBranch = &doUpdateFlagsActions[0];
+        doUpdateFlagsDecisions[5].falseBranch = &doUpdateFlagsDecisions[6];
+
+        /*
+       Boolean function: isGenocideFlag --checks if the flag is genocide
+       True branch: do nothing
+       False branch: drop Flag
+       */
+        doUpdateFlagsDecisions[6].decFuncPtr = &RobotPlayer::flagMyTeam;
+        doUpdateFlagsDecisions[6].trueBranch = &doUpdateFlagsActions[0];
+        doUpdateFlagsDecisions[6].falseBranch = &doUpdateFlagsActions[1];
+
 
         /*
         doNothing --literally do nothing
@@ -229,7 +248,7 @@ namespace aicore
 
     DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];
     ActionPtr DecisionTrees::doUpdateMotionActions[3];
-    DecisionPtr DecisionTrees::doUpdateFlagsDecisions[5];
+    DecisionPtr DecisionTrees::doUpdateFlagsDecisions[7];
     ActionPtr DecisionTrees::doUpdateFlagsActions[2];
     DecisionPtr DecisionTrees::doUpdateShootDecisions[6];
     ActionPtr DecisionTrees::doUpdateShootActions[3];

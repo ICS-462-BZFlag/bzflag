@@ -737,7 +737,7 @@ bool		RobotPlayer::returnFalse(float dt)
  */
 bool		RobotPlayer::amAlive(float dt)
 {
-    controlPanel->addMessage("im alive");
+    //controlPanel->addMessage("im alive");
     return isAlive();
 }
 
@@ -745,57 +745,56 @@ bool		RobotPlayer::amAlive(float dt)
 Drop Flags Decision Tree
 */
 bool RobotPlayer::amHoldingFlag(float dt) {
-    controlPanel->addMessage("am holding flag");
+    //controlPanel->addMessage("am holding flag");
     return (getFlag() && (getFlag() != Flags::Null));
 }
 
 bool RobotPlayer::isFlagNotSticky(float dt) { //change to is not Sticky
-    controlPanel->addMessage("is Flag not sticky");
+    //controlPanel->addMessage("is Flag not sticky");
     return (getFlag()->endurance != FlagSticky);
 }
 
 bool RobotPlayer::flagNoTeam(float dt) {
-    controlPanel->addMessage("flag no team");
+    //controlPanel->addMessage("flag no team");
     return (getFlag()->flagTeam == NoTeam);
 }
 
 bool RobotPlayer::flagMyTeam(float dt) {
-    controlPanel->addMessage("flag my team");
+    //controlPanel->addMessage("flag my team");
     return (getFlag()->flagTeam == getTeam());
 }
 
 bool RobotPlayer::isShieldFlag(float dt) {
-    controlPanel->addMessage("shield flag");
-    FlagType* flag = getFlag();
-    return (flag->flagAbbv == "SH");
+    //controlPanel->addMessage("shield flag");
+    return (getFlag()->flagAbbv == "SH");
 }
 
 bool RobotPlayer::isGenocideFlag(float dt) {
-    controlPanel->addMessage("Genocide flag");
+    //controlPanel->addMessage("Genocide flag");
     return (getFlag()->flagAbbv == "G");
 }
 
 void RobotPlayer::aDropFlag(float dt)
 {
     serverLink->sendDropFlag(getId(), getPosition());
-    controlPanel->addMessage("drop flag");
+    //controlPanel->addMessage("drop flag");
 }
 
 /*
 Do update Shooting Functions
 */
 bool RobotPlayer::isFiringStatusReady(float dt) {
-    controlPanel->addMessage("Fire is ready!");
+    //controlPanel->addMessage("Fire is ready!");
     return getFiringStatus() == Ready;
 }
 
 bool RobotPlayer::hasShotTimerElapsed(float dt) {
-    controlPanel->addMessage("A3. Attack enemy.");
+    //controlPanel->addMessage("A3. Attack enemy.");
     return timerForShot <= 0.0f;
 }
 
 bool RobotPlayer::willTheShotMiss(float dt) {
-    controlPanel->addMessage("Will the shot miss?");
+    //controlPanel->addMessage("Will the shot miss?");
     /*
     creation of variables to use in this function
     */
@@ -831,7 +830,7 @@ bool RobotPlayer::willTheShotMiss(float dt) {
 }
 
 bool RobotPlayer::isBlockedByBuildings(float dt) {
-    controlPanel->addMessage("Im currently Blocked by a Building");
+    //controlPanel->addMessage("Im currently Blocked by a Building");
     shoot = true;
     const float azimuth = getAngle();
     float pos[3] = {
@@ -849,7 +848,7 @@ bool RobotPlayer::isBlockedByBuildings(float dt) {
 }
 
 bool RobotPlayer::isBlockedByTeammates(float dt) {
-    controlPanel->addMessage("Im Currently Blocked By Teammates");
+    //controlPanel->addMessage("Im Currently Blocked By Teammates");
     const float shotRange = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
     for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
     {
@@ -876,14 +875,14 @@ bool RobotPlayer::isBlockedByTeammates(float dt) {
 }
 
 void RobotPlayer::setShotTimer(float dt) {
-    controlPanel->addMessage("Set Shot Timer");
+    //controlPanel->addMessage("Set Shot Timer");
     timerForShot = 0.1f;
 }
 
 void RobotPlayer::fireTheShot(float dt) {
     if (shoot && fireShot())
     {
-        controlPanel->addMessage("Firing");
+        //controlPanel->addMessage("Firing");
         timerForShot = float(bzfrand()) * 0.6f + 0.2f;
     }
 }
@@ -1087,32 +1086,6 @@ General Do Nothing Function
 void RobotPlayer::doNothing(float dt) {
     controlPanel->addMessage("Doing Nothing");
 }
-
-void	RobotPlayer::a1(float dt)
-{
-    controlPanel->addMessage("A1. Seek out enemies.");
-}
-
-void		RobotPlayer::a2(float dt)
-{
-    controlPanel->addMessage("A2. Seek out health packs.");
-}
-
-void		RobotPlayer::a3(float dt)
-{
-    controlPanel->addMessage("A3. Attack enemy.");
-}
-
-void		RobotPlayer::a4(float dt)
-{
-    controlPanel->addMessage("A4. Run away from enemy.");
-}
-
-void		RobotPlayer::a5(float dt)
-{
-    controlPanel->addMessage("A5. Head for cover.");
-}
-
 /* end of lines added by David Chin */
 
 // Local Variables: ***

@@ -50,6 +50,9 @@ public:
     void        explodeTank();
     /* code added by David Chin */
     bool		RobotPlayer::amAlive(float dt);
+	bool amIAlive(float dt);
+	bool flagOnMyTeam(float dt);
+	bool teamFlagOnGround(float dt);
     bool amHoldingFlag(float dt);
     bool isFlagNotSticky(float dt);
     bool flagNoTeam(float dt);

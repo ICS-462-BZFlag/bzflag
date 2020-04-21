@@ -732,6 +732,7 @@ bool		RobotPlayer::returnFalse(float dt)
     return false;
 }
 
+
 /*
  * same as Player::isAlive(), needed to match type of decision tree
  */
@@ -740,7 +741,45 @@ bool		RobotPlayer::amAlive(float dt)
     //controlPanel->addMessage("im alive");
     return isAlive();
 }
-
+/*
+* Defense Decision Tree
+*/
+bool RobotPlayer::amIAlive(float dt)
+{
+    //controlPanel->addMessage("im alive");
+    return isAlive();
+}
+bool RobotPlayer::flagOnMyTeam(float dt)
+{
+    TeamColor myTeam = getTeam();
+    if (!World::getWorld()->allowTeamFlags()) return false;
+    for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
+    {
+        Player* p = World::getWorld()->getPlayer(i);
+        if (p->getTeam() == myTeam && p->getId() != getId()) {
+            if (p->getFlag()->flagTeam == myTeam) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+bool RobotPlayer::teamFlagOnGround(float dt)
+{
+    TeamColor myTeamColor = getTeam();
+    for (int i = 0; i < numFlags; i++) {
+        Flag& flag = World::getWorld()->getFlag(i);
+        TeamColor flagTeamColor = flag.type->flagTeam;
+        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor && flag.status == FlagOnGround)
+        {
+            return true;
+        }
+        else if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor && flag.status != FlagOnGround) {
+            return false;
+        }
+    }
+    return false;
+}
 /*
 Drop Flags Decision Tree
 */

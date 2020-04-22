@@ -832,7 +832,7 @@ void RobotPlayer::setCorners() {
 * Takes int, 1 means corner1 will replace current corner anything else is corner2
 */
 void RobotPlayer::setCurrentCorner(int input) {
-    if (input = 1) {
+    if (input == 1) {
         currentCorner[0] = corner1[0];
         currentCorner[1] = corner1[1];
         currentCorner[2] = corner1[2];

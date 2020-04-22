@@ -49,6 +49,10 @@ const float RobotPlayer::SeparationW = 2.0f;
 const float RobotPlayer::AlignW = 0.5f;
 const float RobotPlayer::PathW = 3.0f;
 /* end of lines added by David Chin */
+//Global Variables
+float corner1[3];
+float corner2[3];
+float currentCorner[3] = { 0,0,100 };
 
 RobotPlayer::RobotPlayer(const PlayerId& _id, const char* _name,
     ServerLink* _server,
@@ -749,6 +753,24 @@ bool RobotPlayer::amIAlive(float dt)
     //controlPanel->addMessage("im alive");
     return isAlive();
 }
+bool RobotPlayer::teamFlagOnGround(float dt)
+{
+    TeamColor myTeamColor = getTeam();
+    for (int i = 0; i < numFlags; i++) {
+        Flag& flag = World::getWorld()->getFlag(i);
+        TeamColor flagTeamColor = flag.type->flagTeam;
+        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor) {
+            if (flag.status == FlagOnGround)
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    return false;
+}
 bool RobotPlayer::flagOnMyTeam(float dt)
 {
     TeamColor myTeam = getTeam();
@@ -764,22 +786,64 @@ bool RobotPlayer::flagOnMyTeam(float dt)
     }
     return false;
 }
-bool RobotPlayer::teamFlagOnGround(float dt)
-{
-    TeamColor myTeamColor = getTeam();
-    for (int i = 0; i < numFlags; i++) {
-        Flag& flag = World::getWorld()->getFlag(i);
-        TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor && flag.status == FlagOnGround)
-        {
-            return true;
-        }
-        else if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor && flag.status != FlagOnGround) {
-            return false;
-        }
+bool RobotPlayer::atCorner(float dt) {
+    if (currentCorner[2] == 100) {
+        setCorners();
+    }
+    const float* pos = getPosition();
+    if (pos[0] == currentCorner[0] && pos[1] == currentCorner[1]) {
+        return true;
     }
     return false;
 }
+
+void RobotPlayer::setCorners() {
+    TeamColor myTeamColor = getMyTank()->getTeam();
+    const float* baseParms = World::getWorld()->getBase(myTeamColor, 0);
+    if (baseParms[0] > 0) {
+        corner1[0] = BZDBCache::worldSize;
+        corner2[0] = BZDBCache::worldSize;
+    }
+    else if (baseParms[0] < 0) {
+        corner1[0] = -BZDBCache::worldSize;
+        corner2[0] = -BZDBCache::worldSize;
+    }
+    else {
+        corner1[0] = BZDBCache::worldSize;
+        corner2[0] = -BZDBCache::worldSize;
+    }
+    if (baseParms[1] > 0) {
+        corner1[1] = BZDBCache::worldSize;
+        corner2[1] = BZDBCache::worldSize;
+    }
+    else if (baseParms[0] < 0) {
+        corner1[1] = -BZDBCache::worldSize;
+        corner2[1] = -BZDBCache::worldSize;
+    }
+    else {
+        corner1[1] = BZDBCache::worldSize;
+        corner2[1] = -BZDBCache::worldSize;
+    }
+    corner1[2] = baseParms[2];
+    corner2[2] = baseParms[2];
+    RobotPlayer::setCurrentCorner(1);
+}
+/*
+* Takes int, 1 means corner1 will replace current corner anything else is corner2
+*/
+void RobotPlayer::setCurrentCorner(int input) {
+    if (input = 1) {
+        currentCorner[0] = corner1[0];
+        currentCorner[1] = corner1[1];
+        currentCorner[2] = corner1[2];
+    } else
+    {
+        currentCorner[0] = corner2[0];
+        currentCorner[1] = corner2[1];
+        currentCorner[2] = corner2[2];
+    }
+}
+
 /*
 Drop Flags Decision Tree
 */

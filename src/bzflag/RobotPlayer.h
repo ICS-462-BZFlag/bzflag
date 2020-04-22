@@ -52,6 +52,9 @@ public:
     bool		RobotPlayer::amAlive(float dt);
 	bool amIAlive(float dt);
 	bool flagOnMyTeam(float dt);
+	bool atCorner(float dt);
+	void setCorners();
+	void setCurrentCorner(int input);
 	bool teamFlagOnGround(float dt);
     bool amHoldingFlag(float dt);
     bool isFlagNotSticky(float dt);

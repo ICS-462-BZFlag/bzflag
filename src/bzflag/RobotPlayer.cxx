@@ -53,6 +53,7 @@ const float RobotPlayer::PathW = 3.0f;
 float corner1[3];
 float corner2[3];
 float currentCorner[3] = { 0,0,100 };
+int CurrentCorner = 1;
 
 RobotPlayer::RobotPlayer(const PlayerId& _id, const char* _name,
     ServerLink* _server,
@@ -826,24 +827,51 @@ void RobotPlayer::setCorners() {
     }
     corner1[2] = baseParms[2];
     corner2[2] = baseParms[2];
-    RobotPlayer::setCurrentCorner(1);
+    RobotPlayer::swapCurrentCorner();
 }
 /*
 * Takes int, 1 means corner1 will replace current corner anything else is corner2
 */
-void RobotPlayer::setCurrentCorner(int input) {
-    if (input == 1) {
+void RobotPlayer::swapCurrentCorner() {
+    if (CurrentCorner == 1) {
         currentCorner[0] = corner1[0];
         currentCorner[1] = corner1[1];
         currentCorner[2] = corner1[2];
+        CurrentCorner = 2;
     } else
     {
+        CurrentCorner = 1;
         currentCorner[0] = corner2[0];
         currentCorner[1] = corner2[1];
         currentCorner[2] = corner2[2];
     }
+
 }
 
+void RobotPlayer::aStarToCurrentCorner(float dt) {
+    AStarGraph::aStarSearch(getPosition(), currentCorner, AstarPath);
+    followAStar(dt);
+}
+void RobotPlayer::swapCornerAndAStar(float dt) {
+    swapCurrentCorner();
+    AStarGraph::aStarSearch(getPosition(), currentCorner, AstarPath);
+    followAStar(dt);
+}
+void RobotPlayer::aStarToFlag(float dt) {
+    TeamColor myTeamColor = getTeam();
+    for (int i = 0; i < numFlags; i++) {
+        Flag& flag = World::getWorld()->getFlag(i);
+        TeamColor flagTeamColor = flag.type->flagTeam;
+        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor) {
+            float flagPos[3];
+            flagPos[0] = flag.position[0];
+            flagPos[1] = flag.position[1];
+            flagPos[2] = flag.position[2];
+        }
+    }
+    AStarGraph::aStarSearch(getPosition(), currentCorner, AstarPath);
+    followAStar(dt);
+}
 /*
 Drop Flags Decision Tree
 */

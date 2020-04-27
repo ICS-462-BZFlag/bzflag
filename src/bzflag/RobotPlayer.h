@@ -54,7 +54,10 @@ public:
 	bool flagOnMyTeam(float dt);
 	bool atCorner(float dt);
 	void setCorners();
-	void setCurrentCorner(int input);
+	void swapCurrentCorner();
+    void aStarToCurrentCorner(float dt);
+    void swapCornerAndAStar(float dt);
+    void aStarToFlag(float dt);
 	bool teamFlagOnGround(float dt);
     bool amHoldingFlag(float dt);
     bool isFlagNotSticky(float dt);

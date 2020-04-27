@@ -244,13 +244,42 @@ namespace aicore
         */
         doUpdateFlagsActions[0].actFuncPtr = &RobotPlayer::doNothing;
         doUpdateFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
+
+        /*
+        DEFENSE TREE DECISIONS
+        */
+        DefenseTreeDecisions[0].decFuncPtr  = &RobotPlayer::amAlive;
+        DefenseTreeDecisions[0].trueBranch  = &DefenseTreeDecisions[1];
+        DefenseTreeDecisions[0].falseBranch = &DefenseTreeActions[0];
+
+        DefenseTreeDecisions[1].decFuncPtr = &RobotPlayer::teamFlagOnGround;
+        DefenseTreeDecisions[1].trueBranch = &DefenseTreeActions[1];
+        DefenseTreeDecisions[1].falseBranch = &DefenseTreeDecisions[2];
+
+        DefenseTreeDecisions[2].decFuncPtr = &RobotPlayer::flagOnMyTeam;
+        DefenseTreeDecisions[2].trueBranch = &DefenseTreeDecisions[3];
+        DefenseTreeDecisions[2].falseBranch = &DefenseTreeActions[2];
+
+        DefenseTreeDecisions[3].decFuncPtr = &RobotPlayer::atCorner;
+        DefenseTreeDecisions[3].trueBranch = &DefenseTreeDecisions[1];
+        DefenseTreeDecisions[3].falseBranch = &DefenseTreeActions[0];
+        /*
+        DEFENSE TREE ACTIONS
+        */
+        DefenseTreeActions[0].actFuncPtr = &RobotPlayer::doNothing;
+        DefenseTreeActions[1].actFuncPtr = &RobotPlayer::doNothing;
+        DefenseTreeActions[2].actFuncPtr = &RobotPlayer::doNothing;
+        DefenseTreeActions[3].actFuncPtr = &RobotPlayer::doNothing;
+        DefenseTreeActions[4].actFuncPtr = &RobotPlayer::doNothing;
     }
 
     DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];
-    ActionPtr DecisionTrees::doUpdateMotionActions[3];
+    ActionPtr   DecisionTrees::doUpdateMotionActions[3];
     DecisionPtr DecisionTrees::doUpdateFlagsDecisions[7];
-    ActionPtr DecisionTrees::doUpdateFlagsActions[2];
+    ActionPtr   DecisionTrees::doUpdateFlagsActions[2];
     DecisionPtr DecisionTrees::doUpdateShootDecisions[6];
-    ActionPtr DecisionTrees::doUpdateShootActions[3];
+    ActionPtr   DecisionTrees::doUpdateShootActions[3];
+    DecisionPtr DecisionTrees::DefenseTreeDecisions[4];
+    ActionPtr   DecisionTrees::DefenseTreeActions[5];
 
 }; // end of namespace

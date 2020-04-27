@@ -130,6 +130,10 @@ namespace aicore
         static DecisionPtr doUpdateShootDecisions[6];
         //Holds our list of actions based on flags
         static ActionPtr doUpdateShootActions[3];
+        //Holds our list of decisions based on defense
+        static DecisionPtr DefenseTreeDecisions[4];
+        //hold our list of actions based on defense
+        static ActionPtr DefenseTreeActions[5];
     };
 
 }; // end of namespace

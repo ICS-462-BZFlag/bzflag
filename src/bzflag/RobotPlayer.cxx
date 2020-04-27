@@ -765,7 +765,7 @@ bool RobotPlayer::teamFlagOnGround(float dt)
             {
                 return true;
             }
-            else{
+            else {
                 return false;
             }
         }
@@ -838,7 +838,8 @@ void RobotPlayer::swapCurrentCorner() {
         currentCorner[1] = corner1[1];
         currentCorner[2] = corner1[2];
         CurrentCorner = 2;
-    } else
+    }
+    else
     {
         CurrentCorner = 1;
         currentCorner[0] = corner2[0];

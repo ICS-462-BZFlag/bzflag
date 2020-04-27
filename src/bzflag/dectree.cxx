@@ -261,16 +261,16 @@ namespace aicore
         DefenseTreeDecisions[2].falseBranch = &DefenseTreeActions[2];
 
         DefenseTreeDecisions[3].decFuncPtr = &RobotPlayer::atCorner;
-        DefenseTreeDecisions[3].trueBranch = &DefenseTreeDecisions[1];
-        DefenseTreeDecisions[3].falseBranch = &DefenseTreeActions[0];
+        DefenseTreeDecisions[3].trueBranch = &DefenseTreeActions[3];
+        DefenseTreeDecisions[3].falseBranch = &DefenseTreeActions[4];
         /*
         DEFENSE TREE ACTIONS
         */
         DefenseTreeActions[0].actFuncPtr = &RobotPlayer::doNothing;
-        DefenseTreeActions[1].actFuncPtr = &RobotPlayer::doNothing;
-        DefenseTreeActions[2].actFuncPtr = &RobotPlayer::doNothing;
-        DefenseTreeActions[3].actFuncPtr = &RobotPlayer::doNothing;
-        DefenseTreeActions[4].actFuncPtr = &RobotPlayer::doNothing;
+        DefenseTreeActions[1].actFuncPtr = &RobotPlayer::aStarToFlag;
+        DefenseTreeActions[2].actFuncPtr = &RobotPlayer::aStarToCurrentCorner;
+        DefenseTreeActions[3].actFuncPtr = &RobotPlayer::swapCornerAndAStar;
+        DefenseTreeActions[4].actFuncPtr = &RobotPlayer::aStarToFlag;
     }
 
     DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];

@@ -248,8 +248,8 @@ namespace aicore
         /*
         DEFENSE TREE DECISIONS
         */
-        DefenseTreeDecisions[0].decFuncPtr  = &RobotPlayer::amAlive;
-        DefenseTreeDecisions[0].trueBranch  = &DefenseTreeDecisions[1];
+        DefenseTreeDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
+        DefenseTreeDecisions[0].trueBranch = &DefenseTreeDecisions[1];
         DefenseTreeDecisions[0].falseBranch = &DefenseTreeActions[0];
 
         DefenseTreeDecisions[1].decFuncPtr = &RobotPlayer::teamFlagOnGround;

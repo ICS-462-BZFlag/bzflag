@@ -241,7 +241,7 @@ void            RobotPlayer::setTarget(const Player* _target)
         //path.clear();
     target = _target;
     bool genocideBool = false;
-    Flag& genocideFlag;
+    Flag genocideFlag;
     //if (!target) return;
 
     TeamColor myteam = getTeam();
@@ -249,12 +249,13 @@ void            RobotPlayer::setTarget(const Player* _target)
     genocideBool = isGenocideTaken(genocideFlag);
     if (genocideBool == true) {
       findGenocideFlag(genocideFlag, goalPos);
-    } else {
-      if (myTeamHoldingOpponentFlag())
-          findHomeBase(myteam, goalPos);
-      else
-          findOpponentFlag(goalPos);
     }
+    //else {
+    //  if (myTeamHoldingOpponentFlag())
+    //      findHomeBase(myteam, goalPos);
+    //  else
+    //      findOpponentFlag(goalPos);
+    //}
 
     AStarNode goalNode(goalPos);
     if (!AstarPath.empty() && goalNode == pathGoalNode)
@@ -716,8 +717,9 @@ bool RobotPlayer::isGenocideTaken(Flag& flag) {
     if (!World::getWorld()->allowSuperFlags()) return false;
     for (int i = 0; i < numFlags; i++) {
         flag = World::getWorld()->getFlag(i);
-        if (flag->flagAbbv == "G" && flag.owner == 0) {
-	  return true;
+        if (flag.type->flagAbbv == "G" && flag.owner == 0) { //nvrm bruh they override em flag then type then flag abbv
+        //int j = 0;
+	    return true;
         }
     }
     return false;

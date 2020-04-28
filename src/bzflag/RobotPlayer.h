@@ -59,11 +59,14 @@ public:
     bool isFiringStatusReady(float dt);
     bool hasShotTimerElapsed(float dt);
     bool willTheShotMiss(float dt);
-    bool willTheShotMissMore(float dt)
+  bool willTheShotMissMore(float dt);
     bool isBlockedByBuildings(float dt);
     bool isBlockedByTeammates(float dt);
+    void rotateTank(float dt);
+    /* Failed implementation trying to seek to genocide flag
     void RobotPlayer::findGenocideFlag(Flag& flag, float location[3]);
     bool RobotPlayer::isGenocideTaken(Flag& flag);
+     */
     void setShotTimer(float dt);
     void fireTheShot(float dt);
     bool isShotComing(float dt);

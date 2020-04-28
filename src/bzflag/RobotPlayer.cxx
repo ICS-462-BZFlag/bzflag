@@ -240,16 +240,18 @@ void            RobotPlayer::setTarget(const Player* _target)
 
         //path.clear();
     target = _target;
+    /* Failed implementation trying to seek to genocide flag
     bool genocideBool = false;
-    Flag genocideFlag;
+    Flag genocideFlag;*/
     //if (!target) return;
 
     TeamColor myteam = getTeam();
     float goalPos[3];
+    /* Failed implementation trying to seek to genocide flag 
     genocideBool = isGenocideTaken(genocideFlag);
     if (genocideBool == true) {
       findGenocideFlag(genocideFlag, goalPos);
-    }
+    }*/
     //else {
     //  if (myTeamHoldingOpponentFlag())
     //      findHomeBase(myteam, goalPos);
@@ -713,7 +715,8 @@ void		RobotPlayer::findOpponentFlag(float location[3])
     }
 }
 
-bool RobotPlayer::isGenocideTaken(Flag& flag) {
+/* Failed implementation trying to seek to genocide flag
+ bool RobotPlayer::isGenocideTaken(Flag& flag) {
     if (!World::getWorld()->allowSuperFlags()) return false;
     for (int i = 0; i < numFlags; i++) {
         flag = World::getWorld()->getFlag(i);
@@ -737,6 +740,7 @@ void		RobotPlayer::findGenocideFlag(Flag& flag, float location[3])
     controlPanel->addMessage(buffer);
 #endif
 }
+*/
 
 /*
  * Given a PlayerId, find the corresponding local Player
@@ -897,6 +901,34 @@ bool RobotPlayer::willTheShotMissMore(float dt) {
     else {
         return false;
     }
+}
+
+ /*
+ Code adapted from:
+ https://gamedev.stackexchange.com/questions/68140/calculating-2d-physics-prediction-of-shot-angle-with-moving-velocity-of-both-tar
+ */
+void RobotPlayer::rotateTank(float dt) {
+    double max_error = 0.0000000001; // measured in radians
+    double dx = target.getPosition() - getPosition();
+    double dy = target.getPosition() - getPosition();
+    double targetDistance = sqrt(dx*dx+dy*dy);
+    double ImpactTime = targetDistance/myPlayer.BulletSpeed;
+    double radian = atan2(dy,dx);
+    int max_iterations = 100;
+    while (max_iterations--) {
+        printf("Angle: %2.1fdeg, Collision At: (%f, %f)\n", radian*(180.0/M_PI), dx,dy);
+        dx = target.getPosition() - getPosition() +
+             (target.getVelocity() - getVelocity())*ImpactTime;
+        dy = target.getPosition() - getPosition() +
+             (target.getPosition() - getVelocity())*ImpactTime;
+        targetDistance = sqrt(dx*dx+dy*dy);
+        ImpactTime = targetDistance/myPlayer.BulletSpeed;
+        double newradian = atan2(dy,dx);
+
+        double cur_error = fabs(newradian - radian);
+        radian = newradian;
+        if (cur_error <= max_error) break;
+  }
 }
 
 bool RobotPlayer::isBlockedByBuildings(float dt) {

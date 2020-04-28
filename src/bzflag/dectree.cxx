@@ -168,26 +168,8 @@ namespace aicore
         false branch: do nothing
         */
         doUpdateShootDecisions[6].decFuncPtr = &RobotPlayer::willTheShotMissMore;
-        doUpdateShootDecisions[6].trueBranch = &doUpdateShootDecisions[4];
+        doUpdateShootDecisions[6].trueBranch = &doUpdateShootActions[4];
         doUpdateShootDecisions[6].falseBranch = &doUpdateShootActions[0];
-      
-        /*
-	Boolean function: isBlockedByBuildings
-	True branch: proceed to the next decision
-	false branch: do nothing
-	*/
-	doUpdateShootDecisions[7].decFuncPtr = &RobotPlayer::isBlockedByBuildings;
-	doUpdateShootDecisions[7].trueBranch = &doUpdateShootDecisions[5];
-	doUpdateShootDecisions[7].falseBranch = &doUpdateShootActions[0];
-
-	/*
-	Boolean function: isBlockedByTeammates
-	True branch: setShotTimer
-	false branch: fireTheShot
-	*/
-	doUpdateShootDecisions[8].decFuncPtr = &RobotPlayer::isBlockedByTeammates;
-	doUpdateShootDecisions[8].trueBranch = &doUpdateShootActions[1];
-	doUpdateShootDecisions[8].falseBranch = &doUpdateShootActions[2];
 
         /*
         do Nothing --literally do nothing
@@ -197,6 +179,7 @@ namespace aicore
         doUpdateShootActions[0].actFuncPtr = &RobotPlayer::doNothing;
         doUpdateShootActions[1].actFuncPtr = &RobotPlayer::setShotTimer;
         doUpdateShootActions[2].actFuncPtr = &RobotPlayer::fireTheShot;
+        doUpdateShootActions[3].actFuncPtr = &RobotPlayer::rotateTank;
 
         /*
             DropFlags Decision Tree
@@ -277,7 +260,7 @@ namespace aicore
     ActionPtr DecisionTrees::doUpdateMotionActions[3];
     DecisionPtr DecisionTrees::doUpdateFlagsDecisions[7];
     ActionPtr DecisionTrees::doUpdateFlagsActions[2];
-    DecisionPtr DecisionTrees::doUpdateShootDecisions[9];
-    ActionPtr DecisionTrees::doUpdateShootActions[3];
+    DecisionPtr DecisionTrees::doUpdateShootDecisions[7];
+    ActionPtr DecisionTrees::doUpdateShootActions[4];
 
 }; // end of namespace

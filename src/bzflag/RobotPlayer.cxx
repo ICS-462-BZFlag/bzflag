@@ -861,6 +861,42 @@ bool RobotPlayer::willTheShotMiss(float dt) {
     }
 }
 
+bool RobotPlayer::willTheShotMissMore(float dt) {
+    controlPanel->addMessage("Will the shot miss more?");
+    /*
+    creation of variables to use in this function
+    */
+    float p1[3];
+    const float azimuth = getAngle();
+    float tankRadius = BZDBCache::tankRadius;
+    const float shotRadius = BZDB.eval(StateDatabase::BZDB_SHOTRADIUS);
+    if (target) {
+        /*
+        Actual function stolen from the original doUpdate function
+        */
+        getProjectedPosition(target, p1);
+        const float* p2 = getPosition();
+        float shootingAngle = atan2f(p1[1] - p2[1], p1[0] - p2[0]);
+        if (shootingAngle < 0.0f)
+            shootingAngle += (float)(2.0 * M_PI);
+        float azimuthDiff = shootingAngle - azimuth;
+        if (azimuthDiff > M_PI)
+            azimuthDiff -= (float)(2.0 * M_PI);
+        else if (azimuthDiff < -M_PI)
+            azimuthDiff += (float)(2.0 * M_PI);
+
+        targetdistance = hypotf(p1[0] - p2[0], p1[1] - p2[1]) -
+            BZDB.eval(StateDatabase::BZDB_MUZZLEFRONT) - tankRadius;
+
+        const float missby = fabs(azimuthDiff) *
+            (targetdistance - BZDBCache::tankLength);
+      return (missby < 2.0f * BZDBCache::tankLength && p1[2] < shotRadius);
+    }
+    else {
+        return false;
+    }
+}
+
 bool RobotPlayer::isBlockedByBuildings(float dt) {
     controlPanel->addMessage("Im currently Blocked by a Building");
     shoot = true;

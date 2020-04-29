@@ -244,10 +244,10 @@ void            RobotPlayer::setTarget(const Player* _target)
 
     TeamColor myteam = getTeam();
     float goalPos[3];
-   if (myTeamHoldingOpponentFlag())
+    if (myTeamHoldingOpponentFlag())
         findHomeBase(myteam, goalPos);
     else
-       findOpponentFlag(goalPos);
+        findOpponentFlag(goalPos);
 
     AStarNode goalNode(goalPos);
     if (!AstarPath.empty() && goalNode == pathGoalNode)
@@ -626,6 +626,8 @@ int		RobotPlayer::computeAlign(float neighborhoodSize, float avVOut[3], float* a
  */
 void		RobotPlayer::findHomeBase(TeamColor teamColor, float location[3])
 {
+
+    controlPanel->addMessage("Lets Go Home");
     World* world = World::getWorld();
     if (!world->allowTeamFlags()) return;
     const float* baseParms = world->getBase(teamColor, 0);
@@ -651,7 +653,7 @@ bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor
+        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor
             && flag.status == FlagOnTank) {
             PlayerId ownerId = flag.owner;
 #ifdef TRACE2
@@ -685,12 +687,16 @@ bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
  */
 void		RobotPlayer::findOpponentFlag(float location[3])
 {
+    controlPanel->addMessage("Defense squad has own flag");
+    location[0] = 0;
+    location[1] = 0;
+    location[2] = 0;
     TeamColor myTeamColor = getTeam();
     if (!World::getWorld()->allowTeamFlags()) return;
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor) {
+        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor && flag.status == FlagOnGround) {
             location[0] = flag.position[0];
             location[1] = flag.position[1];
             location[2] = flag.position[2];
@@ -737,7 +743,7 @@ bool		RobotPlayer::returnFalse(float dt)
  */
 bool		RobotPlayer::amAlive(float dt)
 {
-    controlPanel->addMessage("im alive");
+    
     return isAlive();
 }
 
@@ -745,46 +751,38 @@ bool		RobotPlayer::amAlive(float dt)
 Drop Flags Decision Tree
 */
 bool RobotPlayer::amHoldingFlag(float dt) {
-    controlPanel->addMessage("am holding flag");
     return (getFlag() && (getFlag() != Flags::Null));
 }
 
 bool RobotPlayer::isFlagNotSticky(float dt) { //change to is not Sticky
-    controlPanel->addMessage("is Flag not sticky");
     return (getFlag()->endurance != FlagSticky);
 }
 
 bool RobotPlayer::flagNoTeam(float dt) {
-    controlPanel->addMessage("flag no team");
     return (getFlag()->flagTeam == NoTeam);
 }
 
 bool RobotPlayer::flagMyTeam(float dt) {
-    controlPanel->addMessage("flag my team");
     return (getFlag()->flagTeam == getTeam());
 }
 
 void RobotPlayer::aDropFlag(float dt)
 {
     serverLink->sendDropFlag(getId(), getPosition());
-    controlPanel->addMessage("drop flag");
 }
 
 /*
 Do update Shooting Functions
 */
 bool RobotPlayer::isFiringStatusReady(float dt) {
-    controlPanel->addMessage("Fire is ready!");
     return getFiringStatus() == Ready;
 }
 
 bool RobotPlayer::hasShotTimerElapsed(float dt) {
-    controlPanel->addMessage("A3. Attack enemy.");
     return timerForShot <= 0.0f;
 }
 
 bool RobotPlayer::willTheShotMiss(float dt) {
-    controlPanel->addMessage("Will the shot miss?");
     /*
     creation of variables to use in this function
     */
@@ -820,7 +818,6 @@ bool RobotPlayer::willTheShotMiss(float dt) {
 }
 
 bool RobotPlayer::isBlockedByBuildings(float dt) {
-    controlPanel->addMessage("Im currently Blocked by a Building");
     shoot = true;
     const float azimuth = getAngle();
     float pos[3] = {
@@ -838,7 +835,6 @@ bool RobotPlayer::isBlockedByBuildings(float dt) {
 }
 
 bool RobotPlayer::isBlockedByTeammates(float dt) {
-    controlPanel->addMessage("Im Currently Blocked By Teammates");
     const float shotRange = BZDB.eval(StateDatabase::BZDB_SHOTRANGE);
     for (int i = 0; i <= World::getWorld()->getCurMaxPlayers(); i++)
     {
@@ -865,14 +861,12 @@ bool RobotPlayer::isBlockedByTeammates(float dt) {
 }
 
 void RobotPlayer::setShotTimer(float dt) {
-    controlPanel->addMessage("Set Shot Timer");
     timerForShot = 0.1f;
 }
 
 void RobotPlayer::fireTheShot(float dt) {
     if (shoot && fireShot())
     {
-        controlPanel->addMessage("Firing");
         timerForShot = float(bzfrand()) * 0.6f + 0.2f;
     }
 }
@@ -1074,7 +1068,6 @@ void RobotPlayer::followAStar(float dt) {//
 General Do Nothing Function
 */
 void RobotPlayer::doNothing(float dt) {
-    controlPanel->addMessage("Doing Nothing");
 }
 
 void	RobotPlayer::a1(float dt)

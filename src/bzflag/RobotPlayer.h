@@ -91,8 +91,8 @@ private:
     void       getProjectedPosition(const Player* targ, float* projpos) const;
     /* lines added by David Chin */
     void		findHomeBase(TeamColor teamColor, float location[3]);
-    bool		myTeamHoldingOpponentFlag(void);
-    void		findOpponentFlag(float location[3]);
+    bool myTeamHoldingMyTeamFlag(void);
+    void findMyTeamFlag(float location[3]);
     int		computeCenterOfMass(float neighborhoodSize, float cmOut[3]);
     int		computeRepulsion(float neighborhoodSize, float repulseOut[3]);
     int		computeAlign(float neighborhoodSize, float avVOut[3], float* avAzimuthOut);

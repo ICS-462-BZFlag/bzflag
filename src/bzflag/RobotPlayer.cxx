@@ -168,7 +168,7 @@ void            RobotPlayer::doUpdate(float dt)
 
 void            RobotPlayer::doUpdateMotion(float dt)
 {
-    aicore::DecisionPtr::runDecisionTree(aicore::DecisionTrees::doUpdateMotionDecisions, this, dt);
+    aicore::DecisionPtr::runDecisionTree(aicore::DecisionTrees::DefenseTreeDecisions, this, dt);
     LocalPlayer::doUpdateMotion(dt);
 }
 

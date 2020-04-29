@@ -66,7 +66,10 @@ public:
     void followAStar(float dt);
     bool		returnTrue(float dt);
     bool		returnFalse(float dt);
+    bool shotComing(float dt);
     void doNothing(float dt);
+    void evade(float dt);
+    void followPath(float dt);
     void		RobotPlayer::a1(float dt);
     void		RobotPlayer::a2(float dt);
     void		RobotPlayer::a3(float dt);
@@ -77,6 +80,16 @@ public:
 
 private:
     void        doUpdate(float dt);
+	bool isShotCloseToTarget(float dt);
+	bool isBuildingInWay(float dt);
+	bool isTeammateInWay(float dt);
+    void setShortShotTimer(float dt);
+    void shootAndResetShotTimer(float dt);
+    bool isHoldingFlag(float dt);
+    bool isFlagSticky(float dt);
+    bool isTeamFlag(float dt);
+    bool isMyTeamFlag(float dt);
+    void dropFlag(float dt);
     void        doUpdateMotion(float dt);
     BzfRegion* findRegion(const float p[2], float nearest[2]) const;
     float       getRegionExitPoint(
@@ -92,7 +105,7 @@ private:
     /* lines added by David Chin */
     void		findHomeBase(TeamColor teamColor, float location[3]);
     bool		myTeamHoldingOpponentFlag(void);
-    void		findOpponentFlag(float location[3]);
+    bool		findOpponentFlag(float location[3]);
     int		computeCenterOfMass(float neighborhoodSize, float cmOut[3]);
     int		computeRepulsion(float neighborhoodSize, float repulseOut[3]);
     int		computeAlign(float neighborhoodSize, float avVOut[3], float* avAzimuthOut);
@@ -103,6 +116,8 @@ private:
     static const float		AlignW;
     static const float		PathW;
     /* end of lines added by David Chin */
+    //Added by Jeff
+    float targetdir[3];
 
 private:
     const Player* target;

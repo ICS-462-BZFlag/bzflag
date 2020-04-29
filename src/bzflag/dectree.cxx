@@ -113,63 +113,63 @@ namespace aicore
         True branch: proceed to next decision
         false branch: do nothing
         */
-        doUpdateShootDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
-        doUpdateShootDecisions[0].trueBranch = &doUpdateShootDecisions[1];
-        doUpdateShootDecisions[0].falseBranch = &doUpdateShootActions[0];
+        doUpdateShootingDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
+        doUpdateShootingDecisions[0].trueBranch = &doUpdateShootingDecisions[1];
+        doUpdateShootingDecisions[0].falseBranch = &doUpdateShootingActions[0];
 
         /*
         Boolean function: isFiringStatusReady
         True branch: proceed to next decision
         false branch: do nothing
         */
-        doUpdateShootDecisions[1].decFuncPtr = &RobotPlayer::isFiringStatusReady;
-        doUpdateShootDecisions[1].trueBranch = &doUpdateShootDecisions[2];
-        doUpdateShootDecisions[1].falseBranch = &doUpdateShootActions[0];
+        doUpdateShootingDecisions[1].decFuncPtr = &RobotPlayer::isFiringStatusReady;
+        doUpdateShootingDecisions[1].trueBranch = &doUpdateShootingDecisions[2];
+        doUpdateShootingDecisions[1].falseBranch = &doUpdateShootingActions[0];
 
         /*
         Boolean function: hasShotTimerElapsed
         True branch: proceed to the next decision
         false branch: do nothing
         */
-        doUpdateShootDecisions[2].decFuncPtr = &RobotPlayer::hasShotTimerElapsed;
-        doUpdateShootDecisions[2].trueBranch = &doUpdateShootDecisions[3];
-        doUpdateShootDecisions[2].falseBranch = &doUpdateShootActions[0];
+        doUpdateShootingDecisions[2].decFuncPtr = &RobotPlayer::hasShotTimerElapsed;
+        doUpdateShootingDecisions[2].trueBranch = &doUpdateShootingDecisions[3];
+        doUpdateShootingDecisions[2].falseBranch = &doUpdateShootingActions[0];
 
         /*
         Boolean function: willTheShotMiss
         True branch: proceed to the next decision
         false branch: do nothing
         */
-        doUpdateShootDecisions[3].decFuncPtr = &RobotPlayer::willTheShotMiss;
-        doUpdateShootDecisions[3].trueBranch = &doUpdateShootDecisions[4];
-        doUpdateShootDecisions[3].falseBranch = &doUpdateShootActions[0];
+        doUpdateShootingDecisions[3].decFuncPtr = &RobotPlayer::willTheShotMiss;
+        doUpdateShootingDecisions[3].trueBranch = &doUpdateShootingDecisions[4];
+        doUpdateShootingDecisions[3].falseBranch = &doUpdateShootingActions[0];
 
         /*
         Boolean function: isBlockedByBuildings
         True branch: proceed to the next decision
         false branch: do nothing
         */
-        doUpdateShootDecisions[4].decFuncPtr = &RobotPlayer::isBlockedByBuildings;
-        doUpdateShootDecisions[4].trueBranch = &doUpdateShootDecisions[5];
-        doUpdateShootDecisions[4].falseBranch = &doUpdateShootActions[0];
+        doUpdateShootingDecisions[4].decFuncPtr = &RobotPlayer::isBlockedByBuildings;
+        doUpdateShootingDecisions[4].trueBranch = &doUpdateShootingDecisions[5];
+        doUpdateShootingDecisions[4].falseBranch = &doUpdateShootingActions[0];
 
         /*
         Boolean function: isBlockedByTeammates
         True branch: setShotTimer
         false branch: fireTheShot
         */
-        doUpdateShootDecisions[5].decFuncPtr = &RobotPlayer::isBlockedByTeammates;
-        doUpdateShootDecisions[5].trueBranch = &doUpdateShootActions[1];
-        doUpdateShootDecisions[5].falseBranch = &doUpdateShootActions[2];
+        doUpdateShootingDecisions[5].decFuncPtr = &RobotPlayer::isBlockedByTeammates;
+        doUpdateShootingDecisions[5].trueBranch = &doUpdateShootingActions[1];
+        doUpdateShootingDecisions[5].falseBranch = &doUpdateShootingActions[2];
 
         /*
         do Nothing --literally do nothing
         setShottimer --sets the shot timer
         fireTheShot -- fires the shot
         */
-        doUpdateShootActions[0].actFuncPtr = &RobotPlayer::doNothing;
-        doUpdateShootActions[1].actFuncPtr = &RobotPlayer::setShotTimer;
-        doUpdateShootActions[2].actFuncPtr = &RobotPlayer::fireTheShot;
+        doUpdateShootingActions[0].actFuncPtr = &RobotPlayer::doNothing;
+        doUpdateShootingActions[1].actFuncPtr = &RobotPlayer::setShotTimer;
+        doUpdateShootingActions[2].actFuncPtr = &RobotPlayer::fireTheShot;
 
         /*
             DropFlags Decision Tree
@@ -179,59 +179,63 @@ namespace aicore
         True branch: preoceed to the next decision
         false branch: do nothing
         */
-        doUpdateFlagsDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
-        doUpdateFlagsDecisions[0].trueBranch = &doUpdateFlagsDecisions[1];
-        doUpdateFlagsDecisions[0].falseBranch = &doUpdateFlagsActions[0];
+        doUpdateDropFlagDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
+        doUpdateDropFlagDecisions[0].trueBranch = &doUpdateDropFlagDecisions[1];
+        doUpdateDropFlagDecisions[0].falseBranch = &doUpdateDropFlagsActions[0];
 
         /*
         Boolean function: amHoldingFlag
         True branch: proceed to the next decision
         false branch: do nothing
         */
-        doUpdateFlagsDecisions[1].decFuncPtr = &RobotPlayer::amHoldingFlag;
-        doUpdateFlagsDecisions[1].trueBranch = &doUpdateFlagsDecisions[2];
-        doUpdateFlagsDecisions[1].falseBranch = &doUpdateFlagsActions[0];
+        doUpdateDropFlagDecisions[1].decFuncPtr = &RobotPlayer::amHoldingFlag;
+        doUpdateDropFlagDecisions[1].trueBranch = &doUpdateDropFlagDecisions[2];
+        doUpdateDropFlagDecisions[1].falseBranch = &doUpdateDropFlagsActions[0];
 
         /*
         Boolean function: isFlagNotSticky
         True branch: proceed to the next decision
         false branch: do nothing
         */
-        doUpdateFlagsDecisions[2].decFuncPtr = &RobotPlayer::isFlagNotSticky;
-        doUpdateFlagsDecisions[2].trueBranch = &doUpdateFlagsDecisions[3];
-        doUpdateFlagsDecisions[2].falseBranch = &doUpdateFlagsActions[0];
+        doUpdateDropFlagDecisions[2].decFuncPtr = &RobotPlayer::isFlagNotSticky;
+        doUpdateDropFlagDecisions[2].trueBranch = &doUpdateDropFlagDecisions[3];
+        doUpdateDropFlagDecisions[2].falseBranch = &doUpdateDropFlagsActions[0];
 
         /*
         Boolean function: flagNoTeam --checks if the flag is of property noTeam
         True branch: drop flag
         false branch: proceed to the next decision
         */
-        doUpdateFlagsDecisions[3].decFuncPtr = &RobotPlayer::flagNoTeam;
-        doUpdateFlagsDecisions[3].trueBranch = &doUpdateFlagsActions[1];
-        doUpdateFlagsDecisions[3].falseBranch = &doUpdateFlagsDecisions[4];
+        doUpdateDropFlagDecisions[3].decFuncPtr = &RobotPlayer::flagNoTeam;
+        doUpdateDropFlagDecisions[3].trueBranch = &doUpdateDropFlagsActions[1];
+        doUpdateDropFlagDecisions[3].falseBranch = &doUpdateDropFlagDecisions[4];
 
         /*
         Boolean function: FlagmyTeam --checks if the flag is my team
         True branch: drop flag
         false branch: do nothing
         */
-        doUpdateFlagsDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
-        doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsActions[1];
-        doUpdateFlagsDecisions[4].falseBranch = &doUpdateFlagsActions[0];
+        doUpdateDropFlagDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
+        doUpdateDropFlagDecisions[4].trueBranch = &doUpdateDropFlagsActions[1];
+        doUpdateDropFlagDecisions[4].falseBranch = &doUpdateDropFlagsActions[0];
 
         /*
         doNothing --literally do nothing
         aDropFlag --Drop it
         */
-        doUpdateFlagsActions[0].actFuncPtr = &RobotPlayer::doNothing;
-        doUpdateFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
+        doUpdateDropFlagsActions[0].actFuncPtr = &RobotPlayer::doNothing;
+        doUpdateDropFlagsActions[1].actFuncPtr = &RobotPlayer::aDropFlag;
     }
 
     DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];
     ActionPtr DecisionTrees::doUpdateMotionActions[3];
-    DecisionPtr DecisionTrees::doUpdateFlagsDecisions[5];
-    ActionPtr DecisionTrees::doUpdateFlagsActions[2];
-    DecisionPtr DecisionTrees::doUpdateShootDecisions[6];
-    ActionPtr DecisionTrees::doUpdateShootActions[3];
+    DecisionPtr doUpdateDropFlagDecisions[5];
+    //Holds our list of actions based on flags
+    ActionPtr doUpdateDropFlagsActions[2];
+    //holds our list of decisions based on flags
+    DecisionPtr doUpdateShootingDecisions[6];
+    //Holds our list of actions based on flags
+    ActionPtr doUpdateShootingActions[3];
+    //Holds our list of actions for the point check
 
 }; // end of namespace

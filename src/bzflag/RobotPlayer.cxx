@@ -710,6 +710,12 @@ void		RobotPlayer::findOpponentFlag(float location[3])
 #endif
             return;
         }
+        else if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor && flag.status == FlagInAir) {
+            const float* baseParms = World::getWorld()->getBase(getTeam(), 0);
+            location[0] = baseParms[0];
+            location[1] = baseParms[1];
+            location[2] = baseParms[2];
+        }
     }
 }
 

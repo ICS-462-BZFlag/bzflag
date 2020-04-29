@@ -240,21 +240,14 @@ void            RobotPlayer::setTarget(const Player* _target)
 
         //path.clear();
     target = _target;
-    bool genocideBool = false;
-    Flag& genocideFlag;
-    //if (!target) return;
+
 
     TeamColor myteam = getTeam();
     float goalPos[3];
-    genocideBool = isGenocideTaken(genocideFlag);
-    if (genocideBool == true) {
-      findGenocideFlag(genocideFlag, goalPos);
-    } else {
       if (myTeamHoldingOpponentFlag())
           findHomeBase(myteam, goalPos);
       else
           findOpponentFlag(goalPos);
-    }
 
     AStarNode goalNode(goalPos);
     if (!AstarPath.empty() && goalNode == pathGoalNode)
@@ -712,29 +705,6 @@ void		RobotPlayer::findOpponentFlag(float location[3])
     }
 }
 
-bool RobotPlayer::isGenocideTaken(Flag& flag) {
-    if (!World::getWorld()->allowSuperFlags()) return false;
-    for (int i = 0; i < numFlags; i++) {
-        flag = World::getWorld()->getFlag(i);
-        if (flag->flagAbbv == "G" && flag.owner == 0) {
-	  return true;
-        }
-    }
-    return false;
-}
-
-void		RobotPlayer::findGenocideFlag(Flag& flag, float location[3])
-{
-    location[0] = flag.position[0];
-    location[1] = flag.position[1];
-    location[2] = flag.position[2];
-#ifdef TRACE2
-    char buffer[128];
-    sprintf(buffer, "Robot(%d) found genocide flag at (%f, %f, %f)",
-	getId(), location[0], location[1], location[2]);
-    controlPanel->addMessage(buffer);
-#endif
-}
 
 /*
  * Given a PlayerId, find the corresponding local Player

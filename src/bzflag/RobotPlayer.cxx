@@ -686,11 +686,24 @@ bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
 void		RobotPlayer::findOpponentFlag(float location[3])
 {
     TeamColor myTeamColor = getTeam();
+
+    const Team& myTeam = World::getWorld()->getTeam(int(getTeam()));
+    short myScore = myTeam.getWins() - myTeam.getLosses();
+
+    const Team& team1 = World::getWorld()->getTeam(1);
+    short team1Score = team1.getWins() - team1.getLosses();
+
+    const Team& team2 = World::getWorld()->getTeam(2);
+    short team2Score = team2.getWins() - team2.getLosses();
+
+    const Team& team4 = World::getWorld()->getTeam(4);
+    short team4Score = team4.getWins() - team4.getLosses();
+
     if (!World::getWorld()->allowTeamFlags()) return;
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor) {
+        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team1Score >= myScore && flagTeamColor == RedTeam) {
             location[0] = flag.position[0];
             location[1] = flag.position[1];
             location[2] = flag.position[2];
@@ -702,6 +715,31 @@ void		RobotPlayer::findOpponentFlag(float location[3])
 #endif
             return;
         }
+        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team2Score >= myScore && flagTeamColor == GreenTeam) {
+            location[0] = flag.position[0];
+            location[1] = flag.position[1];
+            location[2] = flag.position[2];
+#ifdef TRACE2
+            char buffer[128];
+            sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
+                getId(), location[0], location[1], location[2]);
+            controlPanel->addMessage(buffer);
+#endif
+            return;
+        }
+        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team4Score >= myScore && flagTeamColor == PurpleTeam) {
+            location[0] = flag.position[0];
+            location[1] = flag.position[1];
+            location[2] = flag.position[2];
+#ifdef TRACE2
+            char buffer[128];
+            sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
+                getId(), location[0], location[1], location[2]);
+            controlPanel->addMessage(buffer);
+#endif
+            return;
+        }
+
     }
 }
 

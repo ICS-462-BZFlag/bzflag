@@ -247,7 +247,7 @@ namespace aicore
 
         /*
         DEFENSE TREE DECISIONS
-        */
+       
         DefenseTreeDecisions[0].decFuncPtr = &RobotPlayer::amAlive;
         DefenseTreeDecisions[0].trueBranch = &DefenseTreeDecisions[1];
         DefenseTreeDecisions[0].falseBranch = &DefenseTreeActions[0];
@@ -263,23 +263,24 @@ namespace aicore
         DefenseTreeDecisions[3].decFuncPtr = &RobotPlayer::atCorner;
         DefenseTreeDecisions[3].trueBranch = &DefenseTreeActions[3];
         DefenseTreeDecisions[3].falseBranch = &DefenseTreeActions[4];
-        /*
+        
         DEFENSE TREE ACTIONS
-        */
+        
         DefenseTreeActions[0].actFuncPtr = &RobotPlayer::doNothing;
         DefenseTreeActions[1].actFuncPtr = &RobotPlayer::aStarToFlag;
         DefenseTreeActions[2].actFuncPtr = &RobotPlayer::aStarToCurrentCorner;
         DefenseTreeActions[3].actFuncPtr = &RobotPlayer::swapCornerAndAStar;
         DefenseTreeActions[4].actFuncPtr = &RobotPlayer::aStarToFlag;
+        */
     }
-
+    
     DecisionPtr DecisionTrees::doUpdateMotionDecisions[2];
     ActionPtr   DecisionTrees::doUpdateMotionActions[3];
     DecisionPtr DecisionTrees::doUpdateFlagsDecisions[7];
     ActionPtr   DecisionTrees::doUpdateFlagsActions[2];
     DecisionPtr DecisionTrees::doUpdateShootDecisions[6];
     ActionPtr   DecisionTrees::doUpdateShootActions[3];
-    DecisionPtr DecisionTrees::DefenseTreeDecisions[4];
-    ActionPtr   DecisionTrees::DefenseTreeActions[5];
+    //DecisionPtr DecisionTrees::DefenseTreeDecisions[4];
+    //ActionPtr   DecisionTrees::DefenseTreeActions[5];
 
 }; // end of namespace

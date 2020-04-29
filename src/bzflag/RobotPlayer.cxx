@@ -914,7 +914,7 @@ void RobotPlayer::rotateTank(float dt) {
     double targetDistance = sqrt(dx*dx+dy*dy);
     // Code taken from getProjectedPosition to find bullet speed
     double bulletSpeed = BZDB.eval(StateDatabase::BZDB_SHOTSPEED) *
-    (getFlag() == Flags::Laser ? BZDB.eval(StateDatabase::BZDB_LASERADVEL) :
+        (getFlag() == Flags::Laser ? BZDB.eval(StateDatabase::BZDB_LASERADVEL) :
 	getFlag() == Flags::RapidFire ? BZDB.eval(StateDatabase::BZDB_RFIREADVEL) :
 	getFlag() == Flags::MachineGun ? BZDB.eval(StateDatabase::BZDB_MGUNADVEL) : 1) +
         hypotf(getVelocity()[0], getVelocity()[1]);
@@ -922,7 +922,7 @@ void RobotPlayer::rotateTank(float dt) {
     double radian = atan2(dy,dx);
     int max_iterations = 100;
     while (max_iterations--) {
-        printf("Angle: %2.1fdeg, Collision At: (%f, %f)\n", radian*(180.0/M_PI), dx,dy);
+        printf("Angle: %2.1fdeg, Collision At: (%f, %f)\n", radian*(180.0/M_PI), dx, dy);
         dx = target.getPosition()[0] - getPosition()[0] +
              (target.getVelocity()[0] - getVelocity()[0])*ImpactTime;
         dy = target.getPosition()[1] - getPosition()[1] +
@@ -930,7 +930,7 @@ void RobotPlayer::rotateTank(float dt) {
         targetDistance = sqrt(dx*dx+dy*dy);
         ImpactTime = targetDistance/bulletSpeed;
         double newradian = atan2(dy,dx);
-
+        setDesiredAngVel((float) newradian);
         double cur_error = fabs(newradian - radian);
         radian = newradian;
         if (cur_error <= max_error) break;

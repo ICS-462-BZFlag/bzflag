@@ -244,10 +244,10 @@ void            RobotPlayer::setTarget(const Player* _target)
 
     TeamColor myteam = getTeam();
     float goalPos[3];
-    if (myTeamHoldingMyTeamFlag())
+   // if (myTeamHoldingOpponentFlag())
         findHomeBase(myteam, goalPos);
-    else
-       findMyTeamFlag(goalPos);
+    //else
+       // findOpponentFlag(goalPos);
 
     AStarNode goalNode(goalPos);
     if (!AstarPath.empty() && goalNode == pathGoalNode)
@@ -644,14 +644,14 @@ void		RobotPlayer::findHomeBase(TeamColor teamColor, float location[3])
  * Return true if any player on my team
  * is holding an opponent team flag, and false otherwise
  */
-bool		RobotPlayer::myTeamHoldingMyTeamFlag(void)
+bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
 {
     TeamColor myTeamColor = getTeam();
     if (!World::getWorld()->allowTeamFlags()) return false;
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor
+        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor
             && flag.status == FlagOnTank) {
             PlayerId ownerId = flag.owner;
 #ifdef TRACE2
@@ -683,14 +683,14 @@ bool		RobotPlayer::myTeamHoldingMyTeamFlag(void)
 /*
  * Find any opponent flag and return its location
  */
-void		RobotPlayer::findMyTeamFlag(float location[3])
+void		RobotPlayer::findOpponentFlag(float location[3])
 {
     TeamColor myTeamColor = getTeam();
     if (!World::getWorld()->allowTeamFlags()) return;
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor) {
+        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor) {
             location[0] = flag.position[0];
             location[1] = flag.position[1];
             location[2] = flag.position[2];

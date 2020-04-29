@@ -687,10 +687,12 @@ bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
  */
 void		RobotPlayer::findOpponentFlag(float location[3])
 {
-    controlPanel->addMessage("Defense squad has own flag");
-    location[0] = 0;
-    location[1] = 0;
-    location[2] = 0;
+    World* world = World::getWorld();
+    if (!world->allowTeamFlags()) return;
+    const float* baseParms = World::getWorld()->getBase(getTeam(), 0);
+    location[0] = baseParms[0];
+    location[1] = baseParms[1];
+    location[2] = baseParms[2];
     TeamColor myTeamColor = getTeam();
     if (!World::getWorld()->allowTeamFlags()) return;
     for (int i = 0; i < numFlags; i++) {

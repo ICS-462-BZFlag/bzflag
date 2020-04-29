@@ -216,7 +216,7 @@ namespace aicore
         false branch: do nothing
         */
         doUpdateFlagsDecisions[4].decFuncPtr = &RobotPlayer::flagMyTeam;
-        doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsActions[0];
+        doUpdateFlagsDecisions[4].trueBranch = &doUpdateFlagsActions[1];
         doUpdateFlagsDecisions[4].falseBranch = &doUpdateFlagsActions[0];
 
         /*

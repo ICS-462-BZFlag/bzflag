@@ -244,10 +244,10 @@ void            RobotPlayer::setTarget(const Player* _target)
 
     TeamColor myteam = getTeam();
     float goalPos[3];
-    if (myTeamHoldingOpponentFlag())
+   // if (myTeamHoldingOpponentFlag())
         findHomeBase(myteam, goalPos);
-    else
-        findOpponentFlag(goalPos);
+    //else
+       // findOpponentFlag(goalPos);
 
     AStarNode goalNode(goalPos);
     if (!AstarPath.empty() && goalNode == pathGoalNode)

@@ -930,7 +930,13 @@ void RobotPlayer::rotateTank(float dt) {
         targetDistance = sqrt(dx*dx+dy*dy);
         ImpactTime = targetDistance/bulletSpeed;
         double newradian = atan2(dy,dx);
-        setDesiredAngVel((float) newradian);
+        double currAngle = getAngle();
+        double deltaAngle = currAngle - newradian;
+        if (deltaAngle < 1.0f * dt) {
+	  setDesiredAngVel((float) dt * newradian);
+	} else {
+	  setDesiredAngVel((float) newradian);
+	}
         double cur_error = fabs(newradian - radian);
         radian = newradian;
         if (cur_error <= max_error) break;

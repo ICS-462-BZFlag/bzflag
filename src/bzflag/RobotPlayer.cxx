@@ -52,7 +52,7 @@ const float RobotPlayer::PathW = 3.0f;
 //Global Variables
 float corner1[3];
 float corner2[3];
-float currentCorner[3] = { 0,0,100 };
+float currentCorner[3] = { 0,0,0 };
 int CurrentCorner = 1;
 
 RobotPlayer::RobotPlayer(const PlayerId& _id, const char* _name,
@@ -168,7 +168,7 @@ void            RobotPlayer::doUpdate(float dt)
 
 void            RobotPlayer::doUpdateMotion(float dt)
 {
-    aicore::DecisionPtr::runDecisionTree(aicore::DecisionTrees::DefenseTreeDecisions, this, dt);
+    aicore::DecisionPtr::runDecisionTree(aicore::DecisionTrees::doUpdateMotionDecisions, this, dt);
     LocalPlayer::doUpdateMotion(dt);
 }
 
@@ -860,17 +860,17 @@ void RobotPlayer::swapCornerAndAStar(float dt) {
 }
 void RobotPlayer::aStarToFlag(float dt) {
     TeamColor myTeamColor = getTeam();
+    float flagPos[3] = { 0,0,0 };
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
         if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor) {
-            float flagPos[3];
             flagPos[0] = flag.position[0];
             flagPos[1] = flag.position[1];
             flagPos[2] = flag.position[2];
         }
     }
-    AStarGraph::aStarSearch(getPosition(), currentCorner, AstarPath);
+    AStarGraph::aStarSearch(getPosition(), flagPos, AstarPath);
     followAStar(dt);
 }
 /*

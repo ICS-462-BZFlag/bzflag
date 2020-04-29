@@ -258,11 +258,11 @@ namespace aicore
 
         DefenseTreeDecisions[2].decFuncPtr = &RobotPlayer::flagOnMyTeam;
         DefenseTreeDecisions[2].trueBranch = &DefenseTreeDecisions[3];
-        DefenseTreeDecisions[2].falseBranch = &DefenseTreeActions[2];
+        DefenseTreeDecisions[2].falseBranch = &DefenseTreeActions[1];
 
         DefenseTreeDecisions[3].decFuncPtr = &RobotPlayer::atCorner;
         DefenseTreeDecisions[3].trueBranch = &DefenseTreeActions[3];
-        DefenseTreeDecisions[3].falseBranch = &DefenseTreeActions[4];
+        DefenseTreeDecisions[3].falseBranch = &DefenseTreeActions[2];
         /*
         DEFENSE TREE ACTIONS
         */

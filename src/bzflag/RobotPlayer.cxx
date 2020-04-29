@@ -693,10 +693,10 @@ void		RobotPlayer::findOpponentFlag(float location[3])
     const Team& myTeam = World::getWorld()->getTeam(int(getTeam()));
     short myScore = myTeam.getWins() - myTeam.getLosses();
 
-    const Team& team1 = World::getWorld()->getTeam(1);
+    const Team& team1 = World::getWorld()->getTeam(2);
     short team1Score = team1.getWins() - team1.getLosses();
 
-    const Team& team2 = World::getWorld()->getTeam(2);
+    const Team& team2 = World::getWorld()->getTeam(3);
     short team2Score = team2.getWins() - team2.getLosses();
 
     const Team& team4 = World::getWorld()->getTeam(4);
@@ -706,7 +706,7 @@ void		RobotPlayer::findOpponentFlag(float location[3])
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor == RedTeam) {
+        if (flagTeamColor == BlueTeam) {
             if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team1Score > myScore) {
                 location[0] = flag.position[0];
                 location[1] = flag.position[1];

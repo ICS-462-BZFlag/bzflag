@@ -703,42 +703,49 @@ void		RobotPlayer::findOpponentFlag(float location[3])
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team1Score >= myScore && flagTeamColor == RedTeam) {
-            location[0] = flag.position[0];
-            location[1] = flag.position[1];
-            location[2] = flag.position[2];
+        if (flagTeamColor == RedTeam) {
+            if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team1Score > myScore) {
+                location[0] = flag.position[0];
+                location[1] = flag.position[1];
+                location[2] = flag.position[2];
 #ifdef TRACE2
-            char buffer[128];
-            sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
-                getId(), location[0], location[1], location[2]);
-            controlPanel->addMessage(buffer);
+                char buffer[128];
+                sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
+                    getId(), location[0], location[1], location[2]);
+                controlPanel->addMessage(buffer);
 #endif
-            return;
+                return;
+            }
         }
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team2Score >= myScore && flagTeamColor == GreenTeam) {
-            location[0] = flag.position[0];
-            location[1] = flag.position[1];
-            location[2] = flag.position[2];
+        if (flagTeamColor == GreenTeam) {
+            if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team2Score > myScore) {
+                location[0] = flag.position[0];
+                location[1] = flag.position[1];
+                location[2] = flag.position[2];
 #ifdef TRACE2
-            char buffer[128];
-            sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
-                getId(), location[0], location[1], location[2]);
-            controlPanel->addMessage(buffer);
+                char buffer[128];
+                sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
+                    getId(), location[0], location[1], location[2]);
+                controlPanel->addMessage(buffer);
 #endif
-            return;
+                return;
+            }
         }
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team4Score >= myScore && flagTeamColor == PurpleTeam) {
-            location[0] = flag.position[0];
-            location[1] = flag.position[1];
-            location[2] = flag.position[2];
+        if (flagTeamColor == BlueTeam) {
+            if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team4Score > myScore) {
+                location[0] = flag.position[0];
+                location[1] = flag.position[1];
+                location[2] = flag.position[2];
 #ifdef TRACE2
-            char buffer[128];
-            sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
-                getId(), location[0], location[1], location[2]);
-            controlPanel->addMessage(buffer);
+                char buffer[128];
+                sprintf(buffer, "Robot(%d) found a flag at (%f, %f, %f)",
+                    getId(), location[0], location[1], location[2]);
+                controlPanel->addMessage(buffer);
 #endif
-            return;
+                return;
+            }
         }
+        findHomeBase(myTeamColor, location);
 
     }
 }

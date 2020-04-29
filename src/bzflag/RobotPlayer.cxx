@@ -651,7 +651,7 @@ bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
     for (int i = 0; i < numFlags; i++) {
         Flag& flag = World::getWorld()->getFlag(i);
         TeamColor flagTeamColor = flag.type->flagTeam;
-        if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor
+        if (flagTeamColor != NoTeam && flagTeamColor == myTeamColor
             && flag.status == FlagOnTank) {
             PlayerId ownerId = flag.owner;
 #ifdef TRACE2
@@ -685,6 +685,10 @@ bool		RobotPlayer::myTeamHoldingOpponentFlag(void)
  */
 void		RobotPlayer::findOpponentFlag(float location[3])
 {
+    controlPanel->addMessage("Defense squad has own flag");
+    location[0] = 0;
+    location[1] = 0;
+    location[2] = 0;
     TeamColor myTeamColor = getTeam();
     if (!World::getWorld()->allowTeamFlags()) return;
     for (int i = 0; i < numFlags; i++) {

@@ -626,8 +626,11 @@ int		RobotPlayer::computeAlign(float neighborhoodSize, float avVOut[3], float* a
  */
 void		RobotPlayer::findHomeBase(TeamColor teamColor, float location[3])
 {
+    location[0] = 0;
+    location[1] = 0;
+    location[2] = 0;
     World* world = World::getWorld();
-    if (!world->allowTeamFlags()) return;
+    if(!world->allowTeamFlags()) return;
     const float* baseParms = world->getBase(teamColor, 0);
 #ifdef TRACE2
     char buffer[128];
@@ -731,7 +734,7 @@ void		RobotPlayer::findOpponentFlag(float location[3])
                 return;
             }
         }
-        if (flagTeamColor == BlueTeam) {
+        if (flagTeamColor == PurpleTeam) {
             if (flagTeamColor != NoTeam && flagTeamColor != myTeamColor && team4Score > myScore) {
                 location[0] = flag.position[0];
                 location[1] = flag.position[1];
